@@ -1,0 +1,43 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ espece.nomCommun }} - Fiche espèce{% endblock %}
+
+{% block body_class %}espece-show-page-body{% endblock %}
+
+{% block body %}
+<div class="espece-show-page container">
+    <h1 class="text-center">{{ espece.nomCommun }}</h1>
+    {% if espece.nomScientifique %}
+        <h2 class="text-center text-muted"><em>{{ espece.nomScientifique }}</em></h2>
+    {% endif %}
+
+    <div class="row mt-4">
+        <div class="col-md-6 text-center">
+            {% if espece.image %}
+                <img src="{{ asset('uploads/especes/' ~ espece.image) }}" alt="{{ espece.nomCommun }}" class="img-fluid rounded shadow">
+            {% else %}
+                <img src="{{ asset('build/images/default-espece.jpg') }}" alt="Image par défaut" class="img-fluid rounded shadow">
+            {% endif %}
+        </div>
+
+        <div class="col-md-6">
+            <h3>Description</h3>
+            <p>{{ espece.description|default('Aucune description disponible.') }}</p>
+
+            <h4>Biotope</h4>
+            <p>{{ espece.biotope|default('Non renseigné') }}</p>
+
+            <h4>Paramètres</h4>
+            <ul>
+                <li><strong>pH :</strong> {{ espece.phMin }} - {{ espece.phMax }}</li>
+                <li><strong>Température :</strong> {{ espece.temperatureMin }}°C - {{ espece.temperatureMax }}°C</li>
+                <li><strong>Durée de vie :</strong> {{ espece.dureeVie|default('Non renseignée') }}</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="text-center mt-4">
+        <a href="{{ path('app_especes_list') }}" class="btn btn-primary">← Retour à la liste des espèces</a>
+    </div>
+</div>
+{% endblock %}

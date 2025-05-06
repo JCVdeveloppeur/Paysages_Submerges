@@ -1,0 +1,43 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Articles - Paysages Submergés{% endblock %}
+
+{% block body %}
+<section class="section-articles py-6 bg-light">
+    <div class="container">
+        <h1 class="mb-2 text-center">Nos derniers articles</h1>
+        <p class="lead text-center mb-5">Explorez les secrets des biotopes aquatiques et laissez-vous émerveiller par la diversité sous-marine.</p>
+
+        <div class="row" id="articles-list">
+            {% if articles is not empty %}
+                {% for article in articles %}
+                    <div class="col-md-4 mb-4">
+                        <div class="card h-100 shadow-sm">
+                            {% if article.image %}
+                                <img src="{{ asset('uploads/articles/' ~ article.image) }}" class="card-img-top" alt="{{ article.titre }}">
+                            {% else %}
+                                <img src="{{ asset('build/images/default-article.jpg') }}" class="card-img-top" alt="Image par défaut">
+                            {% endif %}
+
+                            <div class="card-body">
+                                <h5 class="card-title">{{ article.titre }}</h5>
+                                <span class="badge bg-primary">{{ article.categorie }}</span>
+                                <p class="card-text">
+                                    {{ article.contenu|length > 100 ? article.contenu|slice(0, 100) ~ '...' : article.contenu }}
+                                </p>
+                                <a href="{{ path('article_show', {'id': article.id}) }}" class="btn btn-primary mt-3">Lire la suite</a>
+                            </div>
+                            <div class="card-footer text-muted">
+                                Publié le {{ article.createdAt ? article.createdAt|date('d F Y') : 'Non publié' }}
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <p class="text-center">Aucun article trouvé.</p>
+            {% endif %}
+        </div>
+    </div>
+</section>
+{% endblock %}
+

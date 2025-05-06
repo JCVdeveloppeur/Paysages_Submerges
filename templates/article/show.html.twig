@@ -1,0 +1,54 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ article.titre }}{% endblock %}
+
+{% block body %}
+<div class="article-show-page">
+    <div class="article-card">
+        {% if article.image %}
+            <img src="{{ asset('uploads/articles/' ~ article.image) }}" alt="{{ article.titre }}" class="article-image">
+        {% endif %}
+
+        <div class="article-content">
+            <h1>{{ article.titre }}</h1>
+            <span class="badge">{{ article.categorie }}</span>
+            <p>{{ article.contenu | raw }}</p>
+        </div>
+
+        <div class="article-footer">
+            <span><i class="bi bi-heart-fill"></i> {{ article.likes|length }} likes</span>
+            <span><i class="bi bi-chat-fill"></i> {{ article.commentaires|length }} commentaires</span>
+        </div>
+    </div>
+
+    <div class="comments-section">
+        <h3>Commentaires</h3>
+        {% if article.commentaires|length == 0 %}
+            <p class="text-muted">Pas encore de commentaires pour cet article.</p>
+        {% else %}
+            {% for commentaire in article.commentaires %}
+                <div class="card">
+                    <div class="card-body">
+                        <strong>{{ commentaire.auteur }}</strong>
+                        <p>{{ commentaire.contenu }}</p>
+                        <small>{{ commentaire.createdAt|date('d/m/Y H:i') }}</small>
+                    </div>
+                </div>
+            {% endfor %}
+        {% endif %}
+    </div>
+
+    <div class="text-center">
+        <a href="{{ path('app_articles') }}" class="back-button">← Retour aux articles</a>
+    </div>
+</div>
+{% endblock %}
+
+
+
+
+
+
+
+
+

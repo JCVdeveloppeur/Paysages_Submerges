@@ -1,0 +1,37 @@
+@use "variables" as *;
+
+.badge {
+    font-size: 0.85rem;
+    padding: 0.4em 0.6em;
+    border-radius: 1rem;
+    color: #fff;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+    transition: transform 0.2s, box-shadow 0.2s;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+
+    &:hover {
+        transform: scale(1.1);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    }
+}
+
+/* Catégories personnalisées */
+.badge-amerique-sud {
+    background: linear-gradient(45deg, #6b8e23, #556b2f); // vert forêt amazonienne
+}
+
+.badge-asiatique {
+    background: linear-gradient(45deg, #20b2aa, #008b8b); // turquoise asiatique, eau claire
+}
+
+.badge-africain {
+    background: linear-gradient(45deg, #c2b280, #a0522d); // sable du désert, terre sèche
+}
+
+.badge-australien {
+    background: linear-gradient(45deg, #ffa07a, #ff4500); // corail, récif australien
+}
+
+.badge-autre {
+    background: linear-gradient(45deg, #708090, #2f4f4f); // gris ardoise, roche
+}

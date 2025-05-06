@@ -1,0 +1,67 @@
+
+@use 'variables' as vars;
+
+.espece-show-page-body {
+    background-color: vars.$crème-clair;
+    min-height: calc(100vh - 120px); // ajuste selon la hauteur navbar + footer
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 2rem 1rem;
+}
+
+.espece-show-page {
+    width: 100%;
+    max-width: 1200px;
+    background: #fff;
+    border-radius: vars.$border-radius;
+    box-shadow: vars.$shadow-light;
+    padding: 2rem;
+
+    h1, h2 {
+        font-family: vars.$font-titres;
+        margin-bottom: 1rem;
+        text-align: center;
+    }
+
+    h3, h4 {
+        font-family: vars.$font-titres;
+        margin-top: 1.5rem;
+        margin-bottom: 0.5rem;
+    }
+
+    p, li {
+        font-family: vars.$font-corps;
+        font-size: 1rem;
+        color: vars.$texte-foncé;
+    }
+
+    img {
+        max-width: 100%;
+        height: auto;
+        border-radius: vars.$border-radius;
+        box-shadow: vars.$shadow-light;
+    }
+
+    .btn {
+        background-color: vars.$bleu-accent;
+        border-color: vars.$bleu-accent;
+        color: #fff;
+        margin-top: 2rem;
+
+        &:hover {
+            background-color: vars.$bleu-accent-hover;
+            border-color: darken(vars.$bleu-accent-hover, 10%);
+            color: #fff;
+        }
+    }
+
+    ul {
+        list-style: none;
+        padding: 0;
+
+        li {
+            margin-bottom: 0.5rem;
+        }
+    }
+}

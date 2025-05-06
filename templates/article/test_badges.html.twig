@@ -1,0 +1,28 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Aperçu des badges{% endblock %}
+
+{% block body %}
+<div class="container py-5">
+    <h1 class="mb-4 text-center">Aperçu des badges par catégorie</h1>
+
+    <table class="table table-bordered text-center">
+        <thead class="table-dark">
+            <tr>
+                <th>Catégorie</th>
+                <th>Badge</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for categorie, class in badgeClasses %}
+                <tr>
+                    <td>{{ categorie }}</td>
+                    <td>
+                        <span class="badge {{ class }}">{{ categorie }}</span>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

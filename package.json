@@ -1,0 +1,21 @@
+{
+  "scripts": {
+    "dev": "encore dev",
+    "watch": "encore dev --watch",
+    "build": "encore production"
+  },
+  "dependencies": {
+    "bootstrap": "^5.3.5"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.27.1",
+    "@babel/preset-env": "^7.27.1",
+    "@popperjs/core": "^2.11.8",
+    "@symfony/webpack-encore": "^5.1.0",
+    "file-loader": "^6.0.0",
+    "sass": "^1.87.0",
+    "sass-loader": "^16.0.5",
+    "webpack": "^5.99.7",
+    "webpack-cli": "^6.0.1"
+  }
+}

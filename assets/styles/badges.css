@@ -1,0 +1,29 @@
+.badge.bg-primary {
+    background-color: #007bff !important; /* bleu vif, biotope asiatique */
+}
+
+.badge.bg-success {
+    background-color: #28a745 !important; /* vert jungle, Amérique du sud */
+}
+
+.badge.bg-warning {
+    background-color: #ffc107 !important; /* jaune doré, biotope africain */
+}
+
+.badge.bg-danger {
+    background-color: #dc3545 !important; /* rouge profond, matériel */
+}
+
+.badge.bg-info {
+    background-color: #17a2b8 !important; /* bleu lagon, maintenance */
+}
+
+.badge.bg-secondary {
+    background-color: #6c757d !important; /* gris discret, par défaut */
+}
+
+.badge {
+    font-size: 0.85rem;
+    padding: 0.4em 0.6em;
+    border-radius: 1rem;
+}

@@ -1,0 +1,67 @@
+
+@use "bootstrap/scss/bootstrap" as *;
+@use "variables" as vars;
+@use "accueil";
+@use "article";
+@use "article_show";
+@use "espece";
+
+html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Lato', sans-serif;
+    background-color: vars.$bleu-profond; // couleur uniforme pour éviter le blanc
+}
+
+body > * {
+    margin: 0;
+    padding: 0;
+}
+
+.main-content {
+    flex: 1;
+    width: 100%;
+    background-color: vars.$crème-clair; // ou adapte selon chaque page
+}
+
+h1, h2, h3, h4 {
+    font-family: 'Merriweather', serif;
+}
+
+button, .btn {
+    font-family: 'Roboto', sans-serif;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.navbar, .site-footer {
+    width: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+// Empêche les pages spécifiques d'ajouter des marges parasites
+.accueil-page, .article-page, .article-show-page, .espece-show-page-body {
+    margin: 0;
+    padding: 0;
+}
+
+// Corrige les petits décalages visuels universels
+* {
+    box-sizing: border-box;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+

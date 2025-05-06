@@ -1,0 +1,58 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ espece.nomCommun|default('Nom inconnu') }} - Fiche espèce{% endblock %}
+
+{% block body %}
+<div class="espece-page">
+    <div class="espece-header">
+        <h1>{{ espece.nomCommun|e }}</h1>
+        {% if espece.nomScientifique %}
+            <p class="scientific-name"><em>{{ espece.nomScientifique|e }}</em></p>
+        {% endif %}
+    </div>
+
+    <div class="espece-content">
+        <div class="espece-image">
+            <img src="{{ asset('../images/espece/' ~ (espece.image ?: 'default.jpg')) }}" alt="{{ espece.nomCommun|e }}">
+        </div>
+
+        <div class="espece-details">
+            <section>
+                <h2>Description</h2>
+                <p>{{ espece.descriptionPhysique|default('Description non renseignée')|e }}</p>
+            </section>
+
+            <section>
+                <h2>Biotope</h2>
+                <p>{{ espece.repartitionGeographique|default('Non précisé')|e }}</p>
+            </section>
+
+            <section class="parametres">
+                <h2>Paramètres</h2>
+                <div class="param-grid">
+                    <div class="param-item">
+                        <i class="icon ph-icon"></i>
+                        <strong>pH :</strong>
+                        {{ espece.phMin ?: '?' }} - {{ espece.phMax ?: '?' }}
+                    </div>
+                    <div class="param-item">
+                        <i class="icon temp-icon"></i>
+                        <strong>Température :</strong>
+                        {{ espece.temperatureMin ?: '?' }}°C - {{ espece.temperatureMax ?: '?' }}°C
+                    </div>
+                    <div class="param-item">
+                        <i class="icon life-icon"></i>
+                        <strong>Durée de vie :</strong>
+                        {{ espece.dureeVie ?: 'Non renseignée' }}
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+
+
+
+

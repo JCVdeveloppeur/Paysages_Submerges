@@ -1,0 +1,66 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Accueil - Paysages Submergés{% endblock %}
+
+{% block body %}
+<div class="banner accueil-page">
+    <h1>PAYSAGES SUBMERGÉS</h1>
+</div>
+
+<div class="bottom-section">
+    <div class="horizontal-layout">
+
+        {# Carte : Voir les articles #}
+        <div class="home-card fade-in fade-delay-1">
+            <img src="{{ asset('images/Discus2.jpg') }}" alt="Articles" class="card-image">
+            <div class="card-title">Voir les articles</div>
+            <p>Parcourez nos derniers articles rédigés par la communauté.</p>
+            <a href="{{ path('app_articles') }}" class="btn btn-primary">
+                <i class="bi bi-eye"></i> Découvrir
+            </a>
+        </div>
+
+        {# Encart Bienvenue : au centre et plus large #}
+        <div class="home-center fade-in fade-delay-2">
+            <p>
+                Bienvenue sur Paysages Submergés, votre guide pour réaliser un aquarium naturel et équilibré.<br>
+                Que vous débutiez en aquariophilie ou que vous souhaitiez recréer un décor inspiré de la nature, ce site vous accompagne à chaque étape.
+            </p>
+            <p>
+                <img src="{{ asset('images/Goutte.png') }}" alt="Goutte d'eau" class="icon-drop">
+                <strong>Mais l'aquariophilie, c'est mieux quand ça se partage !</strong><br>
+                Vous avez des conseils, des anecdotes ou des découvertes à partager ?<br>
+                Plongez dans l'aventure, écrivez votre article et inspirez la communauté !<br>
+                <strong>Un clic sur « Je me lance » et c'est parti !</strong>
+            </p>
+        </div>
+
+        {# Carte : Rédiger un article #}
+        <div class="home-card fade-in fade-delay-3">
+            <img src="{{ asset('images/betta_splendens2.png') }}" alt="Rédiger un article" class="card-image">
+            <div class="card-title">Rédiger un article</div>
+            <p>Partagez vos connaissances, astuces ou découvertes en rédigeant un article.</p>
+            <a href="{{ path('article_create') }}" class="btn btn-primary">
+                <i class="bi bi-pencil-square"></i> Je me lance
+            </a>
+        </div>
+
+    </div>
+</div>
+{% endblock %}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
