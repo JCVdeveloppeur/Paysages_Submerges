@@ -17,26 +17,39 @@ use Symfony\Component\String\Slugger\SluggerInterface;
 class ArticleController extends AbstractController
 {
     #[Route('/articles', name: 'app_articles')]
-    public function index(ArticleRepository $articleRepository): Response
+    public function index(Request $request, ArticleRepository $articleRepository): Response
     {
+    $searchTerm = $request->query->get('q');
+
+    if ($searchTerm) {
+        $articles = $articleRepository->createQueryBuilder('a')
+            ->where('a.titre LIKE :searchTerm OR a.contenu LIKE :searchTerm')
+            ->setParameter('searchTerm', '%' . $searchTerm . '%')
+            ->orderBy('a.createdAt', 'DESC')
+            ->getQuery()
+            ->getResult();
+    } else {
         $articles = $articleRepository->findBy([], ['createdAt' => 'DESC']);
-
-        $badgeClasses = [
-            'Biotope Amérique du sud' => 'badge-amerique-sud',
-            'Biotope asiatique' => 'badge-asiatique',
-            'Biotope africain' => 'badge-africain',
-            'Biotope australien' => 'badge-australien',
-            'Autre' => 'badge-autre',
-        ];
-
-        return $this->render('article/index.html.twig', [
-            'articles' => $articles,
-            'badgeClasses' => $badgeClasses,
-        ]);
     }
 
+    $badgeClasses = [
+        'Biotope Amérique du sud' => 'badge-amerique-sud',
+        'Biotope asiatique' => 'badge-asiatique',
+        'Biotope africain' => 'badge-africain',
+        'Biotope australien' => 'badge-australien',
+        'Autre' => 'badge-autre',
+    ];
+
+    return $this->render('article/index.html.twig', [
+        'articles' => $articles,
+        'badgeClasses' => $badgeClasses,
+        'searchTerm' => $searchTerm,
+    ]);
+    }
+
+
     #[Route('/articles/test-badges', name: 'article_test_badges')]
-public function testBadges(): Response
+    public function testBadges(): Response
     {
     $badgeClasses = [
         'Biotope Amérique du sud' => 'badge-amerique-sud',

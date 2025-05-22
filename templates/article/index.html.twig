@@ -6,7 +6,15 @@
 <section class="section-articles py-6 bg-light">
     <div class="container">
         <h1 class="mb-2 text-center">Nos derniers articles</h1>
-        <p class="lead text-center mb-5">Explorez les secrets des biotopes aquatiques et laissez-vous émerveiller par la diversité sous-marine.</p>
+        <p class="lead text-center mb-5">
+            Explorez les secrets des biotopes aquatiques et laissez-vous émerveiller par la diversité sous-marine.
+        </p>
+
+        {% if searchTerm is defined and searchTerm %}
+            <div class="alert alert-info text-center">
+                Résultats pour : <strong>{{ searchTerm }}</strong> – {{ articles|length }} article{{ articles|length > 1 ? 's' : '' }} trouvé{{ articles|length > 1 ? 's' : '' }}.
+            </div>
+        {% endif %}
 
         <div class="row" id="articles-list">
             {% if articles is not empty %}
@@ -34,10 +42,19 @@
                     </div>
                 {% endfor %}
             {% else %}
-                <p class="text-center">Aucun article trouvé.</p>
+                <div class="col-12">
+                    <div class="alert alert-warning text-center">
+                        {% if searchTerm is defined and searchTerm %}
+                            Aucun article ne correspond à votre recherche « {{ searchTerm }} ».
+                        {% else %}
+                            Aucun article disponible pour le moment.
+                        {% endif %}
+                    </div>
+                </div>
             {% endif %}
         </div>
     </div>
 </section>
 {% endblock %}
+
 

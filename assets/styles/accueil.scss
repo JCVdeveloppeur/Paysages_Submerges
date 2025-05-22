@@ -139,6 +139,10 @@
         background-color: $bleu-accent-hover;
     }
 }
+input[type="search"] {
+    border-radius: 20px;
+  }
+  
 
 // Animation d’apparition
 .fade-in {
