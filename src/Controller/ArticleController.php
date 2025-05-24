@@ -98,7 +98,6 @@ class ArticleController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            // dd('Formulaire soumis', $request->request->all());
             $article->setCreatedAt(new \DateTime());
             $article->setDateCreation(new \DateTime());
 
@@ -202,6 +201,19 @@ class ArticleController extends AbstractController
         'article' => $article,
     ]);
     }
+    #[Route('/articles/{id}/supprimer', name: 'article_delete', methods: ['POST'])]
+public function delete(Request $request, Article $article, EntityManagerInterface $em): Response
+{
+    if ($this->isCsrfTokenValid('delete'.$article->getId(), $request->request->get('_token'))) {
+        $em->remove($article);
+        $em->flush();
+
+        $this->addFlash('success', 'Article supprimé avec succès.');
+    }
+
+    return $this->redirectToRoute('app_articles');
+}
+
 
     }
 

@@ -37,6 +37,11 @@
                                 <a href="{{ path('article_show', {'id': article.id}) }}" class="btn btn-primary">Lire la suite</a>
                                 <a href="{{ path('article_edit', {'id': article.id}) }}" class="btn btn-outline-secondary">✏️ Modifier</a>
                                 </div>
+                                <form method="post" action="{{ path('article_delete', {'id': article.id}) }}" onsubmit="return confirm('Voulez-vous vraiment supprimer cet article ?');">
+                                <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ article.id) }}">
+                                <button class="btn btn-danger btn-sm">🗑 Supprimer</button>
+                                </form>
+
 
                             </div>
                             <div class="card-footer text-muted">
