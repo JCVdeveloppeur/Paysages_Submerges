@@ -1,0 +1,37 @@
+{# templates/commentaire/_form.html.twig #}
+
+{{ form_start(form, {'attr': {'enctype': 'multipart/form-data'}}) }}
+    <div class="mb-3">
+        {{ form_label(form.contenu) }}
+        {{ form_widget(form.contenu, {'attr': {'class': 'form-control'}}) }}
+        {{ form_errors(form.contenu) }}
+    </div>
+
+    <div class="mb-3">
+        {{ form_label(form.dateCommentaire, 'Date du commentaire') }}
+        {{ form_widget(form.dateCommentaire, {'attr': {'class': 'form-control'}}) }}
+        {{ form_errors(form.dateCommentaire) }}
+    </div>
+
+    <div class="mb-3 form-check">
+        {{ form_widget(form.approuve, {'attr': {'class': 'form-check-input'}}) }}
+        {{ form_label(form.approuve, null, {'label_attr': {'class': 'form-check-label'}}) }}
+        {{ form_errors(form.approuve) }}
+    </div>
+
+    <div class="mb-3">
+        {{ form_label(form.auteur, 'Auteur') }}
+        {{ form_widget(form.auteur, {'attr': {'class': 'form-select'}}) }}
+        {{ form_errors(form.auteur) }}
+    </div>
+
+    <div class="mb-3">
+        {{ form_label(form.article, 'Article concerné') }}
+        {{ form_widget(form.article, {'attr': {'class': 'form-select'}}) }}
+        {{ form_errors(form.article) }}
+    </div>
+
+    <button type="submit" class="btn btn-primary">
+        {{ button_label|default('Enregistrer') }}
+    </button>
+{{ form_end(form) }}

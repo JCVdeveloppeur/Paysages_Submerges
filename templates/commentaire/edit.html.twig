@@ -1,0 +1,56 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Modifier le commentaire{% endblock %}
+
+{% block body %}
+<div class="container py-5">
+    <h1 class="mb-4 text-center">✏️ Modifier le commentaire</h1>
+
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            {{ form_start(form, {'attr': {'enctype': 'multipart/form-data'}}) }}
+
+                <div class="mb-3">
+                    {{ form_label(form.contenu) }}
+                    {{ form_widget(form.contenu, {'attr': {'class': 'form-control'}}) }}
+                    {{ form_errors(form.contenu) }}
+                </div>
+
+                <div class="mb-3">
+                    {{ form_label(form.dateCommentaire) }}
+                    {{ form_widget(form.dateCommentaire, {'attr': {'class': 'form-control'}}) }}
+                    {{ form_errors(form.dateCommentaire) }}
+                </div>
+
+                <div class="mb-3">
+                    {{ form_label(form.approuve) }}
+                    {{ form_widget(form.approuve, {'attr': {'class': 'form-check-input'}}) }}
+                    {{ form_errors(form.approuve) }}
+                </div>
+
+                <div class="mb-3">
+                    {{ form_label(form.auteur) }}
+                    {{ form_widget(form.auteur, {'attr': {'class': 'form-select'}}) }}
+                    {{ form_errors(form.auteur) }}
+                </div>
+
+                <div class="mb-3">
+                    {{ form_label(form.article) }}
+                    {{ form_widget(form.article, {'attr': {'class': 'form-select'}}) }}
+                    {{ form_errors(form.article) }}
+                </div>
+
+                <div class="d-flex justify-content-between mt-4">
+                    <a href="{{ path('commentaire_index') }}" class="btn btn-secondary">
+                        ← Retour à la liste
+                    </a>
+                    <button type="submit" class="btn btn-primary">
+                        💾 Enregistrer les modifications
+                    </button>
+                </div>
+            {{ form_end(form) }}
+        </div>
+    </div>
+</div>
+{% endblock %}
+

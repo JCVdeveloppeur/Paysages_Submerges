@@ -3,46 +3,51 @@
 {% block title %}{{ article.titre }}{% endblock %}
 
 {% block body %}
-<div class="article-show-page">
-    <div class="article-card">
+<div class="article-show-page container py-5">
+    <div class="article-card mb-5">
         {% if article.image %}
-            <img src="{{ asset('uploads/articles/' ~ article.image) }}" alt="{{ article.titre }}" class="article-image">
+            <img src="{{ asset('uploads/articles/' ~ article.image) }}" alt="{{ article.titre }}" class="img-fluid mb-3">
         {% endif %}
 
-        <div class="article-content">
-            <h1>{{ article.titre }}</h1>
-            <span class="badge">{{ article.categorie }}</span>
-            <p>{{ article.contenu | raw }}</p>
-        </div>
+        <h1>{{ article.titre }}</h1>
+        <span class="badge bg-primary">{{ article.categorie }}</span>
 
-        <div class="article-footer">
+        <p class="mt-3">{{ article.contenu|raw }}</p>
+
+        <div class="article-footer mt-4 d-flex justify-content-between text-muted">
             <span><i class="bi bi-heart-fill"></i> {{ article.likes|length }} likes</span>
             <span><i class="bi bi-chat-fill"></i> {{ article.commentaires|length }} commentaires</span>
         </div>
     </div>
 
-    <div class="comments-section">
-        <h3>Commentaires</h3>
-        {% if article.commentaires|length == 0 %}
-            <p class="text-muted">Pas encore de commentaires pour cet article.</p>
-        {% else %}
-            {% for commentaire in article.commentaires %}
-                <div class="card">
-                    <div class="card-body">
-                        <strong>{{ commentaire.auteur }}</strong>
-                        <p>{{ commentaire.contenu }}</p>
-                        <small>{{ commentaire.createdAt|date('d/m/Y H:i') }}</small>
+    <hr>
+
+    <div class="comments-section mt-5">
+        <h3>💬 Commentaires</h3>
+
+        {% if commentaires is not empty %}
+            <div class="list-group mt-4">
+                {% for commentaire in commentaires %}
+                    <div class="list-group-item">
+                        <p class="mb-1">
+                            <strong>{{ commentaire.auteur.email }}</strong>
+                            <span class="text-muted small">le {{ commentaire.dateCommentaire|date('d/m/Y H:i') }}</span>
+                        </p>
+                        <p class="mb-0">{{ commentaire.contenu }}</p>
                     </div>
-                </div>
-            {% endfor %}
+                {% endfor %}
+            </div>
+        {% else %}
+            <p class="text-muted mt-3">Aucun commentaire pour cet article pour le moment.</p>
         {% endif %}
     </div>
 
-    <div class="text-center">
-        <a href="{{ path('app_articles') }}" class="back-button">← Retour aux articles</a>
+    <div class="text-center mt-4">
+        <a href="{{ path('app_articles') }}" class="btn btn-secondary">← Retour aux articles</a>
     </div>
 </div>
 {% endblock %}
+
 
 
 

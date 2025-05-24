@@ -1,0 +1,58 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Liste des commentaires{% endblock %}
+
+{% block body %}
+<div class="container py-5">
+    <h1 class="mb-4 text-center">💬 Liste des commentaires</h1>
+
+    <div class="text-end mb-4">
+        <a href="{{ path('commentaire_new') }}" class="btn btn-success">➕ Ajouter un commentaire</a>
+    </div>
+
+    {% if commentaires is not empty %}
+        <table class="table table-hover table-bordered">
+            <thead class="table-light">
+                <tr>
+                    <th>ID</th>
+                    <th>Auteur</th>
+                    <th>Article</th>
+                    <th>Date</th>
+                    <th>Approuvé</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for commentaire in commentaires %}
+    <div class="col-md-6 mb-4">
+        <div class="card h-100 shadow-sm">
+            <div class="card-body">
+                <h5 class="card-title">Commentaire #{{ commentaire.id }}</h5>
+                <p class="card-text"><strong>Auteur :</strong> {{ commentaire.auteur.email }}</p>
+                <p class="card-text"><strong>Article :</strong> {{ commentaire.article.titre }}</p>
+                <p class="card-text"><strong>Contenu :</strong> {{ commentaire.contenu }}</p>
+                <p class="card-text">
+                    <strong>Date :</strong> {{ commentaire.dateCommentaire|date('d/m/Y H:i') }}<br>
+                    <strong>Approuvé :</strong> {{ commentaire.approuve ? '✅ Oui' : '❌ Non' }}
+                </p>
+
+                <div class="d-flex gap-2">
+                    <a href="{{ path('commentaire_edit', {'id': commentaire.id}) }}" class="btn btn-outline-secondary btn-sm">✏️ Modifier</a>
+
+                    <form method="post" action="{{ path('commentaire_delete', {'id': commentaire.id}) }}" onsubmit="return confirm('Voulez-vous vraiment supprimer ce commentaire ?');">
+                        <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ commentaire.id) }}">
+                        <button class="btn btn-danger btn-sm">🗑 Supprimer</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endfor %}
+
+            </tbody>
+        </table>
+    {% else %}
+        <div class="alert alert-warning text-center">Aucun commentaire trouvé.</div>
+    {% endif %}
+</div>
+{% endblock %}

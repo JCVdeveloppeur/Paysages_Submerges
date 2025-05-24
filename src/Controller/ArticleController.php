@@ -6,6 +6,7 @@ use App\Entity\Article;
 use App\Entity\User;
 use App\Form\ArticleType;
 use App\Repository\ArticleRepository;
+use App\Repository\CommentaireRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -132,7 +133,7 @@ class ArticleController extends AbstractController
     }
 
     #[Route('/articles/{id}', name: 'article_show', requirements: ['id' => '\d+'])]
-    public function show(Article $article): Response
+    public function show(Article $article, CommentaireRepository $commentaireRepository): Response
     {
     $badgeClasses = [
         'Biotope Amérique du sud' => 'badge-amerique-sud',
@@ -142,11 +143,18 @@ class ArticleController extends AbstractController
         'Autre' => 'badge-autre',
     ];
 
+    $commentaires = $commentaireRepository->findBy([
+        'article' => $article,
+        'approuve' => true
+    ], ['dateCommentaire' => 'DESC']);
+
     return $this->render('article/show.html.twig', [
         'article' => $article,
         'badgeClasses' => $badgeClasses,
+        'commentaires' => $commentaires,
     ]);
     }
+
     #[Route('/articles/{id}/edit', name: 'article_edit')]
     public function edit(Request $request, Article $article, EntityManagerInterface $em, SluggerInterface $slugger): Response
     {
@@ -213,7 +221,5 @@ public function delete(Request $request, Article $article, EntityManagerInterfac
 
     return $this->redirectToRoute('app_articles');
 }
-
-
-    }
+}
 
