@@ -1,0 +1,59 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ is_edit ? 'Modifier un utilisateur' : 'Créer un utilisateur' }}{% endblock %}
+
+{% block body %}
+<div class="container py-5">
+    <h1 class="text-center mb-4">{{ is_edit ? 'Modifier l\'utilisateur' : 'Ajouter un nouvel utilisateur' }}</h1>
+
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            {{ form_start(form) }}
+
+            <div class="mb-3">
+                {{ form_label(form.email) }}
+                {{ form_widget(form.email, { 'attr': { 'class': 'form-control' } }) }}
+                {{ form_errors(form.email) }}
+            </div>
+
+            <div class="mb-3">
+                {{ form_label(form.username) }}
+                {{ form_widget(form.username, { 'attr': { 'class': 'form-control' } }) }}
+                {{ form_errors(form.username) }}
+            </div>
+
+            <div class="mb-3">
+                {{ form_label(form.password) }}
+                {{ form_widget(form.password, { 'attr': { 'class': 'form-control' } }) }}
+                {{ form_errors(form.password) }}
+            </div>
+
+            <div class="mb-3">
+                {{ form_label(form.bio) }}
+                {{ form_widget(form.bio, { 'attr': { 'class': 'form-control', 'rows': 3 } }) }}
+                {{ form_errors(form.bio) }}
+            </div>
+
+            <div class="mb-3">
+                {{ form_label(form.roles) }}
+                {{ form_widget(form.roles, { 'attr': { 'class': 'form-control' } }) }}
+                {{ form_errors(form.roles) }}
+            </div>
+
+            <div class="mb-3">
+                {{ form_label(form.dateInscription) }}
+                {{ form_widget(form.dateInscription, { 'attr': { 'class': 'form-control' } }) }}
+                {{ form_errors(form.dateInscription) }}
+            </div>
+
+            <div class="text-end">
+                <button type="submit" class="btn btn-primary">
+                    <i class="bi bi-check-circle"></i> {{ is_edit ? 'Enregistrer les modifications' : 'Créer l\'utilisateur' }}
+                </button>
+            </div>
+
+            {{ form_end(form) }}
+        </div>
+    </div>
+</div>
+{% endblock %}

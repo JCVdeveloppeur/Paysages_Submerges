@@ -1,10 +1,10 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Créer un nouvel article{% endblock %}
+{% block title %}Modifier l'article{% endblock %}
 
 {% block body %}
 <div class="container py-5">
-    <h1 class="mb-4 text-center">📝 Créer un nouvel article</h1>
+    <h1 class="mb-4 text-center">✏️ Modifier l'article</h1>
 
     <div class="row justify-content-center">
         <div class="col-md-8">
@@ -35,7 +35,13 @@
                 </div>
 
                 <div class="mb-3">
-                    {{ form_label(form.datePublication) }}
+                    {{ form_label(form.statut) }}
+                    {{ form_widget(form.statut, {'attr': {'class': 'form-select'}}) }}
+                    {{ form_errors(form.statut) }}
+                </div>
+
+                <div class="mb-3">
+                    {{ form_label(form.datePublication, 'Date de publication') }}
                     <div class="input-group">
                         <span class="input-group-text"><i class="bi bi-calendar-event"></i></span>
                         {{ form_widget(form.datePublication, {'attr': {'class': 'form-control'}}) }}
@@ -44,14 +50,11 @@
                 </div>
 
                 <div class="mb-3">
-                    {{ form_label(form.statut) }}
-                    {{ form_widget(form.statut, {'attr': {'class': 'form-select'}}) }}
-                    {{ form_errors(form.statut) }}
-                </div>
-
-                <div class="mb-3">
-                    {{ form_label(form.user) }}
-                    {{ form_widget(form.user, {'attr': {'class': 'form-select'}}) }}
+                    {{ form_label(form.user, 'Auteur de l\'article') }}
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="bi bi-person-circle"></i></span>
+                        {{ form_widget(form.user, {'attr': {'class': 'form-select'}}) }}
+                    </div>
                     {{ form_errors(form.user) }}
                 </div>
 
@@ -59,17 +62,14 @@
                     <a href="{{ path('app_articles') }}" class="btn btn-secondary">
                         ← Retour à la liste
                     </a>
-                    <button type="submit" class="btn btn-success">
-                        ➕ Créer l'article
+                    <button type="submit" class="btn btn-primary">
+                        💾 Enregistrer les modifications
                     </button>
                 </div>
-
             {{ form_end(form) }}
         </div>
     </div>
 </div>
 {% endblock %}
-
-
 
 

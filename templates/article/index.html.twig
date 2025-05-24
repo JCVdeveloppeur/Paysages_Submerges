@@ -33,7 +33,11 @@
                                 <p class="card-text">
                                     {{ article.contenu|length > 100 ? article.contenu|slice(0, 100) ~ '...' : article.contenu }}
                                 </p>
-                                <a href="{{ path('article_show', {'id': article.id}) }}" class="btn btn-primary mt-3">Lire la suite</a>
+                                <div class="d-flex flex-column gap-2 mt-3">
+                                <a href="{{ path('article_show', {'id': article.id}) }}" class="btn btn-primary">Lire la suite</a>
+                                <a href="{{ path('article_edit', {'id': article.id}) }}" class="btn btn-outline-secondary">✏️ Modifier</a>
+                                </div>
+
                             </div>
                             <div class="card-footer text-muted">
                                 Publié le {{ article.createdAt ? article.createdAt|date('d F Y') : 'Non publié' }}

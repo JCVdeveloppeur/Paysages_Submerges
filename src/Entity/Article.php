@@ -9,6 +9,7 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: ArticleRepository::class)]
+#[ORM\HasLifecycleCallbacks]
 class Article
 {
     #[ORM\Id]
@@ -21,20 +22,12 @@ class Article
 
     #[ORM\Column(type: Types::TEXT)]
     private ?string $contenu = null;
+
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
-private ?\DateTimeInterface $createdAt = null;
+    private ?\DateTimeInterface $createdAt = null;
 
-public function getCreatedAt(): ?\DateTimeInterface
-{
-    return $this->createdAt;
-}
-
-public function setCreatedAt(\DateTimeInterface $createdAt): self
-{
-    $this->createdAt = $createdAt;
-    return $this;
-}
-
+    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    private ?\DateTimeInterface $updatedAt = null;
 
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $image = null;
@@ -55,15 +48,9 @@ public function setCreatedAt(\DateTimeInterface $createdAt): self
     #[ORM\JoinColumn(nullable: false)]
     private ?User $user = null;
 
-    /**
-     * @var Collection<int, Commentaire>
-     */
     #[ORM\OneToMany(targetEntity: Commentaire::class, mappedBy: 'article')]
     private Collection $commentaires;
 
-    /**
-     * @var Collection<int, Like>
-     */
     #[ORM\OneToMany(targetEntity: Like::class, mappedBy: 'article')]
     private Collection $likes;
 
@@ -71,7 +58,14 @@ public function setCreatedAt(\DateTimeInterface $createdAt): self
     {
         $this->commentaires = new ArrayCollection();
         $this->likes = new ArrayCollection();
-        $this->createdAt = new \DateTime(); // auto-initialisation
+        $this->createdAt = new \DateTime();
+        $this->updatedAt = new \DateTime(); // Initialise aussi updatedAt au départ
+    }
+
+    #[ORM\PreUpdate]
+    public function setUpdatedAtValue(): void
+    {
+        $this->updatedAt = new \DateTime();
     }
 
     public function getId(): ?int
@@ -87,7 +81,6 @@ public function setCreatedAt(\DateTimeInterface $createdAt): self
     public function setTitre(string $titre): static
     {
         $this->titre = $titre;
-
         return $this;
     }
 
@@ -99,7 +92,28 @@ public function setCreatedAt(\DateTimeInterface $createdAt): self
     public function setContenu(string $contenu): static
     {
         $this->contenu = $contenu;
+        return $this;
+    }
 
+    public function getCreatedAt(): ?\DateTimeInterface
+    {
+        return $this->createdAt;
+    }
+
+    public function setCreatedAt(\DateTimeInterface $createdAt): self
+    {
+        $this->createdAt = $createdAt;
+        return $this;
+    }
+
+    public function getUpdatedAt(): ?\DateTimeInterface
+    {
+        return $this->updatedAt;
+    }
+
+    public function setUpdatedAt(\DateTimeInterface $updatedAt): static
+    {
+        $this->updatedAt = $updatedAt;
         return $this;
     }
 
@@ -111,7 +125,6 @@ public function setCreatedAt(\DateTimeInterface $createdAt): self
     public function setImage(?string $image): static
     {
         $this->image = $image;
-
         return $this;
     }
 
@@ -123,7 +136,6 @@ public function setCreatedAt(\DateTimeInterface $createdAt): self
     public function setDateCreation(\DateTime $dateCreation): static
     {
         $this->dateCreation = $dateCreation;
-
         return $this;
     }
 
@@ -135,7 +147,6 @@ public function setCreatedAt(\DateTimeInterface $createdAt): self
     public function setDatePublication(?\DateTime $datePublication): static
     {
         $this->datePublication = $datePublication;
-
         return $this;
     }
 
@@ -147,7 +158,6 @@ public function setCreatedAt(\DateTimeInterface $createdAt): self
     public function setStatut(string $statut): static
     {
         $this->statut = $statut;
-
         return $this;
     }
 
@@ -159,7 +169,6 @@ public function setCreatedAt(\DateTimeInterface $createdAt): self
     public function setCategorie(string $categorie): static
     {
         $this->categorie = $categorie;
-
         return $this;
     }
 
@@ -171,13 +180,9 @@ public function setCreatedAt(\DateTimeInterface $createdAt): self
     public function setUser(?User $user): static
     {
         $this->user = $user;
-
         return $this;
     }
 
-    /**
-     * @return Collection<int, Commentaire>
-     */
     public function getCommentaires(): Collection
     {
         return $this->commentaires;
@@ -189,25 +194,19 @@ public function setCreatedAt(\DateTimeInterface $createdAt): self
             $this->commentaires->add($commentaire);
             $commentaire->setArticle($this);
         }
-
         return $this;
     }
 
     public function removeCommentaire(Commentaire $commentaire): static
     {
         if ($this->commentaires->removeElement($commentaire)) {
-            // set the owning side to null (unless already changed)
             if ($commentaire->getArticle() === $this) {
                 $commentaire->setArticle(null);
             }
         }
-
         return $this;
     }
 
-    /**
-     * @return Collection<int, Like>
-     */
     public function getLikes(): Collection
     {
         return $this->likes;
@@ -219,19 +218,17 @@ public function setCreatedAt(\DateTimeInterface $createdAt): self
             $this->likes->add($like);
             $like->setArticle($this);
         }
-
         return $this;
     }
 
     public function removeLike(Like $like): static
     {
         if ($this->likes->removeElement($like)) {
-            // set the owning side to null (unless already changed)
             if ($like->getArticle() === $this) {
                 $like->setArticle(null);
             }
         }
-
         return $this;
     }
 }
+
