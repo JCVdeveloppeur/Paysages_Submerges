@@ -1,0 +1,40 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Nouveau Like{% endblock %}
+
+{% block body %}
+<div class="container py-5">
+    <h1 class="mb-4 text-center">❤️ Ajouter un Like</h1>
+
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            {{ form_start(form) }}
+
+                <div class="mb-3">
+                    {{ form_label(form.user) }}
+                    {{ form_widget(form.user, {'attr': {'class': 'form-select'}}) }}
+                    {{ form_errors(form.user) }}
+                </div>
+
+                <div class="mb-3">
+                    {{ form_label(form.article) }}
+                    {{ form_widget(form.article, {'attr': {'class': 'form-select'}}) }}
+                    {{ form_errors(form.article) }}
+                </div>
+
+                <div class="mb-3">
+                    {{ form_label(form.dateLike) }}
+                    {{ form_widget(form.dateLike, {'attr': {'class': 'form-control'}}) }}
+                    {{ form_errors(form.dateLike) }}
+                </div>
+
+                <div class="d-flex justify-content-between">
+                    <a href="{{ path('like_index') }}" class="btn btn-secondary">← Retour</a>
+                    <button class="btn btn-success">❤️ Ajouter</button>
+                </div>
+
+            {{ form_end(form) }}
+        </div>
+    </div>
+</div>
+{% endblock %}

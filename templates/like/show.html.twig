@@ -1,0 +1,23 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Détail du Like{% endblock %}
+
+{% block body %}
+<div class="container py-5">
+    <h1 class="mb-4 text-center">💙 Détail du Like</h1>
+
+    <div class="card">
+        <div class="card-body">
+            <p><strong>ID :</strong> {{ like.id }}</p>
+            <p><strong>Utilisateur :</strong> {{ like.user.email }}</p>
+            <p><strong>Article :</strong> {{ like.article.titre }}</p>
+            <p><strong>Date :</strong> {{ like.dateLike ? like.dateLike|date('d/m/Y H:i') : 'Non définie' }}</p>
+        </div>
+    </div>
+
+    <div class="mt-4 d-flex justify-content-between">
+        <a href="{{ path('like_index') }}" class="btn btn-secondary">← Retour à la liste</a>
+        <a href="{{ path('like_edit', {'id': like.id}) }}" class="btn btn-primary">✏️ Modifier</a>
+    </div>
+</div>
+{% endblock %}
