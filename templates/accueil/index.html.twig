@@ -39,9 +39,16 @@
             <img src="{{ asset('images/Poisson_écrivain2.jpeg') }}" alt="Rédiger un article" class="card-image">
             <div class="card-title">Rédiger un article</div>
             <p>Partagez vos connaissances, astuces ou découvertes en rédigeant un article.</p>
-            <a href="{{ path('article_create') }}" class="btn btn-primary">
-                <i class="bi bi-pencil-square"></i> Je me lance
+        {% if is_granted('IS_AUTHENTICATED_FULLY') %}
+            <a href="{{ path('article_create') }}" class="btn btn-primary mt-3">
+            ✍️ Je me lance
+             </a>
+        {% else %}
+            <a href="{{ path('app_login') }}" class="btn btn-outline-secondary mt-3" title="Connectez-vous pour rédiger un article">
+            🔒 Je me lance
             </a>
+        {% endif %}
+
         </div>
 
     </div>

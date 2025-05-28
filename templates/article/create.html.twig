@@ -49,12 +49,6 @@
                     {{ form_errors(form.statut) }}
                 </div>
 
-                <div class="mb-3">
-                    {{ form_label(form.user) }}
-                    {{ form_widget(form.user, {'attr': {'class': 'form-select'}}) }}
-                    {{ form_errors(form.user) }}
-                </div>
-
                 <div class="d-flex justify-content-between mt-4">
                     <a href="{{ path('app_articles') }}" class="btn btn-secondary">
                         ← Retour à la liste

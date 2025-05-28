@@ -3,10 +3,17 @@
 namespace App\Entity;
 
 use App\Repository\LikeRepository;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+
 
 #[ORM\Entity(repositoryClass: LikeRepository::class)]
-#[ORM\Table(name: '`like`')]
+#[ORM\Table(name: '`like`', uniqueConstraints: [
+new ORM\UniqueConstraint(name: 'unique_like', columns: ['user_id', 'article_id'])
+])]
+#[UniqueEntity(fields: ['user', 'article'], message: 'Vous avez déjà liké cet article.')]
+#[ORM\HasLifecycleCallbacks]
 class Like
 {
     #[ORM\Id]
@@ -18,7 +25,7 @@ class Like
     private ?\DateTime $dateLike = null;
 
     #[ORM\ManyToOne(inversedBy: 'likes')]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
     private ?User $user = null;
 
     #[ORM\ManyToOne(inversedBy: 'likes')]
@@ -38,7 +45,6 @@ class Like
     public function setDateLike(\DateTime $dateLike): static
     {
         $this->dateLike = $dateLike;
-
         return $this;
     }
 
@@ -50,7 +56,6 @@ class Like
     public function setUser(?User $user): static
     {
         $this->user = $user;
-
         return $this;
     }
 
@@ -61,8 +66,17 @@ class Like
 
     public function setArticle(?Article $article): static
     {
+
         $this->article = $article;
 
         return $this;
     }
+    #[ORM\PrePersist]
+    public function setDateAutomatically(): void
+    {
+        if ($this->dateLike === null) {
+            $this->dateLike = new \DateTime();
+        }
+    }
 }
+

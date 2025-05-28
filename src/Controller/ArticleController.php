@@ -16,13 +16,19 @@ use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use Symfony\Component\String\Slugger\SluggerInterface;
 
 class ArticleController extends AbstractController
-{
+    {
     #[Route('/articles', name: 'app_articles')]
     public function index(Request $request, ArticleRepository $articleRepository): Response
-    {
+{
     $searchTerm = $request->query->get('q');
+    $auteurId = $request->query->get('auteur');
 
-    if ($searchTerm) {
+    if ($auteurId) {
+        $articles = $articleRepository->findBy(
+            ['user' => $auteurId],
+            ['createdAt' => 'DESC']
+        );
+    } elseif ($searchTerm) {
         $articles = $articleRepository->createQueryBuilder('a')
             ->where('a.titre LIKE :searchTerm OR a.contenu LIKE :searchTerm')
             ->setParameter('searchTerm', '%' . $searchTerm . '%')
@@ -93,47 +99,54 @@ class ArticleController extends AbstractController
     #[Route('/articles/creer', name: 'article_create')]
     public function create(Request $request, EntityManagerInterface $em, SluggerInterface $slugger): Response
     {
-        $article = new Article();
-        $form = $this->createForm(ArticleType::class, $article);
-
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            $article->setCreatedAt(new \DateTime());
-            $article->setDateCreation(new \DateTime());
-
-            $imageFile = $form->get('image')->getData();
-            if ($imageFile) {
-                $originalFilename = pathinfo($imageFile->getClientOriginalName(), PATHINFO_FILENAME);
-                $safeFilename = $slugger->slug($originalFilename);
-                $newFilename = $safeFilename.'-'.uniqid().'.'.$imageFile->guessExtension();
-
-                try {
-                    $imageFile->move(
-                        $this->getParameter('kernel.project_dir').'/public/uploads/articles',
-                        $newFilename
-                    );
-                } catch (FileException $e) {
-                    $this->addFlash('danger', "Erreur lors de l'upload de l'image.");
-                }
-
-                $article->setImage($newFilename);
-            }
-
-            $em->persist($article);
-            $em->flush();
-
-            $this->addFlash('success', 'Article créé avec succès !');
-            return $this->redirectToRoute('app_articles');
-        }
-
-        return $this->render('article/create.html.twig', [
-            'form' => $form->createView(),
-        ]);
+    // ✅ Vérifie manuellement si l'utilisateur est connecté
+    if (!$this->getUser()) {
+        $this->addFlash('info', 'Connecte-toi pour rédiger un article ! 🖊️');
+        return $this->redirectToRoute('app_login');
     }
 
+    $article = new Article();
+    $form = $this->createForm(ArticleType::class, $article);
+    $form->handleRequest($request);
+
+    if ($form->isSubmitted() && $form->isValid()) {
+        $article->setCreatedAt(new \DateTime());
+        $article->setDateCreation(new \DateTime());
+        $article->setUser($this->getUser());
+
+        $imageFile = $form->get('image')->getData();
+        if ($imageFile) {
+            $originalFilename = pathinfo($imageFile->getClientOriginalName(), PATHINFO_FILENAME);
+            $safeFilename = $slugger->slug($originalFilename);
+            $newFilename = $safeFilename . '-' . uniqid() . '.' . $imageFile->guessExtension();
+
+            try {
+                $imageFile->move(
+                    $this->getParameter('kernel.project_dir') . '/public/uploads/articles',
+                    $newFilename
+                );
+            } catch (FileException $e) {
+                $this->addFlash('danger', "Erreur lors de l'upload de l'image.");
+            }
+
+            $article->setImage($newFilename);
+        }
+
+        $em->persist($article);
+        $em->flush();
+
+        $this->addFlash('success', 'Article créé avec succès !');
+        return $this->redirectToRoute('app_articles');
+        }
+
+    return $this->render('article/create.html.twig', [
+        'form' => $form->createView(),
+    ]);
+    }
+
+
     #[Route('/articles/{id}', name: 'article_show', requirements: ['id' => '\d+'])]
-    public function show(Article $article, CommentaireRepository $commentaireRepository): Response
+    public function show(Article $article, CommentaireRepository $commentaireRepository, ArticleRepository $articleRepository): Response
     {
     $badgeClasses = [
         'Biotope Amérique du sud' => 'badge-amerique-sud',
@@ -148,12 +161,24 @@ class ArticleController extends AbstractController
         'approuve' => true
     ], ['dateCommentaire' => 'DESC']);
 
+    $isLiked = false;
+
+    if ($this->getUser()) {
+        // Attention : on suppose que LikeRepository est injecté dans le contrôleur ou récupéré autrement
+        $like = $article->getLikes()->filter(function ($like) {
+            return $like->getUser() === $this->getUser();
+        })->first();
+
+        $isLiked = $like !== false;
+    }
+
     return $this->render('article/show.html.twig', [
         'article' => $article,
         'badgeClasses' => $badgeClasses,
         'commentaires' => $commentaires,
+        'isLiked' => $isLiked,
     ]);
-    }
+}
 
     #[Route('/articles/{id}/edit', name: 'article_edit')]
     public function edit(Request $request, Article $article, EntityManagerInterface $em, SluggerInterface $slugger): Response

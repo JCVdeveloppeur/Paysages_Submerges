@@ -45,11 +45,7 @@ class ArticleType extends AbstractType
                 'widget' => 'single_text',
                 'required' => false,
             ])
-            ->add('statut')
-        ->add('user', EntityType::class, [
-            'class' => User::class,
-            'choice_label' => 'id',
-        ]);
+            ->add('statut');
     }
 
     public function configureOptions(OptionsResolver $resolver): void

@@ -29,14 +29,38 @@
         {# Contenu qui se replie #}
         <div class="collapse navbar-collapse" id="navbarContent">
             <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                <li class="nav-item"><a class="nav-link text-white" href="{{ path('app_articles') }}">Articles</a></li>
-                <li class="nav-item"><a class="nav-link text-white" href="#">Espèces</a></li>
-                <li class="nav-item"><a class="nav-link text-white" href="#">Inscription</a></li>
-                <li class="nav-item"><a class="nav-link text-white" href="#">Connexion</a></li>
-                <li class="nav-item"><a class="nav-link text-white" href="#">Mon profil</a></li>
+            <li class="nav-item"><a class="nav-link text-white" href="{{ path('app_articles') }}">Articles</a></li>
+            <li class="nav-item"><a class="nav-link text-white" href="#">Espèces</a></li>
             </ul>
 
-            <form class="d-flex" action="{{ path('app_articles') }}" method="get" role="search">
+            <ul class="navbar-nav">
+        {% if app.user %}
+            <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle text-white d-flex align-items-center" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            <i class="bi bi-person-circle me-1"></i> {{ app.user.username }}
+        </a>
+            <ul class="dropdown-menu dropdown-menu-end">
+            <li><a class="dropdown-item" href="{{ path('app_profile') }}">👤 Mon profil</a></li>
+            <li><a class="dropdown-item" href="{{ path('article_create') }}">📝 Rédiger un article</a></li>
+            <li><a class="dropdown-item" href="{{ path('app_change_password') }}">🔐 Modifier mot de passe</a></li>
+            <li><hr class="dropdown-divider"></li>
+            <li><a class="dropdown-item text-danger" href="{{ path('app_logout') }}">🚪 Déconnexion</a></li>
+            </ul>
+            </li>
+        {% else %}
+
+            <li class="nav-item">
+        <a class="nav-link text-white" href="{{ path('app_register') }}">Inscription</a>
+            </li>
+            <li class="nav-item">
+        <a class="nav-link text-white" href="{{ path('app_login') }}">Connexion</a>
+            </li>
+        {% endif %}
+
+            </ul>
+
+
+            <form class="d-flex ms-3" action="{{ path('app_articles') }}" method="get" role="search">
                 <input class="form-control me-2" type="search" name="q" placeholder="🔍 Rechercher…" value="{{ app.request.get('q') }}">
             </form>
         </div>
@@ -47,6 +71,15 @@
 
 
 <main class="main-content">
+{% for label, messages in app.flashes %}
+    <div class="alert alert-{{ label }} alert-dismissible fade show m-3" role="alert">
+        {% for message in messages %}
+            {{ message }}
+        {% endfor %}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+{% endfor %}
+
     {% block body %}{% endblock %}
 </main>
 
@@ -58,9 +91,11 @@
 </footer>
 
 {% block javascripts %}
+
     {{ encore_entry_script_tags('app') }}
-    {% block importmap %}{{ importmap('app') }}{% endblock %}
+
 {% endblock %}
+
 
 </body>
 </html>

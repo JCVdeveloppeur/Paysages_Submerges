@@ -45,13 +45,14 @@ class Article
     private ?string $categorie = null;
 
     #[ORM\ManyToOne(inversedBy: 'articles')]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\JoinColumn(onDelete: 'SET NULL', nullable: true)]
     private ?User $user = null;
+
 
     #[ORM\OneToMany(targetEntity: Commentaire::class, mappedBy: 'article')]
     private Collection $commentaires;
 
-    #[ORM\OneToMany(targetEntity: Like::class, mappedBy: 'article')]
+    #[ORM\OneToMany(targetEntity: Like::class, mappedBy: 'article', orphanRemoval: true, cascade: ['persist', 'remove'])]
     private Collection $likes;
 
     public function __construct()
@@ -61,6 +62,7 @@ class Article
         $this->createdAt = new \DateTime();
         $this->updatedAt = new \DateTime(); // Initialise aussi updatedAt au départ
     }
+    
 
     #[ORM\PreUpdate]
     public function setUpdatedAtValue(): void

@@ -2,18 +2,48 @@
 
 namespace App\Entity;
 
+use App\Entity\Article;
 use App\Repository\UserRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\UniqueConstraint(name: 'UNIQ_IDENTIFIER_EMAIL', fields: ['email'])]
+#[UniqueEntity(fields: ['email'], message: 'There is already an account with this email')]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
+    #[ORM\OneToMany(mappedBy: 'user', targetEntity: Article::class, orphanRemoval: true)]
+    private Collection $articles;
+
+    #[ORM\OneToMany(mappedBy: 'auteur', targetEntity: Commentaire::class, orphanRemoval: true)]
+    private Collection $commentaires;
+
+    #[ORM\OneToMany(mappedBy: 'user', targetEntity: Like::class, cascade: ['remove'], orphanRemoval: true)]
+    private Collection $likes;
+
+
+    public function __construct()
+    {
+    $this->articles = new ArrayCollection();
+    $this->commentaires = new ArrayCollection();
+    $this->likes = new ArrayCollection();
+    }
+
+
+    public function getArticles(): Collection
+    {
+        return $this->articles;
+    }
+
+    public function getCommentaires(): Collection
+    {
+        return $this->commentaires;
+    }
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
@@ -46,29 +76,17 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     /**
      * @var Collection<int, Article>
      */
-    #[ORM\OneToMany(targetEntity: Article::class, mappedBy: 'user')]
-    private Collection $articles;
+
 
     /**
      * @var Collection<int, Commentaire>
      */
-    #[ORM\OneToMany(targetEntity: Commentaire::class, mappedBy: 'auteur')]
-    private Collection $commentaires;
+
 
     /**
      * @var Collection<int, Like>
      */
-    #[ORM\OneToMany(targetEntity: Like::class, mappedBy: 'user')]
-    private Collection $likes;
-
-    public function __construct()
-    {
-        $this->articles = new ArrayCollection();
-        $this->commentaires = new ArrayCollection();
-        $this->likes = new ArrayCollection();
-    }
-
-
+    
 
     public function getId(): ?int
     {
@@ -179,13 +197,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    /**
-     * @return Collection<int, Article>
-     */
-    public function getArticles(): Collection
-    {
-        return $this->articles;
-    }
 
     public function addArticle(Article $article): static
     {
@@ -208,14 +219,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
         return $this;
     }
-
-    /**
-     * @return Collection<int, Commentaire>
-     */
-    public function getCommentaires(): Collection
-    {
-        return $this->commentaires;
-    }
+    
 
     public function addCommentaire(Commentaire $commentaire): static
     {

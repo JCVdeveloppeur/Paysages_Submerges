@@ -3,14 +3,17 @@
 namespace App\Controller;
 
 use App\Entity\User;
-use App\Form\UserForm;
+use App\Form\UserFormType;
+use App\Repository\ArticleRepository;
 use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 #[Route('/user')]
 final class UserController extends AbstractController
@@ -24,12 +27,36 @@ final class UserController extends AbstractController
             'users' => $userRepository->findAll(),
         ]);
     }
+    #[Route('/mon-profil', name: 'app_profile')]
+    public function profile(ArticleRepository $articleRepository): Response
+    {
+        
+    /** @var \App\Entity\User $user */
+    $user = $this->getUser();
+
+
+    if (!$user) {
+        return $this->redirectToRoute('app_login');
+    }
+
+    $totalLikes = 0;
+
+    foreach ($user->getArticles() as $article) {
+        $totalLikes += $article->getLikes()->count();
+    }
+
+    return $this->render('user/profile.html.twig', [
+        'user' => $user,
+        'totalLikes' => $totalLikes,
+    ]);
+}
+
 
     #[Route('/new', name: 'app_user_new', methods: ['GET', 'POST'])]
     public function new(Request $request, EntityManagerInterface $entityManager): Response
     {
         $user = new User();
-        $form = $this->createForm(UserForm::class, $user);
+        $form = $this->createForm(UserFormType::class, $user);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
@@ -68,7 +95,7 @@ final class UserController extends AbstractController
     #[Route('/{id}/edit', name: 'app_user_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, User $user, EntityManagerInterface $entityManager): Response
     {
-        $form = $this->createForm(UserForm::class, $user);
+        $form = $this->createForm(UserFormType::class, $user);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
@@ -93,13 +120,27 @@ final class UserController extends AbstractController
     }
 
     #[Route('/{id}', name: 'app_user_delete', methods: ['POST'])]
-    public function delete(Request $request, User $user, EntityManagerInterface $entityManager): Response
-    {
-        if ($this->isCsrfTokenValid('delete'.$user->getId(), $request->getPayload()->getString('_token'))) {
-            $entityManager->remove($user);
-            $entityManager->flush();
-        }
+    public function delete(
+    Request $request,
+    User $user,
+    EntityManagerInterface $entityManager,
+    TokenStorageInterface $tokenStorage,
+    SessionInterface $session
+        ): Response {
+    if ($this->isCsrfTokenValid('delete' . $user->getId(), $request->getPayload()->getString('_token'))) {
+        // Suppression de l'utilisateur
+        $entityManager->remove($user);
+        $entityManager->flush();
 
-        return $this->redirectToRoute('app_user_index', [], Response::HTTP_SEE_OTHER);
+        // Déconnexion manuelle
+        $tokenStorage->setToken(null);
+        $session->invalidate();
+
+        // Message dramatique 😭
+        $this->addFlash('success', '💔 Votre compte a été supprimé. Merci d\'avoir navigué avec nous. Bon vent marin… 🌊');
     }
+
+    return $this->redirectToRoute('app_accueil');
+}
+
 }

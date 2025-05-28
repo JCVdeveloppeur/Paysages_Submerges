@@ -1,5 +1,5 @@
 <?php
-// Existant
+
 namespace App\Entity;
 
 use App\Repository\CommentaireRepository;
@@ -7,6 +7,7 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: CommentaireRepository::class)]
+#[ORM\HasLifecycleCallbacks]
 class Commentaire
 {
     #[ORM\Id]
@@ -17,15 +18,16 @@ class Commentaire
     #[ORM\Column(type: Types::TEXT)]
     private ?string $contenu = null;
 
-    #[ORM\Column]
+    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     private ?\DateTime $dateCommentaire = null;
 
     #[ORM\Column]
     private ?bool $approuve = null;
 
     #[ORM\ManyToOne(inversedBy: 'commentaires')]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\JoinColumn(onDelete: 'SET NULL', nullable: true)]
     private ?User $auteur = null;
+
 
     #[ORM\ManyToOne(inversedBy: 'commentaires')]
     #[ORM\JoinColumn(nullable: false)]
@@ -95,4 +97,13 @@ class Commentaire
 
         return $this;
     }
-}
+    #[ORM\PrePersist]
+    public function setDateAutomatically(): void
+    {
+    if ($this->dateCommentaire === null) {
+        $this->dateCommentaire = new \DateTime();
+    }
+    }
+
+
+    }
