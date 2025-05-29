@@ -1,0 +1,78 @@
+
+@use "variables" as *;
+
+.register-page {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: $bleu-profond;
+
+  .register-card {
+    background-color: $crème-clair;
+    padding: 2rem;
+    border-radius: $border-radius;
+    box-shadow: $shadow-light;
+    width: 100%;
+    max-width: 400px;
+
+    h1 {
+      font-family: $font-titres;
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+
+    input[type="email"],
+    input[type="password"],
+    input[type="text"] {
+      width: 100%;
+      padding: 0.5rem;
+      border: 1px solid #ccc;
+      border-radius: 0.375rem;
+      font-family: $font-paragraphe;
+    }
+
+    .form-control {
+      margin-bottom: 1rem;
+    }
+
+    .form-check {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-bottom: 1rem;
+      font-size: 0.95rem;
+    }
+
+    button[type="submit"] {
+      margin-top: 1rem;
+      width: 100%;
+      font-family: $font-boutons;
+      background-color: $bleu-accent;
+      transition: $transition-douce;
+
+      &:hover {
+        background-color: $bleu-accent-hover;
+      }
+    }
+
+    .text-center {
+      margin-top: 1.5rem;
+
+      a {
+        display: inline-block;
+        font-size: 0.9rem;
+        color: $bleu-accent;
+        text-decoration: underline;
+
+        &:hover {
+          color: $bleu-accent-hover;
+        }
+      }
+    }
+  }
+}
+
+
+
+

@@ -1,8 +1,8 @@
 
-@use 'variables' as vars;
+@use "variables" as *;
 
 .espece-show-page-body {
-    background-color: vars.$crème-clair;
+    background-color: $crème-clair;
     min-height: calc(100vh - 120px); // ajuste selon la hauteur navbar + footer
     display: flex;
     flex-direction: column;
@@ -14,44 +14,44 @@
     width: 100%;
     max-width: 1200px;
     background: #fff;
-    border-radius: vars.$border-radius;
-    box-shadow: vars.$shadow-light;
+    border-radius: $border-radius;
+    box-shadow: $shadow-light;
     padding: 2rem;
 
     h1, h2 {
-        font-family: vars.$font-titres;
+        font-family: $font-titres;
         margin-bottom: 1rem;
         text-align: center;
     }
 
     h3, h4 {
-        font-family: vars.$font-titres;
+        font-family: $font-titres;
         margin-top: 1.5rem;
         margin-bottom: 0.5rem;
     }
 
     p, li {
-        font-family: vars.$font-corps;
+        font-family: $font-corps;
         font-size: 1rem;
-        color: vars.$texte-foncé;
+        color: $texte-foncé;
     }
 
     img {
         max-width: 100%;
         height: auto;
-        border-radius: vars.$border-radius;
-        box-shadow: vars.$shadow-light;
+        border-radius: $border-radius;
+        box-shadow: $shadow-light;
     }
 
     .btn {
-        background-color: vars.$bleu-accent;
-        border-color: vars.$bleu-accent;
+        background-color: $bleu-accent;
+        border-color: $bleu-accent;
         color: #fff;
         margin-top: 2rem;
 
         &:hover {
-            background-color: vars.$bleu-accent-hover;
-            border-color: darken(vars.$bleu-accent-hover, 10%);
+            background-color: $bleu-accent-hover;
+            border-color: darken($bleu-accent-hover, 10%);
             color: #fff;
         }
     }

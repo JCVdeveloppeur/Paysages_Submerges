@@ -37,15 +37,21 @@
         {% if app.user %}
             <li class="nav-item dropdown">
         <a class="nav-link dropdown-toggle text-white d-flex align-items-center" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-            <i class="bi bi-person-circle me-1"></i> {{ app.user.username }}
-        </a>
+           <i class="bi bi-person-circle me-1"></i> {{ app.user.pseudo ?? app.user.username }}</a>
             <ul class="dropdown-menu dropdown-menu-end">
-            <li><a class="dropdown-item" href="{{ path('app_profile') }}">👤 Mon profil</a></li>
+            <li><a class="dropdown-item" href="{{ path('app_profile') }}">👤 Mon profil</a></li><li>
+            <a class="dropdown-item d-flex align-items-center" href="{{ path('app_public_profile', {'pseudo': app.user.pseudo}) }}">
+            <i class="bi bi-globe2 me-2"></i> Voir mon profil public
+            </a>
+            </li>
+
+
             <li><a class="dropdown-item" href="{{ path('article_create') }}">📝 Rédiger un article</a></li>
             <li><a class="dropdown-item" href="{{ path('app_change_password') }}">🔐 Modifier mot de passe</a></li>
             <li><hr class="dropdown-divider"></li>
             <li><a class="dropdown-item text-danger" href="{{ path('app_logout') }}">🚪 Déconnexion</a></li>
             </ul>
+
             </li>
         {% else %}
 

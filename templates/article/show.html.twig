@@ -31,7 +31,12 @@
     </div>
 
     {% if article.user %}
-    Rédigé par <strong>{{ article.user.username }}</strong>
+    Rédigé par 
+    <a href="{{ path('app_public_profile', {'pseudo': article.user.pseudo}) }}" class="fw-bold text-decoration-none">
+    <i class="bi bi-person-circle me-1"></i>{{ article.user.pseudo }}
+    </a>
+
+
     {% if article.user.articles|length >= 10 %}
         <span class="badge bg-warning text-dark ms-2" title="Auteur confirmé">🌟</span>
     {% elseif article.user.articles|length >= 1 %}

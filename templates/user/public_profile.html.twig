@@ -1,0 +1,42 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Profil de {{ user.pseudo }}{% endblock %}
+
+{% block body %}
+        <div class="container my-5 public-profile-page">
+        <div class="card shadow-sm">
+        <div class="profile-banner">
+        <i class="bi bi-person-circle"></i> Profil public de <span>{{ user.pseudo }}</span>
+        </div>
+
+        <div class="card-body">
+            <p><strong>Inscrit depuis :</strong> {{ user.dateInscription|date('d/m/Y') }}</p>
+
+            {% if user.bio %}
+                <p><strong>À propos :</strong> {{ user.bio }}</p>
+            {% endif %}
+
+            <hr>
+
+            <h5>📚 Articles rédigés ({{ user.articles|length }})</h5>
+            {% if user.articles is not empty %}
+                <ul class="list-group list-group-flush">
+                    {% for article in user.articles %}
+                        <li class="list-group-item">
+                            <a href="{{ path('article_show', {'id': article.id}) }}">{{ article.titre }}</a>
+                            {% if article.approuve %}
+                                <span class="badge bg-success ms-2">⭐ Approuvé</span>
+                            {% endif %}
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <p class="text-muted">Cet utilisateur n’a pas encore publié d’article.</p>
+            {% endif %}
+        </div>
+    </div>
+    <div class="text-center mt-4">
+        <a href="{{ path('app_articles') }}" class="btn btn-outline-secondary">← Retour aux articles</a>
+    </div>
+</div>
+{% endblock %}

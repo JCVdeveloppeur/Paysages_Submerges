@@ -55,8 +55,12 @@ class Article
     #[ORM\OneToMany(targetEntity: Like::class, mappedBy: 'article', orphanRemoval: true, cascade: ['persist', 'remove'])]
     private Collection $likes;
 
+    #[ORM\Column]
+    private ?bool $approuve = null;
+
     public function __construct()
     {
+        $this->approuve = false;
         $this->commentaires = new ArrayCollection();
         $this->likes = new ArrayCollection();
         $this->createdAt = new \DateTime();
@@ -230,6 +234,18 @@ class Article
                 $like->setArticle(null);
             }
         }
+        return $this;
+    }
+
+    public function isApprouve(): ?bool
+    {
+        return $this->approuve;
+    }
+
+    public function setApprouve(bool $approuve): static
+    {
+        $this->approuve = $approuve;
+
         return $this;
     }
 }

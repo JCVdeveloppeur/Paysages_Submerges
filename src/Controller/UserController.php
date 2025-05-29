@@ -4,15 +4,14 @@ namespace App\Controller;
 
 use App\Entity\User;
 use App\Form\UserFormType;
-use App\Repository\ArticleRepository;
 use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
-use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
+use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 #[Route('/user')]
@@ -27,30 +26,6 @@ final class UserController extends AbstractController
             'users' => $userRepository->findAll(),
         ]);
     }
-    #[Route('/mon-profil', name: 'app_profile')]
-    public function profile(ArticleRepository $articleRepository): Response
-    {
-        
-    /** @var \App\Entity\User $user */
-    $user = $this->getUser();
-
-
-    if (!$user) {
-        return $this->redirectToRoute('app_login');
-    }
-
-    $totalLikes = 0;
-
-    foreach ($user->getArticles() as $article) {
-        $totalLikes += $article->getLikes()->count();
-    }
-
-    return $this->render('user/profile.html.twig', [
-        'user' => $user,
-        'totalLikes' => $totalLikes,
-    ]);
-}
-
 
     #[Route('/new', name: 'app_user_new', methods: ['GET', 'POST'])]
     public function new(Request $request, EntityManagerInterface $entityManager): Response
@@ -60,14 +35,11 @@ final class UserController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            // Hash du mot de passe
             $hashedPassword = $this->passwordHasher->hashPassword(
                 $user,
                 $user->getPassword()
             );
             $user->setPassword($hashedPassword);
-
-            // Date d'inscription
             $user->setDateInscription(new \DateTime());
 
             $entityManager->persist($user);
@@ -81,7 +53,6 @@ final class UserController extends AbstractController
             'user' => $user,
             'is_edit' => false,
         ]);
-        
     }
 
     #[Route('/{id}', name: 'app_user_show', methods: ['GET'])]
@@ -99,13 +70,11 @@ final class UserController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            // Re-hash uniquement si le mot de passe a changé (simplement illustratif ici)
             $hashedPassword = $this->passwordHasher->hashPassword(
                 $user,
                 $user->getPassword()
             );
             $user->setPassword($hashedPassword);
-
             $entityManager->flush();
 
             return $this->redirectToRoute('app_user_index', [], Response::HTTP_SEE_OTHER);
@@ -116,31 +85,40 @@ final class UserController extends AbstractController
             'user' => $user,
             'is_edit' => true,
         ]);
-                
     }
 
     #[Route('/{id}', name: 'app_user_delete', methods: ['POST'])]
     public function delete(
-    Request $request,
-    User $user,
-    EntityManagerInterface $entityManager,
-    TokenStorageInterface $tokenStorage,
-    SessionInterface $session
-        ): Response {
-    if ($this->isCsrfTokenValid('delete' . $user->getId(), $request->getPayload()->getString('_token'))) {
-        // Suppression de l'utilisateur
-        $entityManager->remove($user);
-        $entityManager->flush();
+        Request $request,
+        User $user,
+        EntityManagerInterface $entityManager,
+        TokenStorageInterface $tokenStorage,
+        SessionInterface $session
+    ): Response {
+        if ($this->isCsrfTokenValid('delete' . $user->getId(), $request->getPayload()->getString('_token'))) {
+            $entityManager->remove($user);
+            $entityManager->flush();
 
-        // Déconnexion manuelle
-        $tokenStorage->setToken(null);
-        $session->invalidate();
+            $tokenStorage->setToken(null);
+            $session->invalidate();
 
-        // Message dramatique 😭
-        $this->addFlash('success', '💔 Votre compte a été supprimé. Merci d\'avoir navigué avec nous. Bon vent marin… 🌊');
+            $this->addFlash('success', '💔 Votre compte a été supprimé. Merci d\'avoir navigué avec nous. Bon vent marin… 🌊');
+        }
+
+        return $this->redirectToRoute('app_accueil');
+    }
+    #[Route('/utilisateur/{pseudo}', name: 'app_public_profile')]
+public function publicProfile(string $pseudo, UserRepository $userRepository): Response
+{
+    $user = $userRepository->findOneBy(['pseudo' => $pseudo]);
+
+    if (!$user) {
+        throw $this->createNotFoundException('Auteur introuvable.');
     }
 
-    return $this->redirectToRoute('app_accueil');
+    return $this->render('user/public_profile.html.twig', [
+        'user' => $user,
+    ]);
 }
 
 }

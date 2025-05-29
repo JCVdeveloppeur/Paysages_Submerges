@@ -1,0 +1,32 @@
+@use "variables" as *;
+
+.login-page {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: $bleu-profond;
+
+  .login-card {
+    background-color: $crème-clair;
+    padding: 2rem;
+    border-radius: $border-radius;
+    box-shadow: $shadow-light;
+    width: 100%;
+    max-width: 400px;
+  }
+
+  .form-control {
+    margin-bottom: 1rem;
+  }
+
+  .btn-primary {
+    background-color: $bleu-accent;
+    transition: $transition-douce;
+
+    &:hover {
+      background-color: $bleu-accent-hover;
+    }
+  }
+}
+

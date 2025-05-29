@@ -1,0 +1,38 @@
+@use "variables" as *;
+
+.public-profile-page {
+  .card {
+    border-radius: $border-radius;
+    background-color: $crème-clair;
+    box-shadow: $shadow-light;
+  }
+
+  .card-header {
+    font-size: 1.25rem;
+    font-weight: bold;
+  }
+
+  .list-group-item a {
+    text-decoration: none;
+    color: $bleu-marine;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+}
+.profile-banner {
+  background-color: $bleu-profond;
+  color: white;
+  padding: 1rem 2rem;
+  border-top-left-radius: $border-radius;
+  border-top-right-radius: $border-radius;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  i {
+    font-size: 1.2rem;
+  }
+}
+
