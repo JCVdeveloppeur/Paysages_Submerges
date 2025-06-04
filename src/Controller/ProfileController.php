@@ -18,70 +18,78 @@ class ProfileController extends AbstractController
 {
     #[Route('/mon-profil', name: 'app_profile')]
     #[IsGranted('ROLE_USER')]
-public function index(ArticleRepository $articleRepository, CommentaireRepository $commentaireRepository): Response
+    public function index(ArticleRepository $articleRepository, CommentaireRepository $commentaireRepository): Response
     {
-    $user = $this->getUser();
+        $user = $this->getUser();
 
-    $articles = $articleRepository->findBy(['user' => $user]);
-    $commentaires = $commentaireRepository->findBy(['auteur' => $user]);
+        $articles = $articleRepository->findBy(['user' => $user]);
+        $commentaires = $commentaireRepository->findBy(['auteur' => $user]);
 
-    // ✅ Calcul du total de likes reçus
-    $totalLikes = 0;
-    foreach ($articles as $article) {
-        $totalLikes += count($article->getLikes());
-    }
+        $totalLikes = 0;
+        foreach ($articles as $article) {
+            $totalLikes += count($article->getLikes());
+        }
 
-    return $this->render('user/profile.html.twig', [
-        'user' => $user,
-        'articles' => $articles,
-        'commentaires' => $commentaires,
-        'totalLikes' => $totalLikes,
-        'nbCommentaires' => count($commentaires), // <-- ici !
-    ]);
+        return $this->render('user/profile.html.twig', [
+            'user' => $user,
+            'articles' => $articles,
+            'commentaires' => $commentaires,
+            'totalLikes' => $totalLikes,
+            'nbCommentaires' => count($commentaires),
+        ]);
     }
 
     #[Route('/mon-compte/mot-de-passe', name: 'app_change_password')]
     public function changePassword(Request $request, UserPasswordHasherInterface $passwordHasher, EntityManagerInterface $em): Response
     {
-    /** @var \App\Entity\User $user */
-    $user = $this->getUser();
+        /** @var \App\Entity\User $user */
+        $user = $this->getUser();
 
-    $form = $this->createForm(ChangePasswordFormType::class);
-    $form->handleRequest($request);
+        $form = $this->createForm(ChangePasswordFormType::class);
+        $form->handleRequest($request);
 
-    if ($form->isSubmitted() && $form->isValid()) {
-        $newPassword = $form->get('plainPassword')->getData();
-        $user->setPassword($passwordHasher->hashPassword($user, $newPassword));
-        $em->flush();
+        if ($form->isSubmitted() && $form->isValid()) {
+            $newPassword = $form->get('plainPassword')->getData();
+            $user->setPassword($passwordHasher->hashPassword($user, $newPassword));
+            $em->flush();
 
-        $this->addFlash('success', 'Mot de passe modifié avec succès !');
-        return $this->redirectToRoute('app_profile');
-    }
+            $this->addFlash('success', 'Mot de passe modifié avec succès !');
+            return $this->redirectToRoute('app_profile');
+        }
 
-    return $this->render('user/change_password.html.twig', [
-        'form' => $form->createView(),
-    ]);
+        return $this->render('user/change_password.html.twig', [
+            'form' => $form->createView(),
+        ]);
     }
 
     #[Route('/mon-compte/supprimer', name: 'app_delete_account', methods: ['GET', 'POST'])]
-    public function deleteAccount(EntityManagerInterface $em, Request $request, Security $security): Response
+    #[IsGranted('ROLE_USER')]
+    public function deleteAccount(Request $request, EntityManagerInterface $em, Security $security, UserPasswordHasherInterface $passwordHasher): Response
     {
-    $user = $this->getUser();
+        $user = $this->getUser();
 
-    if ($this->isCsrfTokenValid('delete-user', $request->get('_token'))) {
-    $em->remove($user);
-    $em->flush();
+        if ($request->isMethod('POST')) {
+            $submittedPassword = $request->request->get('password');
 
-    $request->getSession()->invalidate();
+            /** @var \App\Entity\User $user */
+                $user = $this->getUser();
 
-    $this->addFlash('success', 'Compte supprimé avec succès !');
-    return $this->redirectToRoute('app_home');
+
+            if (!$submittedPassword || !$passwordHasher->isPasswordValid($user, $submittedPassword)) {
+                $this->addFlash('danger', 'Mot de passe incorrect.');
+                return $this->redirectToRoute('app_delete_account');
+            }
+
+            $em->remove($user);
+            $em->flush();
+
+            $security->logout(false);
+            $request->getSession()->invalidate();
+
+            $this->addFlash('success', 'Compte supprimé avec succès.');
+            return $this->redirectToRoute('app_accueil'); // 🟢 correction ici
+        }
+
+        return $this->render('user/delete_confirm.html.twig');
     }
-
-
-    return $this->render('user/delete_confirm.html.twig', [
-       
-    ]);
-}
-
 }

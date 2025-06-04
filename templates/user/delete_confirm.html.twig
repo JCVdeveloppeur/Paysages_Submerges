@@ -1,0 +1,35 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Supprimer mon compte{% endblock %}
+
+{% block body %}
+<div class="container py-5">
+    {% for message in app.flashes('danger') %}
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Fermer"></button>
+        </div>
+    {% endfor %}
+
+    <h1 class="mb-4 text-danger"><i class="bi bi-x-circle-fill me-2"></i>Supprimer mon compte</h1>
+
+    <div class="alert alert-warning">
+        Cette action est <strong>irréversible</strong>. Toutes vos données seront supprimées.
+    </div>
+
+    <form method="post" action="{{ path('app_delete_account') }}">
+        <input type="hidden" name="_token" value="{{ csrf_token('delete-user') }}">
+
+        <div class="mb-3">
+            <label for="password" class="form-label">Confirmez votre mot de passe :</label>
+            <input type="password" name="password" id="password" class="form-control" required autofocus>
+        </div>
+
+        <button type="submit" class="btn btn-danger">
+            <i class="bi bi-trash3 me-1"></i> Confirmer la suppression
+        </button>
+        <a href="{{ path('app_profile') }}" class="btn btn-secondary ms-2">Annuler</a>
+    </form>
+</div>
+{% endblock %}
+
