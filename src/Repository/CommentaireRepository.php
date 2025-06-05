@@ -1,5 +1,5 @@
 <?php
-// Existant
+
 
 namespace App\Repository;
 
@@ -16,6 +16,29 @@ class CommentaireRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, Commentaire::class);
     }
+
+    public function countCommentairesDepuis(\DateTimeInterface $date): int
+    {
+    return $this->createQueryBuilder('c')
+        ->select('COUNT(c.id)')
+        ->where('c.dateCommentaire >= :date')
+        ->setParameter('date', $date)
+        ->getQuery()
+        ->getSingleScalarResult();
+    }
+    public function countCommentairesDerniersJours(int $jours = 7): int
+    {
+    $date = new \DateTimeImmutable("-{$jours} days");
+
+    return $this->createQueryBuilder('c')
+        ->select('COUNT(c.id)')
+        ->where('c.dateCommentaire >= :date')
+        ->setParameter('date', $date)
+        ->getQuery()
+        ->getSingleScalarResult();
+    }
+
+
 
 //    /**
 //     * @return Commentaire[] Returns an array of Commentaire objects

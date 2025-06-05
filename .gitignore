@@ -1,36 +1,57 @@
 
-###> symfony/framework-bundle ###
-/.env.local
+# Symfony config
+.env.local
+.env.*.local
 /.env.local.php
-/.env.*.local
+
+# Clés secrètes de prod
 /config/secrets/prod/prod.decrypt.private.php
-/public/bundles/
+
+# Dossiers générés
 /var/
 /vendor/
-###< symfony/framework-bundle ###
 
-###> phpunit/phpunit ###
-/phpunit.xml
-.phpunit.result.cache
-###< phpunit/phpunit ###
-
-###> symfony/phpunit-bridge ###
+# PHPUnit
 .phpunit.result.cache
 /phpunit.xml
-###< symfony/phpunit-bridge ###
+/phpunit.xml.dist
 
-###> symfony/asset-mapper ###
-/public/assets/
-/assets/vendor/
-###< symfony/asset-mapper ###
-
-###> symfony/webpack-encore-bundle ###
+# Webpack Encore / Asset Mapper
 /node_modules/
 /public/build/
-npm-debug.log
-yarn-error.log
-###< symfony/webpack-encore-bundle ###
+/public/assets/
+/assets/vendor/
+npm-debug.log*
+yarn-error.log*
+yarn-debug.log*
 
-# Fichiers uploadés par l'utilisateur
+# Encore cache
+/.cache/
+
+# Base de données SQLite locale (si utilisée)
+/*.sqlite
+/*.sqlite3
+
+# Uploads utilisateur (images etc.)
 /public/uploads/
+
+# Coverage (si utilisation de PHPUnit ou Code Coverage)
+coverage/
+
+# IDE / OS spécifiques
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db
+
+# Logs
+/log/
+*.log
+
+# Fichiers de travail temporaires
+*.swp
+*.swo
+*~
+!/public/uploads/.gitkeep
+
 

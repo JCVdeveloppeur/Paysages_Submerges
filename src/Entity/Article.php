@@ -56,11 +56,12 @@ class Article
     private Collection $likes;
 
     #[ORM\Column]
-    private ?bool $approuve = null;
+    private ?bool $estApprouve = null;
+
 
     public function __construct()
     {
-        $this->approuve = false;
+        $this->estApprouve = false;
         $this->commentaires = new ArrayCollection();
         $this->likes = new ArrayCollection();
         $this->createdAt = new \DateTime();
@@ -237,16 +238,16 @@ class Article
         return $this;
     }
 
-    public function isApprouve(): ?bool
+    public function isEstApprouve(): ?bool
     {
-        return $this->approuve;
+    return $this->estApprouve;
     }
 
-    public function setApprouve(bool $approuve): static
+    public function setEstApprouve(bool $estApprouve): static
     {
-        $this->approuve = $approuve;
-
-        return $this;
+    $this->estApprouve = $estApprouve;
+    return $this;
     }
+
 }
 

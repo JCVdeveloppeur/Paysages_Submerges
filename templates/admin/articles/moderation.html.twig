@@ -1,0 +1,50 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Modération des articles{% endblock %}
+
+{% block body %}
+<div class="container py-5">
+    <h1 class="mb-4"><i class="bi bi-eye-slash"></i> Modération des articles</h1>
+
+    {% if articles is empty %}
+        <div class="alert alert-info">
+            Aucun article en attente de modération pour le moment.
+        </div>
+    {% else %}
+        <div class="row g-4">
+            {% for article in articles %}
+                <div class="col-md-6">
+                    <div class="card h-100 border-warning">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ article.titre }}</h5>
+                            <p class="card-text text-muted">
+                                Proposé par :
+                                {% if article.user %}
+                                    {{ article.user.pseudo ?: article.user.email }}
+                                {% else %}
+                                    Auteur inconnu
+                                {% endif %}
+                            </p>
+                            <p class="card-text">{{ article.contenu|striptags|slice(0, 100) ~ '...' }}</p>
+
+                            <div class="d-flex justify-content-between mt-3">
+                                {# ✅ Approuver #}
+                                <form method="post" action="{{ path('admin_article_approve', {'id': article.id}) }}">
+                                    <input type="hidden" name="_token" value="{{ csrf_token('approve' ~ article.id) }}">
+                                    <button class="btn btn-success btn-sm">✅ Approuver</button>
+                                </form>
+
+                                {# 🗑️ Supprimer #}
+                                <form method="post" action="{{ path('admin_article_delete', {'id': article.id}) }}" onsubmit="return confirm('Supprimer cet article ?')">
+                                    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ article.id) }}">
+                                    <button class="btn btn-danger btn-sm">🗑️ Supprimer</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

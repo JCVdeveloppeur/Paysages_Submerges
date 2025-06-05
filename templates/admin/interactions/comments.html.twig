@@ -1,0 +1,68 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Modération des commentaires{% endblock %}
+
+{% block body %}
+<div class="container py-5">
+    <h1 class="mb-4"><i class="bi bi-chat-left-dots-fill"></i> Commentaires des utilisateurs</h1>
+
+    {% if commentaires is empty %}
+        <p class="text-muted">Aucun commentaire à afficher.</p>
+    {% else %}
+        <table class="table table-hover align-middle">
+            <thead>
+                <tr>
+                    <th>Auteur</th>
+                    <th>Contenu</th>
+                    <th>Date</th>
+                    <th>Article lié</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for commentaire in commentaires %}
+                    <tr>
+                        <td>
+                            {% if commentaire.auteur %}
+                                {{ commentaire.auteur.pseudo ?? commentaire.auteur.email }}
+                            {% else %}
+                                <em class="text-muted">Compte supprimé</em>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if commentaire.contenu is empty %}
+                                <span class="text-warning fst-italic">[Commentaire vide]</span>
+                            {% else %}
+                                {{ commentaire.contenu|u.truncate(50) }}
+                            {% endif %}
+                        </td>
+                        <td>{{ commentaire.dateCommentaire|date('d/m/Y H:i') }}</td>
+                        <td>
+                            {% if commentaire.article %}
+                                <a href="{{ path('article_show', {'id': commentaire.article.id}) }}" target="_blank">
+                                    {{ commentaire.article.titre }}
+                                </a>
+                            {% else %}
+                                <em class="text-muted">Supprimé</em>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <form method="post" action="{{ path('admin_comment_delete', {'id': commentaire.id}) }}"
+                                  onsubmit="return confirm('Confirmer la suppression de ce commentaire ?');">
+                                <input type="hidden" name="_token" value="{{ csrf_token('delete-comment-' ~ commentaire.id) }}">
+                                <button class="btn btn-sm btn-danger" title="Supprimer">
+                                    <i class="bi bi-trash"></i>
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% endif %}
+
+    <a href="{{ path('admin_dashboard') }}" class="btn btn-outline-secondary mt-4">
+        ← Retour au tableau de bord
+    </a>
+</div>
+{% endblock %}

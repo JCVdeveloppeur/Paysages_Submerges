@@ -1,0 +1,118 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Modération : Commentaires & Likes{% endblock %}
+
+{% block body %}
+<div class="container py-5">
+    <h1 class="mb-4"><i class="bi bi-intersect"></i> Modération des interactions</h1>
+
+    <div class="row">
+        <!-- Bloc Commentaires -->
+        <div class="col-md-6">
+            <h3 class="mb-3">🗨️ Commentaires
+        <span class="badge bg-primary">{{ totalCommentaires }}</span>
+            </h3>
+
+            {% if commentaires is empty %}
+                <p class="text-muted">Aucun commentaire.</p>
+            {% else %}
+                <table class="table table-sm table-hover align-middle">
+                    <thead>
+                        <tr>
+                            <th>Auteur</th>
+                            <th>Article</th>
+                            <th>Contenu</th>
+                            <th>Date</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for commentaire in commentaires %}
+                            <tr>
+                                <td>{{ commentaire.auteur.pseudo ?? commentaire.auteur.email ?? 'Utilisateur supprimé' }}</td>
+                                <td>
+                                    {% if commentaire.article %}
+                                        <a href="{{ path('article_show', { id: commentaire.article.id }) }}">
+                                            {{ commentaire.article.titre|length > 30 ? commentaire.article.titre[:30] ~ '…' : commentaire.article.titre }}
+                                        </a>
+                                    {% else %}
+                                        <em class="text-muted">Supprimé</em>
+                                    {% endif %}
+                                </td>
+                                <td>{{ commentaire.contenu|length > 40 ? commentaire.contenu[:40] ~ '…' : commentaire.contenu }}</td>
+                                <td>{{ commentaire.dateCommentaire|date('d/m/Y H:i') }}</td>
+                                <td>
+                                    <form method="post" action="{{ path('admin_comment_delete', { id: commentaire.id }) }}" onsubmit="return confirm('Supprimer ce commentaire ?');">
+                                        <input type="hidden" name="_token" value="{{ csrf_token('delete-comment-' ~ commentaire.id) }}">
+                                        <button class="btn btn-sm btn-outline-danger">🗑️</button>
+                                    </form>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+
+                <div class="d-flex justify-content-center">
+                    {{ knp_pagination_render(commentaires) }}
+                </div>
+            {% endif %}
+        </div>
+
+        <!-- Bloc Likes -->
+        <div class="col-md-6">
+            <h3 class="mb-3">❤️ Likes
+        <span class="badge bg-danger">{{ totalLikes }}</span>
+            </h3>
+
+            {% if likes is empty %}
+                <p class="text-muted">Aucun like.</p>
+            {% else %}
+                <table class="table table-sm table-hover align-middle">
+                    <thead>
+                        <tr>
+                            <th>Auteur</th>
+                            <th>Article</th>
+                            <th>Date</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for like in likes %}
+                            <tr>
+                                <td>{{ like.user.pseudo ?? like.user.email ?? 'Utilisateur supprimé' }}</td>
+                                <td>
+                                    {% if like.article %}
+                                        <a href="{{ path('article_show', { id: like.article.id }) }}">
+                                            {{ like.article.titre|length > 30 ? like.article.titre[:30] ~ '…' : like.article.titre }}
+                                        </a>
+                                    {% else %}
+                                        <em class="text-muted">Supprimé</em>
+                                    {% endif %}
+                                </td>
+                                <td>{{ like.dateLike|date('d/m/Y H:i') }}</td>
+                                <td>
+                                    <form method="post" action="{{ path('admin_like_delete', { id: like.id }) }}" onsubmit="return confirm('Supprimer ce like ?');">
+                                        <input type="hidden" name="_token" value="{{ csrf_token('delete-like-' ~ like.id) }}">
+                                        <button class="btn btn-sm btn-outline-danger">🗑️</button>
+                                    </form>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+
+                <div class="d-flex justify-content-center">
+                    {{ knp_pagination_render(likes) }}
+                </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="mt-4">
+        <a href="{{ path('admin_dashboard') }}" class="btn btn-outline-secondary">← Retour au tableau de bord</a>
+    </div>
+</div>
+{% endblock %}
+
+
+

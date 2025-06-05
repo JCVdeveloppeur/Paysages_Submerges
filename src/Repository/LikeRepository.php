@@ -16,6 +16,29 @@ class LikeRepository extends ServiceEntityRepository
         parent::__construct($registry, Like::class);
     }
 
+    public function countLikesDepuis(\DateTimeInterface $date): int
+    {
+    return $this->createQueryBuilder('l')
+        ->select('COUNT(l.id)')
+        ->where('l.dateLike >= :date')
+        ->setParameter('date', $date)
+        ->getQuery()
+        ->getSingleScalarResult();
+    }
+    public function countLikesDerniersJours(int $jours = 7): int
+    {
+    $date = new \DateTimeImmutable("-{$jours} days");
+
+    return $this->createQueryBuilder('l')
+        ->select('COUNT(l.id)')
+        ->where('l.dateLike >= :date')
+        ->setParameter('date', $date)
+        ->getQuery()
+        ->getSingleScalarResult();
+    }
+
+
+
 //    /**
 //     * @return Like[] Returns an array of Like objects
 //     */
