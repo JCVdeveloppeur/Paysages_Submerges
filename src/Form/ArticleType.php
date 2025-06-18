@@ -4,18 +4,26 @@ namespace App\Form;
 
 use App\Entity\Article;
 use App\Entity\User;
-use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\TextType;
-use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
+use Symfony\Component\Form\Extension\Core\Type\TextareaType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class ArticleType extends AbstractType
 {
+    private Security $security;
+
+    public function __construct(Security $security)
+    {
+        $this->security = $security;
+    }
+
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
@@ -38,7 +46,7 @@ class ArticleType extends AbstractType
             ])
             ->add('image', FileType::class, [
                 'label' => 'Illustration',
-                'mapped' => false, // car ce champ n’est pas directement lié à l'entité
+                'mapped' => false,
                 'required' => false
             ])
             ->add('datePublication', DateTimeType::class, [
@@ -46,6 +54,17 @@ class ArticleType extends AbstractType
                 'required' => false,
             ])
             ->add('statut');
+
+        // Afficher le champ user uniquement pour l’administrateur
+        if ($this->security->isGranted('ROLE_ADMIN')) {
+            $builder->add('user', EntityType::class, [
+                'class' => User::class,
+                'choice_label' => 'email', // ou 'pseudo' si tu préfères
+                'label' => 'Auteur de l’article',
+                'required' => false,
+                'placeholder' => 'Sélectionnez un auteur',
+            ]);
+        }
     }
 
     public function configureOptions(OptionsResolver $resolver): void
@@ -55,4 +74,6 @@ class ArticleType extends AbstractType
         ]);
     }
 }
+
+
 

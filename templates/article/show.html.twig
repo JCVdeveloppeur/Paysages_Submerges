@@ -5,6 +5,7 @@
 {% block body %}
 <div class="article-show-page container py-5">
     <div class="article-card mb-5">
+
         {% if article.image %}
             <img src="{{ asset('uploads/articles/' ~ article.image) }}" alt="{{ article.titre }}" class="img-fluid mb-3">
         {% endif %}
@@ -14,21 +15,24 @@
 
         <p class="mt-3">{{ article.contenu|raw }}</p>
 
-        <div class="article-footer mt-4 d-flex justify-content-between align-items-center text-muted">
-            <div class="mb-3">
-                {% if is_granted('IS_AUTHENTICATED_FULLY') %}
-                    <button
-                        class="btn btn-outline-danger like-button"
-                        data-article-id="{{ article.id }}"
-                        data-url="{{ path('app_like_toggle', {'id': article.id}) }}"
-                    >
-                        ❤️ <span class="like-count">{{ article.likes|length }}</span>
-                    </button>
-                {% else %}
-                    <p><em><a href="{{ path('app_login') }}">Connecte-toi</a> pour liker cet article !</em></p>
-                {% endif %}
+        <div class="article-footer mt-4 d-flex justify-content-between align-items-center text-muted flex-wrap">
+
+            <!-- ❤️ Zone du like avec message Merci -->
+            <div class="position-relative d-inline-block mb-3 me-3">
+                <div class="merci-message d-none">
+                    Merci
+                </div>
+                <button
+                    class="like-button border-0 bg-transparent"
+                    data-article-id="{{ article.id }}"
+                    data-url="{{ path('app_like_toggle', {'id': article.id}) }}"
+                    style="font-size: 1.2rem;">
+                    <i class="bi bi-heart me-1"></i>
+                    <span class="like-count">{{ article.likes|length }}</span>
+                </button>
             </div>
 
+            <!-- 👤 Zone auteur -->
             <div class="d-flex align-items-center flex-wrap">
                 {% if article.user %}
                     <span class="me-2">

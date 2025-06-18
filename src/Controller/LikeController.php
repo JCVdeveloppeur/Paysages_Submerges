@@ -86,40 +86,63 @@ class LikeController extends AbstractController
     }
 
     #[Route('/toggle/{id}', name: 'app_like_toggle', methods: ['POST'])]
-    #[IsGranted('ROLE_USER')]
     public function toggle(Request $request, Article $article, EntityManagerInterface $em, Security $security): Response
     {
-        $user = $security->getUser();
+    $user = $security->getUser();
+    $likeRepo = $em->getRepository(Like::class);
 
-        $existingLike = $em->getRepository(Like::class)->findOneBy([
+    if ($user) {
+        // Utilisateur connecté : recherche du like existant
+        $existingLike = $likeRepo->findOneBy([
             'user' => $user,
             'article' => $article,
         ]);
+    } else {
+        // Visiteur : on utilise son IP
+        $ip = $request->getClientIp();
 
-        if ($existingLike) {
-            $em->remove($existingLike);
-        } else {
-            $like = new Like();
-            $like->setUser($user);
-            $like->setDateLike(new \DateTime());
-            $like->setArticle($article);
-            $em->persist($like);
-        }
-
-        $em->flush();
-
-        // Si AJAX (XMLHttpRequest), retourne un JSON avec le nouveau total
-        if ($request->isXmlHttpRequest()) {
-            return new JsonResponse([
-                'likeCount' => count($article->getLikes()),
-                'liked' => $existingLike ? false : true
-            ]);
-        }
-
-        // Sinon redirection classique (fallback)
-        return $this->redirectToRoute('article_show', [
-            'id' => $article->getId(),
+        $existingLike = $likeRepo->findOneBy([
+            'ipAdresse' => $ip,
+            'article' => $article,
         ]);
     }
+
+    if ($existingLike) {
+        // Si like existant → suppression
+        $em->remove($existingLike);
+        $liked = false;
+    } else {
+        // Sinon → création du like
+        $like = new Like();
+        $like->setArticle($article);
+        $like->setDateLike(new \DateTime());
+
+        if ($user) {
+            $like->setUser($user);
+        } else {
+            $ip = $request->getClientIp();
+            $like->setIpAdresse($ip);
+        }
+
+        $em->persist($like);
+        $liked = true;
+    }
+
+    $em->flush();
+
+    // Réponse JSON si AJAX
+    if ($request->isXmlHttpRequest()) {
+        return new JsonResponse([
+            'likeCount' => count($article->getLikes()),
+            'liked' => $liked,
+        ]);
+    }
+
+    // Sinon redirection normale
+    return $this->redirectToRoute('article_show', [
+        'id' => $article->getId(),
+    ]);
+}
+
 }
 

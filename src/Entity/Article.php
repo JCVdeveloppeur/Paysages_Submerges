@@ -55,9 +55,8 @@ class Article
     #[ORM\OneToMany(targetEntity: Like::class, mappedBy: 'article', orphanRemoval: true, cascade: ['persist', 'remove'])]
     private Collection $likes;
 
-    #[ORM\Column]
-    private ?bool $estApprouve = null;
-
+    #[ORM\Column(options: ['default' => false])]
+    private bool $estApprouve = false;
 
     public function __construct()
     {

@@ -3,17 +3,14 @@
 namespace App\Entity;
 
 use App\Repository\LikeRepository;
-use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
-
-
-#[ORM\Entity(repositoryClass: LikeRepository::class)]
-#[ORM\Table(name: '`like`', uniqueConstraints: [
-new ORM\UniqueConstraint(name: 'unique_like', columns: ['user_id', 'article_id'])
+    #[ORM\Entity(repositoryClass: LikeRepository::class)]
+    #[ORM\Table(name: '`like`', uniqueConstraints: [
+    new ORM\UniqueConstraint(name: 'unique_like', columns: ['user_id', 'article_id'])
 ])]
-#[UniqueEntity(fields: ['user', 'article'], message: 'Vous avez déjà liké cet article.')]
-#[ORM\HasLifecycleCallbacks]
+    #[UniqueEntity(fields: ['user', 'article'], message: 'Vous avez déjà liké cet article.')]
+    #[ORM\HasLifecycleCallbacks]
 class Like
 {
     #[ORM\Id]
@@ -25,12 +22,25 @@ class Like
     private ?\DateTime $dateLike = null;
 
     #[ORM\ManyToOne(inversedBy: 'likes')]
-    #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
+    #[ORM\JoinColumn(nullable: true, onDelete: 'CASCADE')]
     private ?User $user = null;
 
     #[ORM\ManyToOne(inversedBy: 'likes')]
     #[ORM\JoinColumn(nullable: false)]
     private ?Article $article = null;
+
+    #[ORM\Column(length: 45, nullable: true)]
+    private ?string $ipAdresse = null;
+
+    #[ORM\PrePersist]
+    public function setDateAutomatically(): void
+    {
+        if ($this->dateLike === null) {
+            $this->dateLike = new \DateTime();
+        }
+    }
+
+    // Getters et setters
 
     public function getId(): ?int
     {
@@ -66,17 +76,18 @@ class Like
 
     public function setArticle(?Article $article): static
     {
-
         $this->article = $article;
-
         return $this;
     }
-    #[ORM\PrePersist]
-    public function setDateAutomatically(): void
+
+    public function getIpAdresse(): ?string
     {
-        if ($this->dateLike === null) {
-            $this->dateLike = new \DateTime();
-        }
+        return $this->ipAdresse;
+    }
+
+    public function setIpAdresse(?string $ipAdresse): static
+    {
+        $this->ipAdresse = $ipAdresse;
+        return $this;
     }
 }
-

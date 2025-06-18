@@ -24,7 +24,7 @@
                     {% for article in user.articles %}
                         <li class="list-group-item">
                             <a href="{{ path('article_show', {'id': article.id}) }}">{{ article.titre }}</a>
-                            {% if article.approuve %}
+                            {% if article.estApprouve %}
                                 <span class="badge bg-success ms-2">⭐ Approuvé</span>
                             {% endif %}
                         </li>

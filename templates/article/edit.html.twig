@@ -10,66 +10,70 @@
         <div class="col-md-8">
             {{ form_start(form, {'attr': {'enctype': 'multipart/form-data'}}) }}
 
-                <div class="mb-3">
-                    {{ form_label(form.titre) }}
-                    {{ form_widget(form.titre, {'attr': {'class': 'form-control'}}) }}
-                    {{ form_errors(form.titre) }}
-                </div>
+            <div class="mb-3">
+                {{ form_label(form.titre) }}
+                {{ form_widget(form.titre, {'attr': {'class': 'form-control'}}) }}
+                {{ form_errors(form.titre) }}
+            </div>
 
-                <div class="mb-3">
-                    {{ form_label(form.categorie) }}
-                    {{ form_widget(form.categorie, {'attr': {'class': 'form-select'}}) }}
-                    {{ form_errors(form.categorie) }}
-                </div>
+            <div class="mb-3">
+                {{ form_label(form.categorie) }}
+                {{ form_widget(form.categorie, {'attr': {'class': 'form-select'}}) }}
+                {{ form_errors(form.categorie) }}
+            </div>
 
-                <div class="mb-3">
-                    {{ form_label(form.contenu) }}
-                    {{ form_widget(form.contenu, {'attr': {'class': 'form-control'}}) }}
-                    {{ form_errors(form.contenu) }}
-                </div>
+            <div class="mb-3">
+                {{ form_label(form.contenu) }}
+                {{ form_widget(form.contenu, {'attr': {'class': 'form-control'}}) }}
+                {{ form_errors(form.contenu) }}
+            </div>
 
-                <div class="mb-3">
-                    {{ form_label(form.image) }}
-                    {{ form_widget(form.image, {'attr': {'class': 'form-control'}}) }}
-                    {{ form_errors(form.image) }}
-                </div>
+            <div class="mb-3">
+                {{ form_label(form.image) }}
+                {{ form_widget(form.image, {'attr': {'class': 'form-control'}}) }}
+                {{ form_errors(form.image) }}
+            </div>
 
-                <div class="mb-3">
-                    {{ form_label(form.statut) }}
-                    {{ form_widget(form.statut, {'attr': {'class': 'form-select'}}) }}
-                    {{ form_errors(form.statut) }}
-                </div>
+            <div class="mb-3">
+                {{ form_label(form.statut) }}
+                {{ form_widget(form.statut, {'attr': {'class': 'form-select'}}) }}
+                {{ form_errors(form.statut) }}
+            </div>
 
-                <div class="mb-3">
-                    {{ form_label(form.datePublication, 'Date de publication') }}
-                    <div class="input-group">
-                        <span class="input-group-text"><i class="bi bi-calendar-event"></i></span>
-                        {{ form_widget(form.datePublication, {'attr': {'class': 'form-control'}}) }}
-                    </div>
-                    {{ form_errors(form.datePublication) }}
+            <div class="mb-3">
+                {{ form_label(form.datePublication, 'Date de publication') }}
+                <div class="input-group">
+                    <span class="input-group-text"><i class="bi bi-calendar-event"></i></span>
+                    {{ form_widget(form.datePublication, {'attr': {'class': 'form-control'}}) }}
                 </div>
+                {{ form_errors(form.datePublication) }}
+            </div>
 
+            {% if form.user is defined %}
                 <div class="mb-3">
-                    {{ form_label(form.user, 'Auteur de l\'article') }}
+                    {{ form_label(form.user, "Auteur de l'article") }}
                     <div class="input-group">
                         <span class="input-group-text"><i class="bi bi-person-circle"></i></span>
                         {{ form_widget(form.user, {'attr': {'class': 'form-select'}}) }}
                     </div>
                     {{ form_errors(form.user) }}
                 </div>
+            {% endif %}
 
-                <div class="d-flex justify-content-between mt-4">
-                    <a href="{{ path('app_articles') }}" class="btn btn-secondary">
-                        ← Retour à la liste
-                    </a>
-                    <button type="submit" class="btn btn-primary">
-                        💾 Enregistrer les modifications
-                    </button>
-                </div>
+            <div class="d-flex justify-content-between mt-4">
+                <a href="{{ path('app_articles') }}" class="btn btn-secondary">
+                    ← Retour à la liste
+                </a>
+                <button type="submit" class="btn btn-primary">
+                    💾 Enregistrer les modifications
+                </button>
+            </div>
+
             {{ form_end(form) }}
         </div>
     </div>
 </div>
 {% endblock %}
+
 
 

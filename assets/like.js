@@ -1,5 +1,4 @@
 
-
 import confetti from 'canvas-confetti';
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -7,7 +6,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     likeButtons.forEach(button => {
         button.addEventListener('click', async (e) => {
-            e.preventDefault(); // ⛔ empêche tout rechargement
+            e.preventDefault();
 
             const url = button.dataset.url;
             button.disabled = true;
@@ -24,19 +23,53 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 const data = await response.json();
 
-                // ✅ Met à jour le compteur
-                button.querySelector('.like-count').textContent = data.likeCount;
+                // 💡 Met à jour le HTML du bouton
+                button.innerHTML = `
+                    <i class="bi ${data.liked ? 'bi-heart-fill' : 'bi-heart'} me-1"></i>
+                    <span class="like-count">${data.likeCount}</span>
+                `;
 
-                // 🎉 Confettis si un like a été ajouté
+                const icon = button.querySelector('i');
+
                 if (data.liked === true) {
-                    confetti({
-                        particleCount: 80,
-                        spread: 70,
-                        origin: { y: 0.6 }
-                    });
+    button.classList.add('liked');
+    icon.classList.add('text-danger');
+
+    // 🔧 Forcer le reflow pour garantir le déclenchement de l'animation
+    void icon.offsetWidth;
+
+    // 💓 Battement de cœur sur l’icône
+    icon.classList.add('beating');
+    setTimeout(() => {
+    icon.classList.remove('beating');
+    }, 500);
+
+
+    confetti({
+        particleCount: 80,
+        spread: 70,
+        origin: { y: 0.6 }
+    });
+    const merciMessage = button.parentElement.querySelector('.merci-message');
+
+if (merciMessage) {
+    // Retire la classe d-none si présente
+    merciMessage.classList.remove('d-none');
+
+    // Puis applique l'animation
+    merciMessage.classList.add('show-merci');
+
+    setTimeout(() => {
+        merciMessage.classList.remove('show-merci');
+        merciMessage.classList.add('d-none'); // la remet au repos
+    }, 1000);
+}
+                } else {
+                    button.classList.remove('liked');
+                    icon.classList.remove('text-danger');
                 }
 
-                // 💥 Animation visuelle
+                // 💥 Animation de clic
                 button.classList.add('animated');
                 setTimeout(() => {
                     button.classList.remove('animated');
@@ -50,6 +83,10 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 });
+
+
+
+
 
 
 

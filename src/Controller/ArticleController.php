@@ -181,49 +181,43 @@ class ArticleController extends AbstractController
 }
 
     #[Route('/articles/{id}/edit', name: 'article_edit')]
-    public function edit(Request $request, Article $article, EntityManagerInterface $em, SluggerInterface $slugger): Response
-    {
+public function edit(Request $request, Article $article, EntityManagerInterface $em, SluggerInterface $slugger): Response
+{
     $form = $this->createForm(ArticleType::class, $article);
     $form->handleRequest($request);
 
     if ($form->isSubmitted() && $form->isValid()) {
-
         $article->setTitre($form->get('titre')->getData());
         $article->setContenu($form->get('contenu')->getData());
         $article->setCategorie($form->get('categorie')->getData());
         $article->setStatut($form->get('statut')->getData());
         $article->setDatePublication($form->get('datePublication')->getData());
-        $article->setUser($form->get('user')->getData());
-        $article->setUpdatedAt(new \DateTime());
-        
 
-        // Traitement de l'image (si une nouvelle image a été uploadée)
+        // 🛡️ On ne touche à l’auteur que si le champ est présent (donc si admin)
+        if ($form->has('user')) {
+            $article->setUser($form->get('user')->getData());
+        }
+
+        $article->setUpdatedAt(new \DateTime());
+
+        // Traitement de l'image
         $imageFile = $form->get('image')->getData();
         if ($imageFile) {
             $originalFilename = pathinfo($imageFile->getClientOriginalName(), PATHINFO_FILENAME);
             $safeFilename = $slugger->slug($originalFilename);
-            $newFilename = $safeFilename.'-'.uniqid().'.'.$imageFile->guessExtension();
+            $newFilename = $safeFilename . '-' . uniqid() . '.' . $imageFile->guessExtension();
 
             try {
                 $imageFile->move(
-                    $this->getParameter('kernel.project_dir').'/public/uploads/articles',
+                    $this->getParameter('kernel.project_dir') . '/public/uploads/articles',
                     $newFilename
                 );
+                $article->setImage($newFilename);
             } catch (FileException $e) {
                 $this->addFlash('danger', "Erreur lors de l'upload de l'image.");
             }
-
-            $article->setImage($newFilename);
         }
-
-        // On met à jour les dates si nécessaire (optionnel si modifiable)
-        $article->setDatePublication($article->getDatePublication());
-        $article->setUser($article->getUser());
-        $article->setUpdatedAt(new \DateTime()); // Ajoute cette ligne
-
-
         $em->flush();
-
 
         $this->addFlash('success', 'Article mis à jour avec succès.');
         return $this->redirectToRoute('app_articles');
@@ -233,7 +227,8 @@ class ArticleController extends AbstractController
         'form' => $form->createView(),
         'article' => $article,
     ]);
-    }
+}
+
     #[Route('/articles/{id}/supprimer', name: 'article_delete', methods: ['POST'])]
 public function delete(Request $request, Article $article, EntityManagerInterface $em): Response
 {
