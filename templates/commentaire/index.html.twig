@@ -11,48 +11,60 @@
     </div>
 
     {% if commentaires is not empty %}
-        <table class="table table-hover table-bordered">
-            <thead class="table-light">
-                <tr>
-                    <th>ID</th>
-                    <th>Auteur</th>
-                    <th>Article</th>
-                    <th>Date</th>
-                    <th>Approuvé</th>
-                    <th>Actions</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for commentaire in commentaires %}
-    <div class="col-md-6 mb-4">
-        <div class="card h-100 shadow-sm">
-            <div class="card-body">
-                <h5 class="card-title">Commentaire #{{ commentaire.id }}</h5>
-                <p class="card-text"><strong>Auteur :</strong> {{ commentaire.auteur.email }}</p>
-                <p class="card-text"><strong>Article :</strong> {{ commentaire.article.titre }}</p>
-                <p class="card-text"><strong>Contenu :</strong> {{ commentaire.contenu }}</p>
-                <p class="card-text">
-                    <strong>Date :</strong> {{ commentaire.dateCommentaire|date('d/m/Y H:i') }}<br>
-                    <strong>Approuvé :</strong> {{ commentaire.approuve ? '✅ Oui' : '❌ Non' }}
-                </p>
+        <div class="table-responsive">
+            <table class="table table-hover table-bordered align-middle">
+                <thead class="table-dark text-center">
+                    <tr>
+                        <th>ID</th>
+                        <th>Auteur</th>
+                        <th>Article</th>
+                        <th>Contenu</th>
+                        <th>Date</th>
+                        <th>Approuvé</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for commentaire in commentaires %}
+                        <tr>
+                            <td class="text-center">{{ commentaire.id }}</td>
+                            <td>
+                                {{ commentaire.auteur ? commentaire.auteur.email : 'Auteur supprimé' }}
+                            </td>
+                            <td>{{ commentaire.article.titre }}</td>
+                            <td>{{ commentaire.contenu|u.truncate(100, '...') }}</td>
+                            <td>{{ commentaire.dateCommentaire|date('d/m/Y H:i') }}</td>
+                            <td class="text-center">
+                                {{ commentaire.approuve ? '✅' : '❌' }}
+                            </td>
+                            <td>
+                                <div class="d-flex flex-wrap gap-1 justify-content-center">
+                                    {% if not commentaire.approuve %}
+                                        <form method="post" action="{{ path('commentaire_approve', {'id': commentaire.id}) }}">
+                                            <input type="hidden" name="_token" value="{{ csrf_token('approve' ~ commentaire.id) }}">
+                                            <button class="btn btn-success btn-sm" title="Approuver">✅</button>
+                                        </form>
+                                    {% endif %}
 
-                <div class="d-flex gap-2">
-                    <a href="{{ path('commentaire_edit', {'id': commentaire.id}) }}" class="btn btn-outline-secondary btn-sm">✏️ Modifier</a>
+                                    <a href="{{ path('commentaire_edit', {'id': commentaire.id}) }}" class="btn btn-outline-secondary btn-sm" title="Modifier">
+                                        ✏️
+                                    </a>
 
-                    <form method="post" action="{{ path('commentaire_delete', {'id': commentaire.id}) }}" onsubmit="return confirm('Voulez-vous vraiment supprimer ce commentaire ?');">
-                        <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ commentaire.id) }}">
-                        <button class="btn btn-danger btn-sm">🗑 Supprimer</button>
-                    </form>
-                </div>
-            </div>
+                                    <form method="post" action="{{ path('commentaire_delete', {'id': commentaire.id}) }}"
+                                          onsubmit="return confirm('Voulez-vous vraiment supprimer ce commentaire ?');">
+                                        <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ commentaire.id) }}">
+                                        <button class="btn btn-danger btn-sm" title="Supprimer">🗑</button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
         </div>
-    </div>
-{% endfor %}
-
-            </tbody>
-        </table>
     {% else %}
         <div class="alert alert-warning text-center">Aucun commentaire trouvé.</div>
     {% endif %}
 </div>
 {% endblock %}
+

@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\Article;
 use App\Entity\Commentaire;
 use App\Form\CommentaireType;
 use App\Repository\CommentaireRepository;
@@ -14,6 +15,7 @@ use Symfony\Component\Routing\Annotation\Route;
 #[Route('/commentaires')]
 class CommentaireController extends AbstractController
 {
+    // 🔐 CRUD classique pour l'administration
     #[Route('/', name: 'commentaire_index', methods: ['GET'])]
     public function index(CommentaireRepository $commentaireRepository): Response
     {
@@ -80,4 +82,52 @@ class CommentaireController extends AbstractController
 
         return $this->redirectToRoute('commentaire_index');
     }
+
+    // ✨ Ajout public de commentaire depuis la page d’un article
+    #[Route('/ajouter/{id}', name: 'commentaire_ajouter', methods: ['POST'])]
+    public function ajouter(
+        Request $request,
+        Article $article,
+        EntityManagerInterface $em
+    ): Response {
+        $commentaire = new Commentaire();
+        $commentaire->setArticle($article);
+        $commentaire->setDateCommentaire(new \DateTime());
+        $commentaire->setApprouve(false); // validé par admin
+
+        if ($this->getUser()) {
+            $commentaire->setAuteur($this->getUser());
+        }
+
+        $form = $this->createForm(CommentaireType::class, $commentaire, [
+            'is_authenticated' => $this->getUser() !== null,
+        ]);
+
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $em->persist($commentaire);
+            $em->flush();
+
+            $this->addFlash('success', '💬 Merci pour votre commentaire ! Il sera visible après validation.');
+        } else {
+            $this->addFlash('danger', 'Une erreur est survenue lors de l\'ajout du commentaire.');
+        }
+
+        return $this->redirectToRoute('article_show', ['id' => $article->getId()]);
+    }
+    
+    #[Route('/{id}/approuver', name: 'commentaire_approve', methods: ['POST'])]
+    public function approve(Commentaire $commentaire, EntityManagerInterface $em, Request $request): Response
+    {
+    if ($this->isCsrfTokenValid('approve'.$commentaire->getId(), $request->request->get('_token'))) {
+        $commentaire->setApprouve(true);
+        $em->flush();
+        $this->addFlash('success', 'Commentaire approuvé avec succès.');
+    }
+
+    return $this->redirectToRoute('admin_interactions');
+    }
+
 }
+

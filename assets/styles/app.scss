@@ -10,6 +10,12 @@
 @use "profil";
 @use "public_profile";
 @use "like";
+@import 'commentaire';
+@import 'admin_dashboard';
+
+
+
+
 
 
 html, body {

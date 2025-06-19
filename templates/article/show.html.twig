@@ -15,13 +15,9 @@
 
         <p class="mt-3">{{ article.contenu|raw }}</p>
 
-        <div class="article-footer mt-4 d-flex justify-content-between align-items-center text-muted flex-wrap">
-
-            <!-- ❤️ Zone du like avec message Merci -->
-            <div class="position-relative d-inline-block mb-3 me-3">
-                <div class="merci-message d-none">
-                    Merci
-                </div>
+        <!-- Zone Like + Commentaires alignées -->
+        <div class="d-flex align-items-center gap-4 mt-4 mb-3">
+            <div class="position-relative">
                 <button
                     class="like-button border-0 bg-transparent"
                     data-article-id="{{ article.id }}"
@@ -30,9 +26,16 @@
                     <i class="bi bi-heart me-1"></i>
                     <span class="like-count">{{ article.likes|length }}</span>
                 </button>
+                <div class="merci-message">Merci!</div>
             </div>
 
-            <!-- 👤 Zone auteur -->
+            <div class="text-muted">
+                <i class="bi bi-chat-left-text me-1"></i>{{ article.commentaires|length }} commentaire{{ article.commentaires|length > 1 ? 's' }}
+            </div>
+        </div>
+
+        <!-- Auteur -->
+        <div class="article-footer d-flex justify-content-between align-items-center text-muted flex-wrap">
             <div class="d-flex align-items-center flex-wrap">
                 {% if article.user %}
                     <span class="me-2">
@@ -56,12 +59,11 @@
                 {% endif %}
             </div>
         </div>
-
-        <span><i class="bi bi-chat-fill"></i> {{ article.commentaires|length }} commentaires</span>
     </div>
 
     <hr>
 
+    <!-- Commentaires -->
     <div class="comments-section mt-5">
         <h3>💬 Commentaires</h3>
 
@@ -88,6 +90,50 @@
         {% endif %}
     </div>
 
+    <hr class="my-5">
+
+    <!-- Formulaire de commentaire -->
+    <div class="card p-4 mt-4 shadow-sm">
+        <h4>📝 Laisser un commentaire</h4>
+
+        {{ form_start(commentaireForm) }}
+        <div class="mb-3">
+            {{ form_label(commentaireForm.contenu) }}
+            {{ form_widget(commentaireForm.contenu, {'attr': {'class': 'form-control'}}) }}
+            {{ form_errors(commentaireForm.contenu) }}
+        </div>
+
+        {% if is_granted('IS_AUTHENTICATED_FULLY') %}
+            <div class="mb-3">
+                {{ form_label(commentaireForm.dateCommentaire) }}
+                {{ form_widget(commentaireForm.dateCommentaire, {'attr': {'class': 'form-control'}}) }}
+                {{ form_errors(commentaireForm.dateCommentaire) }}
+            </div>
+
+            <div class="form-check mb-3">
+                {{ form_widget(commentaireForm.approuve, {'attr': {'class': 'form-check-input'}}) }}
+                {{ form_label(commentaireForm.approuve, null, {'label_attr': {'class': 'form-check-label'}}) }}
+                {{ form_errors(commentaireForm.approuve) }}
+            </div>
+
+            <div class="mb-3">
+                {{ form_label(commentaireForm.auteur) }}
+                {{ form_widget(commentaireForm.auteur, {'attr': {'class': 'form-select'}}) }}
+                {{ form_errors(commentaireForm.auteur) }}
+            </div>
+
+            <div class="mb-3">
+                {{ form_label(commentaireForm.article) }}
+                {{ form_widget(commentaireForm.article, {'attr': {'class': 'form-select'}}) }}
+                {{ form_errors(commentaireForm.article) }}
+            </div>
+        {% endif %}
+
+        <button type="submit" class="btn btn-primary">💬 Publier</button>
+        {{ form_end(commentaireForm) }}
+    </div>
+
+    <!-- Liens de navigation -->
     <div class="text-center mt-4">
         <a href="{{ path('app_articles') }}" class="btn btn-secondary">← Retour aux articles</a>
     </div>
@@ -101,6 +147,7 @@
     {% endif %}
 </div>
 {% endblock %}
+
 
 
 

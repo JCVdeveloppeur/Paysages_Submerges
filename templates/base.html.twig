@@ -1,8 +1,10 @@
 <!DOCTYPE html>
-<html>
+<html lang="fr">
 <head>
     <meta charset="UTF-8">
     <title>{% block title %}Paysages Submergés{% endblock %}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
     <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>⚫️</text><text y=%221.3em%22 x=%220.2em%22 font-size=%2276%22 fill=%22%23fff%22>sf</text></svg>">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -63,10 +65,10 @@
                             </li>
                             <li><hr class="dropdown-divider"></li>
                             {% if is_granted('ROLE_ADMIN') %}
-                            <li>
-                                <a class="dropdown-item d-flex align-items-center" href="{{ path('admin_dashboard') }}">
-                                <i class="bi bi-shield-lock me-2 text-warning"></i> Espace Admin
-                                </a>
+                                <li>
+                                    <a class="dropdown-item d-flex align-items-center" href="{{ path('admin_dashboard') }}">
+                                        <i class="bi bi-shield-lock me-2 text-warning"></i> Espace Admin
+                                    </a>
                                 </li>
                                 <li><hr class="dropdown-divider"></li>
                             {% endif %}
@@ -97,20 +99,20 @@
 
 <div id="navbar-overlay"></div>
 
-<main class="main-content">
+<main class="main-content pt-5 mt-4">
     {% for label, messages in app.flashes %}
-        <div class="alert alert-{{ label }} alert-dismissible fade show m-3" role="alert">
-            {% for message in messages %}
+        {% for message in messages %}
+            <div class="alert alert-{{ label }} alert-dismissible fade show m-3" role="alert">
                 {{ message }}
-            {% endfor %}
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-        </div>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        {% endfor %}
     {% endfor %}
 
     {% block body %}{% endblock %}
 </main>
 
-<footer class="site-footer bg-dark text-light py-3 text-center">
+<footer class="site-footer bg-dark text-light py-3 text-center mt-5">
     <small>&copy; {{ "now"|date("Y") }} Paysages Submergés. Tous droits réservés. |
         <a href="{{ path('app_contact') }}" class="text-light">Contact</a> |
         <a href="{{ path('app_mentions_legales') }}" class="text-light">Mentions légales</a>

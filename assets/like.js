@@ -50,7 +50,7 @@ document.addEventListener('DOMContentLoaded', () => {
         spread: 70,
         origin: { y: 0.6 }
     });
-    const merciMessage = button.parentElement.querySelector('.merci-message');
+    const merciMessage = button.closest('.position-relative').querySelector ('.merci-message');
 
 if (merciMessage) {
     // Retire la classe d-none si présente

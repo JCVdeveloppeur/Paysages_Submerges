@@ -3,14 +3,14 @@
 {% block title %}Modération : Commentaires & Likes{% endblock %}
 
 {% block body %}
-<div class="container py-5">
+<div class="container py-5 admin-dashboard">
     <h1 class="mb-4"><i class="bi bi-intersect"></i> Modération des interactions</h1>
 
     <div class="row">
         <!-- Bloc Commentaires -->
         <div class="col-md-6">
-            <h3 class="mb-3">🗨️ Commentaires
-        <span class="badge bg-primary">{{ totalCommentaires }}</span>
+            <h3 class="mb-3">🔔 Commentaires
+                <span class="badge bg-primary">{{ totalCommentaires }}</span>
             </h3>
 
             {% if commentaires is empty %}
@@ -23,36 +23,52 @@
                             <th>Article</th>
                             <th>Contenu</th>
                             <th>Date</th>
-                            <th></th>
+                            <th>Actions</th>
                         </tr>
                     </thead>
                     <tbody>
                         {% for commentaire in commentaires %}
-                            <tr>
+                            <tr class="{{ not commentaire.approuve ? 'row-pending' }}">
                                 <td>{{ commentaire.auteur.pseudo ?? commentaire.auteur.email ?? 'Utilisateur supprimé' }}</td>
                                 <td>
                                     {% if commentaire.article %}
-                                        <a href="{{ path('article_show', { id: commentaire.article.id }) }}">
+                                        <a href="{{ path('article_show', { id: commentaire.article.id }) }}" target="_blank">
                                             {{ commentaire.article.titre|length > 30 ? commentaire.article.titre[:30] ~ '…' : commentaire.article.titre }}
                                         </a>
                                     {% else %}
                                         <em class="text-muted">Supprimé</em>
                                     {% endif %}
                                 </td>
-                                <td>{{ commentaire.contenu|length > 40 ? commentaire.contenu[:40] ~ '…' : commentaire.contenu }}</td>
+                                <td>
+                                    {{ commentaire.contenu|length > 40 ? commentaire.contenu[:40] ~ '…' : commentaire.contenu }}
+                                    {% if not commentaire.approuve %}
+                                        <span class="badge badge-en-attente ms-2">
+                                            <i class="bi bi-clock"></i> En attente
+                                        </span>
+                                    {% endif %}
+                                </td>
                                 <td>{{ commentaire.dateCommentaire|date('d/m/Y H:i') }}</td>
                                 <td>
-                                    <form method="post" action="{{ path('admin_comment_delete', { id: commentaire.id }) }}" onsubmit="return confirm('Supprimer ce commentaire ?');">
-                                        <input type="hidden" name="_token" value="{{ csrf_token('delete-comment-' ~ commentaire.id) }}">
-                                        <button class="btn btn-sm btn-outline-danger">🗑️</button>
-                                    </form>
+                                    <div class="d-flex gap-1">
+                                        {% if not commentaire.approuve %}
+                                            <form method="post" action="{{ path('commentaire_approve', { id: commentaire.id }) }}">
+                                                <input type="hidden" name="_token" value="{{ csrf_token('approve' ~ commentaire.id) }}">
+                                                <button class="btn btn-sm btn-success" title="Approuver">✅</button>
+                                            </form>
+                                        {% endif %}
+                                        <form method="post" action="{{ path('admin_comment_delete', { id: commentaire.id }) }}"
+                                              onsubmit="return confirm('Supprimer ce commentaire ?');">
+                                            <input type="hidden" name="_token" value="{{ csrf_token('delete-comment-' ~ commentaire.id) }}">
+                                            <button class="btn btn-sm btn-outline-danger" title="Supprimer">🗑️</button>
+                                        </form>
+                                    </div>
                                 </td>
                             </tr>
                         {% endfor %}
                     </tbody>
                 </table>
 
-                <div class="d-flex justify-content-center">
+                <div class="d-flex justify-content-center mt-3">
                     {{ knp_pagination_render(commentaires) }}
                 </div>
             {% endif %}
@@ -61,7 +77,7 @@
         <!-- Bloc Likes -->
         <div class="col-md-6">
             <h3 class="mb-3">❤️ Likes
-        <span class="badge bg-danger">{{ totalLikes }}</span>
+                <span class="badge bg-danger">{{ totalLikes }}</span>
             </h3>
 
             {% if likes is empty %}
@@ -73,7 +89,7 @@
                             <th>Auteur</th>
                             <th>Article</th>
                             <th>Date</th>
-                            <th></th>
+                            <th>Actions</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -101,7 +117,7 @@
                     </tbody>
                 </table>
 
-                <div class="d-flex justify-content-center">
+                <div class="d-flex justify-content-center mt-3">
                     {{ knp_pagination_render(likes) }}
                 </div>
             {% endif %}
@@ -113,6 +129,7 @@
     </div>
 </div>
 {% endblock %}
+
 
 
 

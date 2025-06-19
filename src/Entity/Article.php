@@ -50,6 +50,7 @@ class Article
 
 
     #[ORM\OneToMany(targetEntity: Commentaire::class, mappedBy: 'article')]
+    #[ORM\OrderBy(['dateCommentaire' => 'DESC'])]
     private Collection $commentaires;
 
     #[ORM\OneToMany(targetEntity: Like::class, mappedBy: 'article', orphanRemoval: true, cascade: ['persist', 'remove'])]

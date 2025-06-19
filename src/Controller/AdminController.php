@@ -14,7 +14,6 @@ use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
@@ -23,43 +22,37 @@ class AdminController extends AbstractController
     #[Route('/admin/dashboard', name: 'admin_dashboard')]
     #[IsGranted('ROLE_ADMIN')]
     public function dashboard(
-    ArticleRepository $articleRepository,
-    UserRepository $userRepository,
-    CommentaireRepository $commentaireRepository,
-    LikeRepository $likeRepository
+        ArticleRepository $articleRepository,
+        UserRepository $userRepository,
+        CommentaireRepository $commentaireRepository,
+        LikeRepository $likeRepository
     ): Response {
-    $aujourdHui = new \DateTimeImmutable('today');
+        $aujourdHui = new \DateTimeImmutable('today');
+        $labels = [];
+        $commentairesParJour = [];
+        $likesParJour = [];
 
-    // Récupérer les données sur 7 jours
-    $labels = [];
-    $commentairesParJour = [];
-    $likesParJour = [];
+        for ($i = 6; $i >= 0; $i--) {
+            $date = (new \DateTimeImmutable('today'))->modify("-{$i} days");
+            $labels[] = $date->format('d/m');
+            $commentairesParJour[] = $commentaireRepository->countCommentairesDepuis($date->setTime(0, 0));
+            $likesParJour[] = $likeRepository->countLikesDepuis($date->setTime(0, 0));
+        }
 
-    for ($i = 6; $i >= 0; $i--) {
-        $date = (new \DateTimeImmutable('today'))->modify("-{$i} days");
-        $labels[] = $date->format('d/m');
-        $commentairesParJour[] = $commentaireRepository->countCommentairesDepuis($date->setTime(0, 0));
-        $likesParJour[] = $likeRepository->countLikesDepuis($date->setTime(0, 0));
-    }
-
-    return $this->render('admin/dashboard.html.twig', [
-        'nombreArticles' => $articleRepository->count([]),
-        'articlesEnAttente' => $articleRepository->count(['estApprouve' => false]),
-        'nombreUtilisateurs' => $userRepository->count([]),
-        'nombreCommentaires' => $commentaireRepository->count([]),
-        'nombreLikes' => $likeRepository->count([]),
-
-        'commentairesAujourdHui' => $commentaireRepository->countCommentairesDepuis($aujourdHui),
-        'likesAujourdHui' => $likeRepository->countLikesDepuis($aujourdHui),
-
-        'commentaires7Jours' => $commentaireRepository->countCommentairesDerniersJours(7),
-        'likes7Jours' => $likeRepository->countLikesDerniersJours(7),
-
-        // Pour le graphique
-        'jours' => $labels,
-        'commentairesParJour' => $commentairesParJour,
-        'likesParJour' => $likesParJour,
-    ]);
+        return $this->render('admin/dashboard.html.twig', [
+            'nombreArticles' => $articleRepository->count([]),
+            'articlesEnAttente' => $articleRepository->count(['estApprouve' => false]),
+            'nombreUtilisateurs' => $userRepository->count([]),
+            'nombreCommentaires' => $commentaireRepository->count([]),
+            'nombreLikes' => $likeRepository->count([]),
+            'commentairesAujourdHui' => $commentaireRepository->countCommentairesDepuis($aujourdHui),
+            'likesAujourdHui' => $likeRepository->countLikesDepuis($aujourdHui),
+            'commentaires7Jours' => $commentaireRepository->countCommentairesDerniersJours(7),
+            'likes7Jours' => $likeRepository->countLikesDerniersJours(7),
+            'jours' => $labels,
+            'commentairesParJour' => $commentairesParJour,
+            'likesParJour' => $likesParJour,
+        ]);
     }
 
     #[Route('/admin/articles/moderation', name: 'admin_articles_moderation')]
@@ -98,23 +91,23 @@ class AdminController extends AbstractController
     #[Route('/admin/articles', name: 'admin_articles_all')]
     #[IsGranted('ROLE_ADMIN')]
     public function allArticles(
-    ArticleRepository $articleRepository,
-    PaginatorInterface $paginator,
-    Request $request
+        ArticleRepository $articleRepository,
+        PaginatorInterface $paginator,
+        Request $request
     ): Response {
-    $query = $articleRepository->createQueryBuilder('a')
-        ->orderBy('a.dateCreation', 'DESC')
-        ->getQuery();
+        $query = $articleRepository->createQueryBuilder('a')
+            ->orderBy('a.dateCreation', 'DESC')
+            ->getQuery();
 
-    $articles = $paginator->paginate(
-        $query,
-        $request->query->getInt('page', 1),
-        5 // ← nombre d'articles par page
-    );
+        $articles = $paginator->paginate(
+            $query,
+            $request->query->getInt('page', 1),
+            5
+        );
 
-    return $this->render('admin/articles/all_articles.html.twig', [
-        'articles' => $articles,
-    ]);
+        return $this->render('admin/articles/all_articles.html.twig', [
+            'articles' => $articles,
+        ]);
     }
 
     #[Route('/admin/utilisateurs', name: 'admin_users')]
@@ -131,31 +124,42 @@ class AdminController extends AbstractController
     #[Route('/admin/interactions', name: 'admin_interactions')]
     #[IsGranted('ROLE_ADMIN')]
     public function interactions(
-    CommentaireRepository $commentaireRepository,
-    LikeRepository $likeRepository,
-    PaginatorInterface $paginator,
-    Request $request
+        CommentaireRepository $commentaireRepository,
+        LikeRepository $likeRepository,
+        PaginatorInterface $paginator,
+        Request $request
     ): Response {
-    $commentairesQuery = $commentaireRepository->createQueryBuilder('c')
-        ->orderBy('c.dateCommentaire', 'DESC')
-        ->getQuery();
+        $commentairesQuery = $commentaireRepository->createQueryBuilder('c')
+            ->orderBy('c.dateCommentaire', 'DESC')
+            ->getQuery();
 
-    $likesQuery = $likeRepository->createQueryBuilder('l')
-        ->orderBy('l.dateLike', 'DESC')
-        ->getQuery();
+        $likesQuery = $likeRepository->createQueryBuilder('l')
+            ->orderBy('l.dateLike', 'DESC')
+            ->getQuery();
 
-    $commentaires = $paginator->paginate($commentairesQuery, $request->query->getInt('pageCommentaires', 1), 5);
-    $likes = $paginator->paginate($likesQuery, $request->query->getInt('pageLikes', 1), 5);
+        $commentaires = $paginator->paginate(
+            $commentairesQuery,
+            $request->query->getInt('pageCommentaires', 1),
+            5,
+            ['pageParameterName' => 'pageCommentaires']
+        );
 
-    $totalCommentaires = count($commentaireRepository->findAll());
-    $totalLikes = count($likeRepository->findAll());
+        $likes = $paginator->paginate(
+            $likesQuery,
+            $request->query->getInt('pageLikes', 1),
+            5,
+            ['pageParameterName' => 'pageLikes']
+        );
 
-    return $this->render('admin/interactions/index.html.twig', [
-        'commentaires' => $commentaires,
-        'likes' => $likes,
-        'totalCommentaires' => $totalCommentaires,
-        'totalLikes' => $totalLikes,
-    ]);
+        $totalCommentaires = $commentaireRepository->count([]);
+        $totalLikes = $likeRepository->count([]);
+
+        return $this->render('admin/interactions/index.html.twig', [
+            'commentaires' => $commentaires,
+            'likes' => $likes,
+            'totalCommentaires' => $totalCommentaires,
+            'totalLikes' => $totalLikes,
+        ]);
     }
 
     #[Route('/admin/commentaires', name: 'admin_comments_list')]
@@ -177,7 +181,6 @@ class AdminController extends AbstractController
         $em->flush();
 
         $this->addFlash('danger', 'Commentaire supprimé avec succès.');
-
         return $this->redirectToRoute('admin_interactions');
     }
 
@@ -191,7 +194,8 @@ class AdminController extends AbstractController
         $this->addFlash('danger', 'Like supprimé avec succès.');
         return $this->redirectToRoute('admin_interactions');
     }
-
+    
 }
+
 
 
