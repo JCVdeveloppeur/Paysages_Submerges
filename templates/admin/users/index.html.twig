@@ -6,27 +6,86 @@
 <div class="container py-5">
     <h1 class="mb-4">👥 Gestion des utilisateurs</h1>
 
-    <table class="table table-hover table-bordered">
-        <thead>
-            <tr>
-                <th>ID</th>
-                <th>Pseudo</th>
-                <th>Email</th>
-                <th>Rôles</th>
-                <th>Inscription</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for user in users %}
+    {# Formulaire de filtre par pseudo et rôle #}
+    <form method="get" action="{{ path('admin_users') }}" class="row g-3 mb-4">
+        <div class="col-md-4">
+            <input type="text" name="pseudo" value="{{ app.request.get('pseudo') }}"
+                   class="form-control" placeholder="Rechercher par pseudo...">
+        </div>
+        <div class="col-md-4">
+            <select name="role" class="form-select">
+                <option value="">-- Tous les rôles --</option>
+                <option value="ROLE_USER" {{ app.request.get('role') == 'ROLE_USER' ? 'selected' }}>Utilisateur</option>
+                <option value="ROLE_ADMIN" {{ app.request.get('role') == 'ROLE_ADMIN' ? 'selected' }}>Administrateur</option>
+            </select>
+        </div>
+        <div class="col-auto">
+            <button type="submit" class="btn btn-primary">🔍 Filtrer</button>
+            <a href="{{ path('admin_users') }}" class="btn btn-outline-secondary">❌ Réinitialiser</a>
+        </div>
+    </form>
+
+    {% if users|length == 0 %}
+        <div class="alert alert-warning">
+            Aucun utilisateur ne correspond à ce filtre.
+        </div>
+    {% else %}
+        <table class="table table-hover table-bordered align-middle">
+            <thead>
                 <tr>
-                    <td>{{ user.id }}</td>
-                    <td>{{ user.pseudo ?? '(non renseigné)' }}</td>
-                    <td>{{ user.email }}</td>
-                    <td>{{ user.roles|join(', ') }}</td>
-                    <td>{{ user.dateInscription ? user.dateInscription|date('d/m/Y') : 'N/A' }}</td>
+                    <th>ID</th>
+                    <th>Pseudo</th>
+                    <th>Email</th>
+                    <th>Rôles</th>
+                    <th>Inscription</th>
+                    <th>Dernière connexion</th>
+                    <th>Statut</th>
                 </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+            </thead>
+            <tbody>
+                {% for user in users %}
+                    <tr>
+                        <td>{{ user.id }}</td>
+                        <td>{{ user.pseudo ?? '(non renseigné)' }}</td>
+                        <td>{{ user.email }}</td>
+                        <td>
+                {% for role in user.roles %}
+                {% if role == 'ROLE_ADMIN' %}
+                <span class="badge bg-danger"><i class="bi bi-shield-lock-fill"></i> Admin</span>
+                {% elseif role == 'ROLE_USER' %}
+                <span class="badge bg-primary"><i class="bi bi-person-fill"></i> Utilisateur</span>
+                {% else %}
+                <span class="badge bg-secondary">{{ role }}</span>
+                {% endif %}
+                {% endfor %}
+                        </td>
+
+                        <td>{{ user.dateInscription ? user.dateInscription|date('d/m/Y') : 'N/A' }}</td>
+                        <td>{{ user.lastLogin ? user.lastLogin|date('d/m/Y H:i') : 'Jamais' }}</td>
+                        <td>
+                            {% if user.lastLogin and user.lastLogin > sevenDaysAgo %}
+                                <span class="badge bg-success"><i class="bi bi-circle-fill"></i> Actif</span>
+                            {% else %}
+                                <span class="badge bg-secondary"><i class="bi bi-dash-circle-fill"></i> Inactif</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <div class="d-flex justify-content-center mt-4">
+            {{ knp_pagination_render(users) }}
+        </div>
+    {% endif %}
+
+    <div class="mt-4">
+        <a href="{{ path('admin_dashboard') }}" class="btn btn-outline-primary">← Retour au tableau de bord</a>
+    </div>
 </div>
 {% endblock %}
+
+
+
+
+

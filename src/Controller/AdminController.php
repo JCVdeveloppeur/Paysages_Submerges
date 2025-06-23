@@ -112,13 +112,42 @@ class AdminController extends AbstractController
 
     #[Route('/admin/utilisateurs', name: 'admin_users')]
     #[IsGranted('ROLE_ADMIN')]
-    public function usersList(UserRepository $userRepository): Response
+    public function usersList(UserRepository $userRepository, Request $request, PaginatorInterface $paginator): Response
     {
-        $users = $userRepository->findAll();
+    $pseudo = $request->query->get('pseudo');
+    $role = $request->query->get('role');
+    $sevenDaysAgo = (new \DateTimeImmutable())->modify('-7 days');
 
-        return $this->render('admin/users/index.html.twig', [
-            'users' => $users,
-        ]);
+    $qb = $userRepository->createQueryBuilder('u');
+
+    if ($pseudo) {
+        $qb->andWhere('u.pseudo LIKE :search')
+           ->setParameter('search', '%' . $pseudo . '%');
+    }
+
+    if ($role) {
+        if ($role === 'ROLE_USER') {
+            $qb->andWhere('u.roles NOT LIKE :adminRole AND u.roles LIKE :userRole')
+               ->setParameter('adminRole', '%ROLE_ADMIN%')
+               ->setParameter('userRole', '%ROLE_USER%');
+        } else {
+            $qb->andWhere('u.roles LIKE :role')
+               ->setParameter('role', '%' . $role . '%');
+        }
+    }
+
+    $qb->orderBy('u.pseudo', 'ASC');
+
+    $pagination = $paginator->paginate(
+        $qb,
+        $request->query->getInt('page', 1),
+        10
+    );
+
+    return $this->render('admin/users/index.html.twig', [
+        'users' => $pagination,
+        'sevenDaysAgo' => $sevenDaysAgo,
+    ]);
     }
 
     #[Route('/admin/interactions', name: 'admin_interactions')]

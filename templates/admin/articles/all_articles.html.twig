@@ -7,49 +7,61 @@
     <h1 class="mb-4"><i class="bi bi-file-earmark-text"></i> Tous les articles publiés</h1>
 
     {% if articles is empty %}
-        <p class="text-muted">Aucun article pour le moment.</p>
+        <div class="alert alert-info">
+            Aucun article pour le moment.
+        </div>
     {% else %}
-        <table class="table table-hover align-middle">
-            <thead>
-                <tr>
-                    <th>Titre</th>
-                    <th>Auteur</th>
-                    <th>Date création</th>
-                    <th>Statut</th>
-                    <th>Actions</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for article in articles %}
+        <div class="table-responsive">
+            <table class="table table-hover align-middle">
+                <thead class="table-light">
                     <tr>
-                        <td>{{ article.titre }}</td>
-                        <td>
-                {% if article.user %}
-                {{ article.user.pseudo ?? article.user.email }}
-                {% else %}
-                <em class="text-muted">Auteur inconnu</em>
-                {% endif %}
-                        </td>
-
-                        <td>{{ article.dateCreation|date('d/m/Y H:i') }}</td>
-                        <td>{{ article.statut }}</td>
-                        <td>
-                            <form method="post" action="{{ path('admin_article_delete', { id: article.id }) }}"
-                                  onsubmit="return confirm('Supprimer cet article ?');">
-                                <input type="hidden" name="_token" value="{{ csrf_token('delete-article-' ~ article.id) }}">
-                                <button class="btn btn-sm btn-outline-danger">🗑️</button>
-                            </form>
-                        </td>
+                        <th>Titre</th>
+                        <th>Auteur</th>
+                        <th>Date création</th>
+                        <th>Statut</th>
+                        <th>Actions</th>
                     </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+                </thead>
+                <tbody>
+                    {% for article in articles %}
+                        <tr>
+                            <td>{{ article.titre }}</td>
+                            <td>
+                                {% if article.user %}
+                                    {{ article.user.pseudo ?? article.user.email }}
+                                {% else %}
+                                    <em class="text-muted">Auteur inconnu</em>
+                                {% endif %}
+                            </td>
+                            <td>{{ article.dateCreation|date('d/m/Y H:i') }}</td>
+                            <td>
+                                {% if article.statut == 'publié' %}
+                                    <span class="badge bg-success">Publié</span>
+                                {% else %}
+                                    <span class="badge bg-warning text-dark">{{ article.statut }}</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <form method="post" action="{{ path('admin_article_delete', { id: article.id }) }}"
+                                      onsubmit="return confirm('Supprimer cet article ?');">
+                                    <input type="hidden" name="_token" value="{{ csrf_token('delete-article-' ~ article.id) }}">
+                                    <button class="btn btn-sm btn-outline-danger" title="Supprimer">🗑️</button>
+                                </form>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <div class="d-flex justify-content-center mt-4">
+            {{ knp_pagination_render(articles, '@KnpPaginator/Pagination/bootstrap5_v5_pagination.html.twig') }}
+        </div>
     {% endif %}
 
-    <a href="{{ path('admin_dashboard') }}" class="btn btn-outline-secondary mt-4">← Retour au tableau de bord</a>
+    <div class="mt-4">
+        <a href="{{ path('admin_dashboard') }}" class="btn btn-outline-secondary">← Retour au tableau de bord</a>
+    </div>
 </div>
-<div class="d-flex justify-content-center mt-4">
-    {{ knp_pagination_render(articles, '@KnpPaginator/Pagination/bootstrap5_v5_pagination.html.twig') }}
-</div>
-
 {% endblock %}
+
