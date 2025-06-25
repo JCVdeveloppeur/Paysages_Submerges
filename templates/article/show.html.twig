@@ -50,9 +50,9 @@
                     </span>
 
                     {% if article.user.articles|length >= 10 %}
-                        <span class="badge bg-warning text-dark ms-2" title="Auteur confirmé">🌟</span>
+                        <span class="badge bg-warning text-dark ms-2" title="Auteur régulier">🌟</span>
                     {% elseif article.user.articles|length >= 1 %}
-                        <span class="badge bg-info text-white ms-2" title="Auteur débutant">✍️</span>
+                        <span class="badge bg-info text-white ms-2" title="Auteur occasionnel">✍️</span>
                     {% endif %}
                 {% else %}
                     <span class="me-2">Rédigé par un auteur disparu</span>

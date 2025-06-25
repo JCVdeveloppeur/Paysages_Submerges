@@ -69,8 +69,16 @@
                                 <span class="badge bg-secondary"><i class="bi bi-dash-circle-fill"></i> Inactif</span>
                             {% endif %}
                         </td>
+                        <td>
+                        <form method="post" action="{{ path('admin_user_delete', { id: user.id }) }}"
+                        onsubmit="return confirm('Supprimer cet utilisateur ? Cette action est irréversible.');">
+                        <input type="hidden" name="_token" value="{{ csrf_token('delete-user-' ~ user.id) }}">
+                        <button class="btn btn-sm btn-outline-danger">🗑️</button>
+                        </form>
+                        </td>
+
                     </tr>
-                {% endfor %}
+                        {% endfor %}
             </tbody>
         </table>
 

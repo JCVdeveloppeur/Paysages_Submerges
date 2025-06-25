@@ -45,9 +45,8 @@ class Article
     private ?string $categorie = null;
 
     #[ORM\ManyToOne(inversedBy: 'articles')]
-    #[ORM\JoinColumn(onDelete: 'SET NULL', nullable: true)]
+    #[ORM\JoinColumn(nullable: true, onDelete: 'SET NULL')]
     private ?User $user = null;
-
 
     #[ORM\OneToMany(targetEntity: Commentaire::class, mappedBy: 'article')]
     #[ORM\OrderBy(['dateCommentaire' => 'DESC'])]

@@ -25,13 +25,20 @@ class Commentaire
     private ?bool $approuve = null;
 
     #[ORM\ManyToOne(inversedBy: 'commentaires')]
-    #[ORM\JoinColumn(onDelete: 'SET NULL', nullable: true)]
+    #[ORM\JoinColumn(nullable: true, onDelete: 'SET NULL')]
     private ?User $auteur = null;
 
-
     #[ORM\ManyToOne(inversedBy: 'commentaires')]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\JoinColumn(nullable: true, onDelete: 'SET NULL')]
     private ?Article $article = null;
+
+    #[ORM\PrePersist]
+    public function setDateAutomatically(): void
+    {
+        if ($this->dateCommentaire === null) {
+            $this->dateCommentaire = new \DateTime();
+        }
+    }
 
     public function getId(): ?int
     {
@@ -46,7 +53,6 @@ class Commentaire
     public function setContenu(string $contenu): static
     {
         $this->contenu = $contenu;
-
         return $this;
     }
 
@@ -58,7 +64,6 @@ class Commentaire
     public function setDateCommentaire(\DateTime $dateCommentaire): static
     {
         $this->dateCommentaire = $dateCommentaire;
-
         return $this;
     }
 
@@ -70,7 +75,6 @@ class Commentaire
     public function setApprouve(bool $approuve): static
     {
         $this->approuve = $approuve;
-
         return $this;
     }
 
@@ -82,7 +86,6 @@ class Commentaire
     public function setAuteur(?User $auteur): static
     {
         $this->auteur = $auteur;
-
         return $this;
     }
 
@@ -94,16 +97,7 @@ class Commentaire
     public function setArticle(?Article $article): static
     {
         $this->article = $article;
-
         return $this;
     }
-    #[ORM\PrePersist]
-    public function setDateAutomatically(): void
-    {
-    if ($this->dateCommentaire === null) {
-        $this->dateCommentaire = new \DateTime();
-    }
-    }
+}
 
-
-    }

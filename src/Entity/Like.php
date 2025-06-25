@@ -5,12 +5,13 @@ namespace App\Entity;
 use App\Repository\LikeRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
-    #[ORM\Entity(repositoryClass: LikeRepository::class)]
-    #[ORM\Table(name: '`like`', uniqueConstraints: [
+
+#[ORM\Entity(repositoryClass: LikeRepository::class)]
+#[ORM\Table(name: '`like`', uniqueConstraints: [
     new ORM\UniqueConstraint(name: 'unique_like', columns: ['user_id', 'article_id'])
 ])]
-    #[UniqueEntity(fields: ['user', 'article'], message: 'Vous avez déjà liké cet article.')]
-    #[ORM\HasLifecycleCallbacks]
+#[UniqueEntity(fields: ['user', 'article'], message: 'Vous avez déjà liké cet article.')]
+#[ORM\HasLifecycleCallbacks]
 class Like
 {
     #[ORM\Id]
@@ -22,11 +23,11 @@ class Like
     private ?\DateTime $dateLike = null;
 
     #[ORM\ManyToOne(inversedBy: 'likes')]
-    #[ORM\JoinColumn(nullable: true, onDelete: 'CASCADE')]
+    #[ORM\JoinColumn(nullable: true, onDelete: 'SET NULL')]
     private ?User $user = null;
 
     #[ORM\ManyToOne(inversedBy: 'likes')]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\JoinColumn(nullable: true, onDelete: 'SET NULL')]
     private ?Article $article = null;
 
     #[ORM\Column(length: 45, nullable: true)]
@@ -39,8 +40,6 @@ class Like
             $this->dateLike = new \DateTime();
         }
     }
-
-    // Getters et setters
 
     public function getId(): ?int
     {

@@ -32,6 +32,30 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
         $this->getEntityManager()->persist($user);
         $this->getEntityManager()->flush();
     }
+    public function countUsersActifsDerniersJours(int $jours = 7): int
+    {
+    $dateLimite = new \DateTimeImmutable("-{$jours} days");
+
+    return $this->createQueryBuilder('u')
+        ->select('COUNT(u.id)')
+        ->where('u.lastLogin >= :dateLimite')
+        ->setParameter('dateLimite', $dateLimite)
+        ->getQuery()
+        ->getSingleScalarResult();
+    }
+    public function countUsersInactifsDerniersJours(int $jours = 7): int
+{
+    $dateLimite = new \DateTimeImmutable("-{$jours} days");
+
+    return $this->createQueryBuilder('u')
+        ->select('COUNT(u.id)')
+        ->where('u.lastLogin IS NULL OR u.lastLogin < :dateLimite')
+        ->setParameter('dateLimite', $dateLimite)
+        ->getQuery()
+        ->getSingleScalarResult();
+}
+
+
 
 //    /**
 //     * @return User[] Returns an array of User objects

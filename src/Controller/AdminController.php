@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Article;
 use App\Entity\Commentaire;
 use App\Entity\Like;
+use App\Entity\User;
 use App\Repository\ArticleRepository;
 use App\Repository\CommentaireRepository;
 use App\Repository\LikeRepository;
@@ -43,6 +44,8 @@ class AdminController extends AbstractController
             'nombreArticles' => $articleRepository->count([]),
             'articlesEnAttente' => $articleRepository->count(['estApprouve' => false]),
             'nombreUtilisateurs' => $userRepository->count([]),
+            'utilisateursActifs' => $userRepository->countUsersActifsDerniersJours(7),
+            'utilisateursInactifs' => $userRepository->countUsersInactifsDerniersJours(7),
             'nombreCommentaires' => $commentaireRepository->count([]),
             'nombreLikes' => $likeRepository->count([]),
             'commentairesAujourdHui' => $commentaireRepository->countCommentairesDepuis($aujourdHui),
@@ -52,7 +55,8 @@ class AdminController extends AbstractController
             'jours' => $labels,
             'commentairesParJour' => $commentairesParJour,
             'likesParJour' => $likesParJour,
-        ]);
+    ]);
+
     }
 
     #[Route('/admin/articles/moderation', name: 'admin_articles_moderation')]
@@ -223,7 +227,18 @@ class AdminController extends AbstractController
         $this->addFlash('danger', 'Like supprimé avec succès.');
         return $this->redirectToRoute('admin_interactions');
     }
-    
+    #[Route('/admin/utilisateur/{id}/supprimer', name: 'admin_user_delete', methods: ['POST'])]
+    #[IsGranted('ROLE_ADMIN')]
+    public function deleteUser(User $user, EntityManagerInterface $em): Response
+    {
+    $em->remove($user);
+    $em->flush();
+
+    $this->addFlash('danger', 'Utilisateur supprimé avec succès.');
+
+    return $this->redirectToRoute('admin_users');
+    }
+
 }
 
 
