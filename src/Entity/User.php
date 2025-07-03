@@ -60,6 +60,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->articles = new ArrayCollection();
         $this->commentaires = new ArrayCollection();
         $this->likes = new ArrayCollection();
+         $this->dateInscription = new \DateTime();
+        $this->isActive = true; // 👈 Valeur par défaut
     }
 
     public function getId(): ?int

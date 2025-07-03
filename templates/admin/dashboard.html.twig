@@ -7,6 +7,7 @@
     <h1 class="mb-4"><i class="bi bi-speedometer2"></i> Tableau de bord administrateur</h1>
 
     <div class="row g-4">
+        {# Carte Articles #}
         <div class="col-md-3">
             <div class="card border-primary shadow-sm text-center h-100">
                 <div class="card-body">
@@ -15,11 +16,31 @@
                         <span class="badge bg-primary">{{ nombreArticles }}</span>
                     </h5>
                     <p class="card-text text-muted">Nombre total d'articles publiés.</p>
-                    <a href="{{ path('admin_articles_all') }}" class="btn btn-outline-primary w-100">Voir les articles</a>
+                    <a href="{{ path('admin_articles_all') }}" class="btn btn-primary text-white w-100">Voir les articles</a>
                 </div>
             </div>
         </div>
 
+        {# Carte Espèces #}
+        <div class="col-md-3">
+            <div class="card border-warning shadow-sm text-center h-100">
+                <div class="card-body">
+                    <h5 class="card-title">
+                        <i class="bi bi-fish"></i> 🌿Espèces
+                        <span class="badge badge-especes">
+                             {{ nombreEspeces }}
+                        </span>
+                    </h5>
+
+                    <p class="card-text text-muted">Nombre total de fiches espèces.</p>
+                    <a href="{{ path('admin_especes') }}" class="btn btn-primary text-white w-100">Gérer les espèces</a>
+                </div>
+            </div>
+        </div>
+
+
+
+        {# Carte Modération #}
         <div class="col-md-3">
             <div class="card border-success shadow-sm text-center h-100">
                 <div class="card-body">
@@ -28,58 +49,57 @@
                         <span class="badge bg-success">{{ articlesEnAttente }}</span>
                     </h5>
                     <p class="card-text text-muted">Articles en attente de validation.</p>
-                    <a href="{{ path('admin_articles_moderation') }}" class="btn btn-outline-success w-100">Modérer</a>
+                    <a href="{{ path('admin_articles_moderation') }}" class="btn btn-primary text-white w-100">Modérer</a>
                 </div>
             </div>
         </div>
 
+        {# Carte Utilisateurs #}
         <div class="col-md-3">
-    <div class="card border-dark shadow-sm text-center h-100">
-        <div class="card-body">
-            <h5 class="card-title">
-                <i class="bi bi-people"></i> Utilisateurs
-                <span class="badge bg-dark">{{ nombreUtilisateurs }}</span>
-            </h5>
-            <p class="card-text text-muted mb-3">Nombre total d'utilisateurs inscrits.</p>
-            <div class="d-flex justify-content-between align-items-center mb-2">
-                <span data-bs-toggle="tooltip" data-bs-placement="top" title="S'est connecté au moins une fois durant les 7 derniers jours.">
-                Actifs (7j) <i class="bi bi-info-circle"></i>
-                </span>
-
-                <span class="badge bg-success">{{ utilisateursActifs }}</span>
-            </div>
-            <div class="d-flex justify-content-between align-items-center">
-                <span data-bs-toggle="tooltip" data-bs-placement="top" title="Ne s'est pas connecté ces 7 derniers jours.">
-                Inactifs <i class="bi bi-info-circle"></i>
-                </span>
-
-                <span class="badge bg-secondary">{{ utilisateursInactifs }}</span>
-            </div>
-            <a href="{{ path('admin_users') }}" class="btn btn-outline-dark w-100 mt-3">Voir les utilisateurs</a>
-        </div>
-    </div>
-</div>
-
-
-        <div class="col-md-3">
-            <div class="card border-info shadow-sm text-center h-100">
+            <div class="card border-dark shadow-sm text-center h-100">
                 <div class="card-body">
                     <h5 class="card-title">
-                        <i class="bi bi-chat-dots"></i> Interactions
-                        <span class="badge bg-info text-dark">{{ nombreCommentaires + nombreLikes }}</span>
+                        <i class="bi bi-people"></i> Utilisateurs
+                        <span class="badge bg-dark">{{ nombreUtilisateurs }}</span>
                     </h5>
+                    <p class="card-text text-muted mb-3">Nombre total d'utilisateurs inscrits.</p>
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <span data-bs-toggle="tooltip" data-bs-placement="top" title="S'est connecté au moins une fois durant les 7 derniers jours.">
+                            Actifs (7j) <i class="bi bi-info-circle"></i>
+                        </span>
+                        <span class="badge bg-success">{{ utilisateursActifs }}</span>
+                    </div>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <span data-bs-toggle="tooltip" data-bs-placement="top" title="Ne s'est pas connecté ces 7 derniers jours.">
+                            Inactifs <i class="bi bi-info-circle"></i>
+                        </span>
+                        <span class="badge bg-secondary">{{ utilisateursInactifs }}</span>
+                    </div>
+                    <a href="{{ path('admin_users') }}" class="btn btn-primary text-white w-100 mt-3">Voir les utilisateurs</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {# Interactions #}
+    <div class="row mt-5">
+        <div class="col">
+            <div class="card border-info shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title"><i class="bi bi-chat-dots"></i> Interactions</h5>
                     <p class="card-text text-muted">
                         Commentaires ({{ nombreCommentaires }}) & Likes ({{ nombreLikes }})<br>
                         <strong>Aujourd'hui</strong> : Commentaires {{ commentairesAujourdHui }} / Likes {{ likesAujourdHui }}<br>
                         <strong>7 derniers jours</strong> : Commentaires {{ commentaires7Jours }} / Likes {{ likes7Jours }}
                     </p>
-                    <a href="{{ path('admin_interactions') }}" class="btn btn-info text-white w-100">Modérer</a>
+                    <a href="{{ path('admin_interactions') }}" class="btn btn-primary text-white w-100">Modérer</a>
                 </div>
             </div>
         </div>
     </div>
 
-    <div class="row mt-5">
+    {# Graphique #}
+    <div class="row mt-4">
         <div class="col">
             <div class="card border-info shadow-sm">
                 <div class="card-body">
@@ -92,6 +112,7 @@
 
     <hr class="my-5">
 
+    {# Bouton pour rédiger un nouvel article #}
     <div class="text-center">
         <a href="{{ path('article_create') }}" class="btn btn-success btn-lg">
             ✍️ Rédiger un nouvel article
@@ -147,16 +168,17 @@
 
         new Chart(ctx, config);
     </script>
-    <script>
-    document.addEventListener('DOMContentLoaded', function () {
-        const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
-        tooltipTriggerList.map(function (tooltipTriggerEl) {
-            return new bootstrap.Tooltip(tooltipTriggerEl)
-        });
-    });
-</script>
 
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+            tooltipTriggerList.map(function (tooltipTriggerEl) {
+                return new bootstrap.Tooltip(tooltipTriggerEl);
+            });
+        });
+    </script>
 {% endblock %}
+
 
 
 

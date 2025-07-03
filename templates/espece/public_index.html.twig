@@ -1,0 +1,39 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Toutes les espèces{% endblock %}
+
+{% block body %}
+<div class="container my-5">
+    <h1 class="mb-4 text-center">🌿 Encyclopédie des espèces</h1>
+
+    {% if especes is empty %}
+        <div class="alert alert-info text-center">Aucune espèce enregistrée pour le moment.</div>
+    {% else %}
+        <div class="row row-cols-1 row-cols-md-3 g-4">
+            {% for espece in especes %}
+                <div class="col">
+                    <div class="card h-100 shadow-sm card-espece">
+                        {% if espece.image %}
+                            <img src="{{ asset('uploads/especes/' ~ espece.image) }}" class="card-img-top image-carte" alt="{{ espece.nomCommun }}">
+                        {% endif %}
+                        <div class="card-body">
+                            <h5 class="card-title">{{ espece.nomCommun|default('Nom inconnu') }}</h5>
+                            <p class="card-text text-muted">
+                                <em>{{ espece.nomScientifique|default('Non renseigné') }}</em><br>
+                                Type : {{ espece.typeEspece|default('—') }}<br>
+                                Biotope : {{ espece.biotope|default('—') }}
+                            </p>
+                        </div>
+                        <div class="card-footer text-end bg-light">
+                            <a href="{{ path('espece_public_show', { id: espece.id }) }}" class="btn btn-outline-primary btn-sm">
+                                🔍 Voir la fiche
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+</div>
+{% endblock %}
+

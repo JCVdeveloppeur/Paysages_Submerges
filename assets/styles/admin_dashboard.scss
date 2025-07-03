@@ -107,6 +107,30 @@
     font-size: 0.9rem;
   }
 }
+// Badge personnalisé pour les espèces - version aquatique verte/bleutée
+.badge-especes {
+  background-color: #00b894 !important;       // vert turquoise
+  color: #ffffff !important;                  // texte blanc
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 0.4em 0.7em;
+  border-radius: 0.5rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  border: 1px solid darken(#00b894, 10%);
+  box-shadow: inset 0 0 0 1px rgba(0, 184, 148, 0.8), 0 0 4px rgba(0, 0, 0, 0.08);
+  font-family: 'Merriweather', serif;
+  white-space: nowrap;
+  text-shadow: 0 0 1px rgba(0, 0, 0, 0.1);
+
+  i {
+    font-size: 0.9rem;
+  }
+}
+
+
+
 
 
 

@@ -6,32 +6,49 @@
 <div class="container py-5">
     <h1 class="mb-4">👥 Gestion des utilisateurs</h1>
 
-    {# Formulaire de filtre par pseudo et rôle #}
-    <form method="get" action="{{ path('admin_users') }}" class="row g-3 mb-4">
-        <div class="col-md-4">
-            <input type="text" name="pseudo" value="{{ app.request.get('pseudo') }}"
-                   class="form-control" placeholder="Rechercher par pseudo...">
+    {# --- Formulaire de filtre --- #}
+    <form method="get" action="{{ path('admin_users') }}" class="row g-3 mb-4 align-items-end">
+        <div class="col-md-3">
+            <input type="text" name="pseudo" value="{{ app.request.get('pseudo') }}" class="form-control" placeholder="Rechercher par pseudo...">
         </div>
-        <div class="col-md-4">
+
+        <div class="col-md-3">
             <select name="role" class="form-select">
                 <option value="">-- Tous les rôles --</option>
                 <option value="ROLE_USER" {{ app.request.get('role') == 'ROLE_USER' ? 'selected' }}>Utilisateur</option>
                 <option value="ROLE_ADMIN" {{ app.request.get('role') == 'ROLE_ADMIN' ? 'selected' }}>Administrateur</option>
             </select>
         </div>
+
+        <div class="col-md-2">
+            <select name="limit" class="form-select" onchange="this.form.submit()">
+                {% for value in [5, 10, 20, 50, 100] %}
+                    <option value="{{ value }}" {{ limit == value ? 'selected' : '' }}>
+                        {{ value }} par page
+                    </option>
+                {% endfor %}
+            </select>
+        </div>
+
         <div class="col-auto">
             <button type="submit" class="btn btn-primary">🔍 Filtrer</button>
             <a href="{{ path('admin_users') }}" class="btn btn-outline-secondary">❌ Réinitialiser</a>
         </div>
     </form>
 
+    {# --- Résumé du filtrage --- #}
+    <div class="mb-3">
+        <strong>Affichage de {{ users|length }} utilisateur{{ users|length > 1 ? 's' }} sur {{ users.getTotalItemCount }}.</strong>
+    </div>
+
+    {# --- Tableau des utilisateurs --- #}
     {% if users|length == 0 %}
         <div class="alert alert-warning">
             Aucun utilisateur ne correspond à ce filtre.
         </div>
     {% else %}
         <table class="table table-hover table-bordered align-middle">
-            <thead>
+            <thead class="table-dark">
                 <tr>
                     <th>ID</th>
                     <th>Pseudo</th>
@@ -40,26 +57,26 @@
                     <th>Inscription</th>
                     <th>Dernière connexion</th>
                     <th>Statut</th>
+                    <th>Action</th>
                 </tr>
             </thead>
             <tbody>
                 {% for user in users %}
-                    <tr>
+                    <tr class="{{ loop.index is odd ? '' : 'table-light' }}">
                         <td>{{ user.id }}</td>
                         <td>{{ user.pseudo ?? '(non renseigné)' }}</td>
                         <td>{{ user.email }}</td>
                         <td>
-                {% for role in user.roles %}
-                {% if role == 'ROLE_ADMIN' %}
-                <span class="badge bg-danger"><i class="bi bi-shield-lock-fill"></i> Admin</span>
-                {% elseif role == 'ROLE_USER' %}
-                <span class="badge bg-primary"><i class="bi bi-person-fill"></i> Utilisateur</span>
-                {% else %}
-                <span class="badge bg-secondary">{{ role }}</span>
-                {% endif %}
-                {% endfor %}
+                            {% for role in user.roles %}
+                                {% if role == 'ROLE_ADMIN' %}
+                                    <span class="badge bg-danger"><i class="bi bi-shield-lock-fill"></i> Admin</span>
+                                {% elseif role == 'ROLE_USER' %}
+                                    <span class="badge bg-primary"><i class="bi bi-person-fill"></i> Utilisateur</span>
+                                {% else %}
+                                    <span class="badge bg-secondary">{{ role }}</span>
+                                {% endif %}
+                            {% endfor %}
                         </td>
-
                         <td>{{ user.dateInscription ? user.dateInscription|date('d/m/Y') : 'N/A' }}</td>
                         <td>{{ user.lastLogin ? user.lastLogin|date('d/m/Y H:i') : 'Jamais' }}</td>
                         <td>
@@ -70,18 +87,18 @@
                             {% endif %}
                         </td>
                         <td>
-                        <form method="post" action="{{ path('admin_user_delete', { id: user.id }) }}"
-                        onsubmit="return confirm('Supprimer cet utilisateur ? Cette action est irréversible.');">
-                        <input type="hidden" name="_token" value="{{ csrf_token('delete-user-' ~ user.id) }}">
-                        <button class="btn btn-sm btn-outline-danger">🗑️</button>
-                        </form>
+                            <form method="post" action="{{ path('admin_user_delete', { id: user.id }) }}"
+                                  onsubmit="return confirm('Supprimer cet utilisateur ? Cette action est irréversible.');">
+                                <input type="hidden" name="_token" value="{{ csrf_token('delete-user-' ~ user.id) }}">
+                                <button class="btn btn-sm btn-outline-danger">🗑️</button>
+                            </form>
                         </td>
-
                     </tr>
-                        {% endfor %}
+                {% endfor %}
             </tbody>
         </table>
 
+        {# --- Pagination --- #}
         <div class="d-flex justify-content-center mt-4">
             {{ knp_pagination_render(users) }}
         </div>
@@ -92,6 +109,7 @@
     </div>
 </div>
 {% endblock %}
+
 
 
 

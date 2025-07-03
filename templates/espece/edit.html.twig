@@ -1,0 +1,84 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Modifier une espèce – {{ espece.nomCommun }}{% endblock %}
+
+{% block body %}
+<div class="container my-5">
+    <h1 class="mb-4">Modifier l’espèce : {{ espece.nomCommun|default('Nom inconnu') }}</h1>
+
+    {{ form_start(form, {'attr': {'enctype': 'multipart/form-data'}}) }}
+
+        <div class="row g-3">
+
+            <div class="col-md-6">
+                {{ form_row(form.nomCommun) }}
+            </div>
+            <div class="col-md-6">
+                {{ form_row(form.nomScientifique) }}
+            </div>
+
+            <div class="col-md-12">
+                {{ form_row(form.classification) }}
+            </div>
+            <div class="col-md-12">
+                {{ form_row(form.origine) }}
+            </div>
+            <div class="col-md-12">
+                {{ form_row(form.repartitionGeographique) }}
+            </div>
+
+            <div class="col-md-12">
+                {{ form_row(form.descriptionPhysique) }}
+            </div>
+            <div class="col-md-12">
+                {{ form_row(form.dimorphismeSexuel) }}
+            </div>
+            <div class="col-md-12">
+                {{ form_row(form.alimentation) }}
+            </div>
+            <div class="col-md-6">
+                {{ form_row(form.tailleMinimaleBac) }}
+            </div>
+
+            <div class="col-md-3">
+                {{ form_row(form.temperatureMin) }}
+            </div>
+            <div class="col-md-3">
+                {{ form_row(form.temperatureMax) }}
+            </div>
+
+            <div class="col-md-3">
+                {{ form_row(form.phMin) }}
+            </div>
+            <div class="col-md-3">
+                {{ form_row(form.phMax) }}
+            </div>
+
+            <div class="col-md-3">
+                {{ form_row(form.ghMin) }}
+            </div>
+            <div class="col-md-3">
+                {{ form_row(form.ghMax) }}
+            </div>
+
+            <div class="col-md-6">
+                {{ form_row(form.typeEspece) }}
+            </div>
+            <div class="col-md-6">
+                {{ form_row(form.biotope) }}
+            </div>
+            <div class="col-md-6">
+                {{ form_row(form.dureeVie) }}
+            </div>
+            <div class="col-md-6">
+                {{ form_row(form.imageFile) }}
+            </div>
+
+            <div class="col-12 mt-4">
+                <button type="submit" class="btn btn-primary">💾 Enregistrer les modifications</button>
+                <a href="{{ path('espece_index') }}" class="btn btn-secondary">↩ Retour à la liste</a>
+            </div>
+        </div>
+    {{ form_end(form) }}
+</div>
+{% endblock %}

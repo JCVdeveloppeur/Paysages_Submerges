@@ -8,6 +8,7 @@ use App\Entity\Like;
 use App\Entity\User;
 use App\Repository\ArticleRepository;
 use App\Repository\CommentaireRepository;
+use App\Repository\EspeceRepository;
 use App\Repository\LikeRepository;
 use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -20,41 +21,51 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 class AdminController extends AbstractController
 {
+    #[Route('/admin', name: 'admin_index')]
+    #[IsGranted('ROLE_ADMIN')]
+    public function index(): Response
+    {
+        // Redirige simplement vers le dashboard (ou une vue personnalisée si souhaité plus tard)
+        return $this->redirectToRoute('admin_dashboard');
+    }
+
     #[Route('/admin/dashboard', name: 'admin_dashboard')]
     #[IsGranted('ROLE_ADMIN')]
     public function dashboard(
-        ArticleRepository $articleRepository,
-        UserRepository $userRepository,
-        CommentaireRepository $commentaireRepository,
-        LikeRepository $likeRepository
+    ArticleRepository $articleRepository,
+    UserRepository $userRepository,
+    CommentaireRepository $commentaireRepository,
+    LikeRepository $likeRepository,
+    EspeceRepository $especeRepository // 👈 ajoute cette ligne
     ): Response {
-        $aujourdHui = new \DateTimeImmutable('today');
-        $labels = [];
-        $commentairesParJour = [];
-        $likesParJour = [];
+    $aujourdHui = new \DateTimeImmutable('today');
+    $labels = [];
+    $commentairesParJour = [];
+    $likesParJour = [];
 
-        for ($i = 6; $i >= 0; $i--) {
-            $date = (new \DateTimeImmutable('today'))->modify("-{$i} days");
-            $labels[] = $date->format('d/m');
-            $commentairesParJour[] = $commentaireRepository->countCommentairesDepuis($date->setTime(0, 0));
-            $likesParJour[] = $likeRepository->countLikesDepuis($date->setTime(0, 0));
-        }
+    for ($i = 6; $i >= 0; $i--) {
+        $date = (new \DateTimeImmutable('today'))->modify("-{$i} days");
+        $labels[] = $date->format('d/m');
+        $commentairesParJour[] = $commentaireRepository->countCommentairesDepuis($date->setTime(0, 0));
+        $likesParJour[] = $likeRepository->countLikesDepuis($date->setTime(0, 0));
+    }
 
-        return $this->render('admin/dashboard.html.twig', [
-            'nombreArticles' => $articleRepository->count([]),
-            'articlesEnAttente' => $articleRepository->count(['estApprouve' => false]),
-            'nombreUtilisateurs' => $userRepository->count([]),
-            'utilisateursActifs' => $userRepository->countUsersActifsDerniersJours(7),
-            'utilisateursInactifs' => $userRepository->countUsersInactifsDerniersJours(7),
-            'nombreCommentaires' => $commentaireRepository->count([]),
-            'nombreLikes' => $likeRepository->count([]),
-            'commentairesAujourdHui' => $commentaireRepository->countCommentairesDepuis($aujourdHui),
-            'likesAujourdHui' => $likeRepository->countLikesDepuis($aujourdHui),
-            'commentaires7Jours' => $commentaireRepository->countCommentairesDerniersJours(7),
-            'likes7Jours' => $likeRepository->countLikesDerniersJours(7),
-            'jours' => $labels,
-            'commentairesParJour' => $commentairesParJour,
-            'likesParJour' => $likesParJour,
+    return $this->render('admin/dashboard.html.twig', [
+        'nombreArticles' => $articleRepository->count([]),
+        'articlesEnAttente' => $articleRepository->count(['estApprouve' => false]),
+        'nombreUtilisateurs' => $userRepository->count([]),
+        'utilisateursActifs' => $userRepository->countUsersActifsDerniersJours(7),
+        'utilisateursInactifs' => $userRepository->countUsersInactifsDerniersJours(7),
+        'nombreCommentaires' => $commentaireRepository->count([]),
+        'nombreLikes' => $likeRepository->count([]),
+        'nombreEspeces' => $especeRepository->count([]), // 👈 compteur ajouté
+        'commentairesAujourdHui' => $commentaireRepository->countCommentairesDepuis($aujourdHui),
+        'likesAujourdHui' => $likeRepository->countLikesDepuis($aujourdHui),
+        'commentaires7Jours' => $commentaireRepository->countCommentairesDerniersJours(7),
+        'likes7Jours' => $likeRepository->countLikesDerniersJours(7),
+        'jours' => $labels,
+        'commentairesParJour' => $commentairesParJour,
+        'likesParJour' => $likesParJour,
     ]);
 
     }
@@ -120,6 +131,7 @@ class AdminController extends AbstractController
     {
     $pseudo = $request->query->get('pseudo');
     $role = $request->query->get('role');
+    $limit = $request->query->getInt('limit', 5);
     $sevenDaysAgo = (new \DateTimeImmutable())->modify('-7 days');
 
     $qb = $userRepository->createQueryBuilder('u');
@@ -143,14 +155,15 @@ class AdminController extends AbstractController
     $qb->orderBy('u.pseudo', 'ASC');
 
     $pagination = $paginator->paginate(
-        $qb,
+        $qb->getQuery(),
         $request->query->getInt('page', 1),
-        10
+        $limit
     );
 
     return $this->render('admin/users/index.html.twig', [
         'users' => $pagination,
         'sevenDaysAgo' => $sevenDaysAgo,
+        'limit' => $limit,
     ]);
     }
 
@@ -238,7 +251,25 @@ class AdminController extends AbstractController
 
     return $this->redirectToRoute('admin_users');
     }
+    #[Route('/admin/especes', name: 'admin_especes')]
+    #[IsGranted('ROLE_ADMIN')]
+    public function adminEspeces(EspeceRepository $especeRepository, Request $request, PaginatorInterface $paginator): Response
+    {
+        $query = $especeRepository->createQueryBuilder('e')
+            ->orderBy('e.nomCommun', 'ASC')
+            ->getQuery();
 
+        $especes = $paginator->paginate(
+            $query,
+            $request->query->getInt('page', 1),
+            10
+        );
+
+        return $this->render('admin/espece/admin.html.twig', [
+            'especes' => $especes,
+            'nombreEspeces' => $especeRepository->count([]),
+        ]);
+    }
 }
 
 

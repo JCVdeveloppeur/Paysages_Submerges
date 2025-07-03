@@ -1,0 +1,63 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Ajouter une espèce{% endblock %}
+
+{% block body %}
+<div class="container mt-5">
+    <h1 class="mb-4">Nouvelle espèce</h1>
+
+    {{ form_start(form) }}
+        <div class="row g-3">
+
+            {# Nom commun #}
+            <div class="col-md-6">
+                {{ form_label(form.nomCommun) }}
+                {{ form_widget(form.nomCommun, {'attr': {'class': 'form-control'}}) }}
+                {{ form_errors(form.nomCommun) }}
+            </div>
+
+            {# Nom scientifique #}
+            <div class="col-md-6">
+                {{ form_label(form.nomScientifique) }}
+                {{ form_widget(form.nomScientifique, {'attr': {'class': 'form-control'}}) }}
+                {{ form_errors(form.nomScientifique) }}
+            </div>
+
+            {# Type et Biotope #}
+            <div class="col-md-6">
+                {{ form_label(form.typeEspece) }}
+                {{ form_widget(form.typeEspece, {'attr': {'class': 'form-select'}}) }}
+                {{ form_errors(form.typeEspece) }}
+            </div>
+            <div class="col-md-6">
+                {{ form_label(form.biotope) }}
+                {{ form_widget(form.biotope, {'attr': {'class': 'form-control'}}) }}
+                {{ form_errors(form.biotope) }}
+            </div>
+
+            {# Description physique #}
+            <div class="col-md-12">
+                {{ form_label(form.descriptionPhysique) }}
+                {{ form_widget(form.descriptionPhysique, {'attr': {'class': 'form-control', 'rows': '3'}}) }}
+                {{ form_errors(form.descriptionPhysique) }}
+            </div>
+
+            {# Image #}
+            <div class="col-md-12">
+                {{ form_label(form.image) }}
+                {{ form_widget(form.image, {'attr': {'class': 'form-control'}}) }}
+                {{ form_errors(form.image) }}
+            </div>
+
+            {# Autres champs (ajustables plus tard) #}
+            {# Tu peux ajouter d'autres champs de la même manière ici #}
+
+        </div>
+
+        <div class="mt-4 d-flex justify-content-between">
+            <a href="{{ path('espece_index') }}" class="btn btn-secondary">Retour à la liste</a>
+            <button class="btn btn-primary">Enregistrer</button>
+        </div>
+    {{ form_end(form) }}
+</div>
+{% endblock %}

@@ -11,6 +11,8 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Lato&family=Merriweather&family=Roboto&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+    <link href="https://fonts.googleapis.com/css2?family=Caveat&display=swap" rel="stylesheet">
+
 
     {% block stylesheets %}
         {{ encore_entry_link_tags('app') }}
@@ -30,7 +32,9 @@
         <div class="collapse navbar-collapse" id="navbarContent">
             <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                 <li class="nav-item"><a class="nav-link text-white" href="{{ path('app_articles') }}">Articles</a></li>
-                <li class="nav-item"><a class="nav-link text-white" href="#">Espèces</a></li>
+                <li class="nav-item">
+    <a class="nav-link text-white" href="{{ path('espece_public_index') }}">Espèces</a>
+                </li>
             </ul>
 
             <ul class="navbar-nav">
@@ -122,9 +126,21 @@
 {% block javascripts %}
 
     {{ encore_entry_script_tags('app') }}
-
+    
 {% endblock %}
 
+<svg width="0" height="0">
+  <defs>
+    <mask id="stamp-mask" x="0" y="0" width="100%" height="100%" maskUnits="userSpaceOnUse">
+      <rect x="0" y="0" width="100%" height="100%" fill="white"/>
+      {% for x in 0..20 %}
+        {% for y in 0..25 %}
+          <circle cx="{{ x * 15 }}" cy="{{ y * 15 }}" r="4" fill="black"/>
+        {% endfor %}
+      {% endfor %}
+    </mask>
+  </defs>
+</svg>
 
 </body>
 </html>

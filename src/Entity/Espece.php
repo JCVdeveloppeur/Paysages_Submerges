@@ -1,5 +1,5 @@
 <?php
-// Existant
+
 namespace App\Entity;
 
 use App\Repository\EspeceRepository;
@@ -74,6 +74,9 @@ class Espece
 
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $image = null;
+    
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $dureeVie = null;
     
 
     public function getId(): ?int
@@ -320,18 +323,17 @@ class Espece
 
         return $this;
     }
-    #[ORM\Column(length: 255, nullable: true)]
-private ?string $dureeVie = null;
+    
 
-public function getDureeVie(): ?string
-{
+    public function getDureeVie(): ?string
+    {
     return $this->dureeVie;
-}
+    }
 
-public function setDureeVie(?string $dureeVie): static
-{
+    public function setDureeVie(?string $dureeVie): static
+    {
     $this->dureeVie = $dureeVie;
     return $this;
-}
+    }
 
-}
+    }
