@@ -131,6 +131,56 @@ class ArticleController extends AbstractController
 
                 $article->setImage($newFilename);
             }
+                $imageGaucheFile = $form->get('imageGauche')->getData();
+            if ($imageGaucheFile) {
+                $originalFilename = pathinfo($imageGaucheFile->getClientOriginalName(), PATHINFO_FILENAME);
+                $safeFilename = $slugger->slug($originalFilename);
+                $newFilename = $safeFilename . '-' . uniqid() . '.' . $imageGaucheFile->guessExtension();
+
+                try {
+                    $imageGaucheFile->move(
+                        $this->getParameter('kernel.project_dir') . '/public/uploads/articles',
+                        $newFilename
+                    );
+                    $article->setImageGauche($newFilename);
+                } catch (FileException $e) {
+                    $this->addFlash('danger', "Erreur lors de l'upload de l'image gauche.");
+                }
+            }
+
+            $imageDroiteFile = $form->get('imageDroite')->getData();
+            if ($imageDroiteFile) {
+                $originalFilename = pathinfo($imageDroiteFile->getClientOriginalName(), PATHINFO_FILENAME);
+                $safeFilename = $slugger->slug($originalFilename);
+                $newFilename = $safeFilename . '-' . uniqid() . '.' . $imageDroiteFile->guessExtension();
+
+                try {
+                    $imageDroiteFile->move(
+                        $this->getParameter('kernel.project_dir') . '/public/uploads/articles',
+                        $newFilename
+                    );
+                    $article->setImageDroite($newFilename);
+                } catch (FileException $e) {
+                    $this->addFlash('danger', "Erreur lors de l'upload de l'image droite.");
+                }
+            }
+
+            $imageHeaderFile = $form->get('imageHeader')->getData();
+            if ($imageHeaderFile) {
+                $originalFilename = pathinfo($imageHeaderFile->getClientOriginalName(), PATHINFO_FILENAME);
+                $safeFilename = $slugger->slug($originalFilename);
+                $newFilename = $safeFilename . '-' . uniqid() . '.' . $imageHeaderFile->guessExtension();
+
+                try {
+                    $imageHeaderFile->move(
+                        $this->getParameter('kernel.project_dir') . '/public/uploads/articles',
+                        $newFilename
+                    );
+                    $article->setImageHeader($newFilename);
+                } catch (FileException $e) {
+                    $this->addFlash('danger', "Erreur lors de l'upload de l'image d'en-tête.");
+                }
+            }
 
             $em->persist($article);
             $em->flush();
@@ -240,6 +290,57 @@ class ArticleController extends AbstractController
                     $this->addFlash('danger', "Erreur lors de l'upload de l'image.");
                 }
             }
+                    $imageGaucheFile = $form->get('imageGauche')->getData();
+                if ($imageGaucheFile) {
+                    $originalFilename = pathinfo($imageGaucheFile->getClientOriginalName(), PATHINFO_FILENAME);
+                    $safeFilename = $slugger->slug($originalFilename);
+                    $newFilename = $safeFilename . '-' . uniqid() . '.' . $imageGaucheFile->guessExtension();
+
+                    try {
+                        $imageGaucheFile->move(
+                            $this->getParameter('kernel.project_dir') . '/public/uploads/articles',
+                            $newFilename
+                        );
+                        $article->setImageGauche($newFilename);
+                    } catch (FileException $e) {
+                        $this->addFlash('danger', "Erreur lors de l'upload de l'image gauche.");
+                    }
+                    }
+
+                $imageDroiteFile = $form->get('imageDroite')->getData();
+                if ($imageDroiteFile) {
+                    $originalFilename = pathinfo($imageDroiteFile->getClientOriginalName(), PATHINFO_FILENAME);
+                    $safeFilename = $slugger->slug($originalFilename);
+                    $newFilename = $safeFilename . '-' . uniqid() . '.' . $imageDroiteFile->guessExtension();
+
+                    try {
+                        $imageDroiteFile->move(
+                            $this->getParameter('kernel.project_dir') . '/public/uploads/articles',
+                            $newFilename
+                        );
+                        $article->setImageDroite($newFilename);
+                    } catch (FileException $e) {
+                        $this->addFlash('danger', "Erreur lors de l'upload de l'image droite.");
+                    }
+
+                }
+                $imageHeaderFile = $form->get('imageHeader')->getData();
+                if ($imageHeaderFile) {
+                        $originalFilename = pathinfo($imageHeaderFile->getClientOriginalName(), PATHINFO_FILENAME);
+                        $safeFilename = $slugger->slug($originalFilename);
+                        $newFilename = $safeFilename . '-' . uniqid() . '.' . $imageHeaderFile->guessExtension();
+
+                        try {
+                            $imageHeaderFile->move(
+                                $this->getParameter('kernel.project_dir') . '/public/uploads/articles',
+                                $newFilename
+                            );
+                            $article->setImageHeader($newFilename);
+                        } catch (FileException $e) {
+                            $this->addFlash('danger', "Erreur lors de l'upload de l'image d'en-tête.");
+                        }
+                    }
+
 
             $em->flush();
 

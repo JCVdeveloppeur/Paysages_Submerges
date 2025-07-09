@@ -10,59 +10,47 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
-use Symfony\Component\HttpFoundation\File\Exception\FileException;
-use Symfony\Component\String\Slugger\SluggerInterface;
-
+use Knp\Component\Pager\PaginatorInterface;
 
 #[Route('/admin/especes')]
 class EspeceController extends AbstractController
 {
     #[Route('/', name: 'espece_index', methods: ['GET'])]
-    public function index(EspeceRepository $especeRepository): Response
-    {
-        return $this->render('espece/index.html.twig', [
-            'especes' => $especeRepository->findAll(),
-        ]);
-    }
+public function index(Request $request, EspeceRepository $especeRepository, PaginatorInterface $paginator): Response
+{
+    $query = $especeRepository->createQueryBuilder('e')
+        ->orderBy('e.nomCommun', 'ASC')
+        ->getQuery();
+
+    $pagination = $paginator->paginate(
+        $query,
+        $request->query->getInt('page', 1), // page courante
+        3 // nombre d'espèces par page
+    );
+
+    return $this->render('espece/index.html.twig', [
+        'pagination' => $pagination,
+    ]);
+}
 
     #[Route('/ajouter', name: 'espece_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, EntityManagerInterface $em, SluggerInterface $slugger): Response
+    public function new(Request $request, EntityManagerInterface $em): Response
     {
-    $espece = new Espece();
-    $form = $this->createForm(EspeceType::class, $espece);
-    $form->handleRequest($request);
+        $espece = new Espece();
+        $form = $this->createForm(EspeceType::class, $espece);
+        $form->handleRequest($request);
 
-    if ($form->isSubmitted() && $form->isValid()) {
-        $imageFile = $form->get('imageFile')->getData();
+        if ($form->isSubmitted() && $form->isValid()) {
+            $em->persist($espece);
+            $em->flush();
 
-        if ($imageFile) {
-            $originalFilename = pathinfo($imageFile->getClientOriginalName(), PATHINFO_FILENAME);
-            $safeFilename = $slugger->slug($originalFilename);
-            $newFilename = $safeFilename . '-' . uniqid() . '.' . $imageFile->guessExtension();
-
-            try {
-                $imageFile->move(
-                    $this->getParameter('kernel.project_dir') . '/public/uploads/especes',
-                    $newFilename
-                );
-            } catch (FileException $e) {
-                $this->addFlash('danger', 'Erreur lors de l\'upload de l\'image.');
-            }
-
-            $espece->setImage($newFilename);
+            $this->addFlash('success', 'Nouvelle espèce ajoutée avec succès !');
+            return $this->redirectToRoute('espece_index');
         }
 
-        $em->persist($espece);
-        $em->flush();
-
-        $this->addFlash('success', 'Nouvelle espèce ajoutée avec succès !');
-
-        return $this->redirectToRoute('espece_index');
-    }
-
         return $this->render('espece/new.html.twig', [
-        'form' => $form->createView(),
-    ]);
+            'form' => $form->createView(),
+        ]);
     }
 
 
@@ -75,54 +63,36 @@ class EspeceController extends AbstractController
     }
 
     #[Route('/{id}/modifier', name: 'espece_edit', methods: ['GET', 'POST'])]
-    public function edit(Request $request, Espece $espece, EntityManagerInterface $em, SluggerInterface $slugger): Response
+    public function edit(Request $request, Espece $espece, EntityManagerInterface $em): Response
     {
-    $form = $this->createForm(EspeceType::class, $espece);
-    $form->handleRequest($request);
+        $form = $this->createForm(EspeceType::class, $espece);
+        $form->handleRequest($request);
 
-    if ($form->isSubmitted() && $form->isValid()) {
-        $imageFile = $form->get('imageFile')->getData();
+        if ($form->isSubmitted() && $form->isValid()) {
+            $em->flush();
 
-        if ($imageFile) {
-            $originalFilename = pathinfo($imageFile->getClientOriginalName(), PATHINFO_FILENAME);
-            $safeFilename = $slugger->slug($originalFilename);
-            $newFilename = $safeFilename . '-' . uniqid() . '.' . $imageFile->guessExtension();
-
-            try {
-                $imageFile->move(
-                    $this->getParameter('kernel.project_dir') . '/public/uploads/especes',
-                    $newFilename
-                );
-            } catch (FileException $e) {
-                $this->addFlash('danger', 'Erreur lors de l\'upload de l\'image.');
-            }
-
-            $espece->setImage($newFilename);
+            $this->addFlash('success', 'Espèce modifiée avec succès.');
+            return $this->redirectToRoute('espece_index');
         }
 
-        $em->flush();
-        $this->addFlash('success', 'Espèce modifiée avec succès.');
-
-        return $this->redirectToRoute('espece_index');
-    }
-
-    return $this->render('espece/edit.html.twig', [
-        'form' => $form->createView(),
-        'espece' => $espece,
-    ]);
+        return $this->render('espece/edit.html.twig', [
+            'form' => $form->createView(),
+            'espece' => $espece,
+        ]);
     }
 
     #[Route('/{id}', name: 'espece_delete', methods: ['POST'])]
     public function delete(Request $request, Espece $espece, EntityManagerInterface $em): Response
     {
+        
         if ($this->isCsrfTokenValid('delete' . $espece->getId(), $request->request->get('_token'))) {
             $em->remove($espece);
             $em->flush();
-
             $this->addFlash('danger', 'Espèce supprimée.');
         }
 
         return $this->redirectToRoute('espece_index');
     }
 }
+
 

@@ -247,6 +247,100 @@ class Article
     $this->estApprouve = $estApprouve;
     return $this;
     }
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    private ?string $intro1 = null;
 
-}
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    private ?string $intro2 = null;
+
+    public function getIntro1(): ?string
+    {
+        return $this->intro1;
+    }
+
+    public function setIntro1(?string $intro1): static
+    {
+        $this->intro1 = $intro1;
+        return $this;
+    }
+
+    public function getIntro2(): ?string
+    {
+        return $this->intro2;
+    }
+
+    public function setIntro2(?string $intro2): static
+    {
+        $this->intro2 = $intro2;
+        return $this;
+    }
+    #[ORM\Column(length: 255, nullable: true)]
+private ?string $imageGauche = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $imageDroite = null;
+
+    public function getImageGauche(): ?string { return $this->imageGauche; }
+    public function setImageGauche(?string $imageGauche): static { $this->imageGauche = $imageGauche; return $this; }
+
+    public function getImageDroite(): ?string { return $this->imageDroite; }
+    public function setImageDroite(?string $imageDroite): static { $this->imageDroite = $imageDroite; return $this; }
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $legendeImageGauche = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $legendeImageDroite = null;
+
+    public function getLegendeImageGauche(): ?string
+    {
+        return $this->legendeImageGauche;
+    }
+
+    public function setLegendeImageGauche(?string $legendeImageGauche): self
+    {
+        $this->legendeImageGauche = $legendeImageGauche;
+        return $this;
+    }
+
+    public function getLegendeImageDroite(): ?string
+    {
+        return $this->legendeImageDroite;
+    }
+
+    public function setLegendeImageDroite(?string $legendeImageDroite): self
+    {
+        $this->legendeImageDroite = $legendeImageDroite;
+        return $this;
+    }
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $imageHeader = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $legendeImageHeader = null;
+
+    public function getImageHeader(): ?string
+    {
+        return $this->imageHeader;
+    }
+
+    public function setImageHeader(?string $imageHeader): static
+    {
+        $this->imageHeader = $imageHeader;
+        return $this;
+    }
+
+    public function getLegendeImageHeader(): ?string
+    {
+        return $this->legendeImageHeader;
+    }
+
+    public function setLegendeImageHeader(?string $legendeImageHeader): static
+    {
+        $this->legendeImageHeader = $legendeImageHeader;
+        return $this;
+    }
+
+    }
 

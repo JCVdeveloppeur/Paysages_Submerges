@@ -3,150 +3,199 @@
 {% block title %}{{ article.titre }}{% endblock %}
 
 {% block body %}
-<div class="article-show-page container py-5">
-    <div class="article-card mb-5">
+<div class="article-show-page"> {# Toute la page article, sans container ici #}
 
-        {% if article.image %}
-            <img src="{{ asset('uploads/articles/' ~ article.image) }}" alt="{{ article.titre }}" class="img-fluid mb-3">
+    {% if article.imageHeader %}
+        <section class="hero-header hero-zoom mb-4" data-bg="{{ asset('uploads/articles/' ~ article.imageHeader) }}">
+            <div class="hero-overlay d-flex justify-content-center align-items-center text-center">
+                <div>
+                    <h1 class="hero-title">{{ article.titre }}</h1>
+                    <span class="badge bg-primary">{{ article.categorie }}</span>
+                </div>
+            </div>
+        </section>
+
+        {% if article.legendeImageHeader %}
+            <div class="image-caption text-center mt-2">
+                <p class="text-muted small fst-italic">{{ article.legendeImageHeader }}</p>
+            </div>
         {% endif %}
+    {% endif %}
 
-        <h1>{{ article.titre }}</h1>
-        <span class="badge bg-primary">{{ article.categorie }}</span>
+    <div class="container py-5"> {# On commence le container ici seulement #}
 
-        <p class="mt-3">{{ article.contenu|raw }}</p>
-
-        <!-- Zone Like + Commentaires alignées -->
-        <div class="d-flex align-items-center gap-4 mt-4 mb-3">
-            <div class="position-relative">
-                <button
-                    class="like-button border-0 bg-transparent"
-                    data-article-id="{{ article.id }}"
-                    data-url="{{ path('app_like_toggle', {'id': article.id}) }}"
-                    style="font-size: 1.2rem;">
-                    <i class="bi bi-heart me-1"></i>
-                    <span class="like-count">{{ article.likes|length }}</span>
-                </button>
-                <div class="merci-message">Merci!</div>
-            </div>
-
-            <div class="text-muted">
-                <i class="bi bi-chat-left-text me-1"></i>{{ article.commentaires|length }} commentaire{{ article.commentaires|length > 1 ? 's' }}
-            </div>
-        </div>
-
-        <!-- Auteur -->
-        <div class="article-footer d-flex justify-content-between align-items-center text-muted flex-wrap">
-            <div class="d-flex align-items-center flex-wrap">
-                {% if article.user %}
-                    <span class="me-2">
-                        Rédigé par
-                        {% if article.user.pseudo is not empty %}
-                            <a href="{{ path('app_public_profile', {'pseudo': article.user.pseudo}) }}" class="fw-bold text-decoration-none">
-                                <i class="bi bi-person-circle me-1"></i>{{ article.user.pseudo }}
-                            </a>
-                        {% else %}
-                            <strong>{{ article.user.email }}</strong>
-                        {% endif %}
-                    </span>
-
-                    {% if article.user.articles|length >= 10 %}
-                        <span class="badge bg-warning text-dark ms-2" title="Auteur régulier">🌟</span>
-                    {% elseif article.user.articles|length >= 1 %}
-                        <span class="badge bg-info text-white ms-2" title="Auteur occasionnel">✍️</span>
-                    {% endif %}
-                {% else %}
-                    <span class="me-2">Rédigé par un auteur disparu</span>
-                {% endif %}
-            </div>
-        </div>
-    </div>
-
-    <hr>
-
-    <!-- Commentaires -->
-    <div class="comments-section mt-5">
-        <h3>💬 Commentaires</h3>
-
-        {% if commentaires is not empty %}
-            <div class="list-group mt-4">
-                {% for commentaire in commentaires %}
-                    <div class="list-group-item">
-                        <p class="mb-1">
-                            <strong>
-                                {% if commentaire.auteur %}
-                                    {{ commentaire.auteur.email }}
-                                {% else %}
-                                    Auteur supprimé
+        <div class="article-card mb-5">
+            <div class="article-content">
+                {% if article.imageGauche %}
+                    <div class="section-with-image my-5">
+                        <div class="image-container">
+                            <figure>
+                                <img src="{{ asset('uploads/articles/' ~ article.imageGauche) }}"
+                                     alt="Image gauche de {{ article.titre }}"
+                                     class="img-fluid rounded shadow">
+                                {% if article.legendeImageGauche %}
+                                    <figcaption class="text-muted small text-center mt-2">{{ article.legendeImageGauche }}</figcaption>
                                 {% endif %}
-                            </strong>
-                            <span class="text-muted small">le {{ commentaire.dateCommentaire|date('d/m/Y H:i') }}</span>
-                        </p>
-                        <p class="mb-0">{{ commentaire.contenu }}</p>
+                            </figure>
+                        </div>
+                        <div class="text-container">
+                            <p>{{ article.intro1|raw }}</p>
+                        </div>
                     </div>
-                {% endfor %}
+                {% endif %}
+
+                {% if article.imageDroite %}
+                    <div class="section-with-image reverse my-5">
+                        <div class="image-container">
+                            <figure>
+                                <img src="{{ asset('uploads/articles/' ~ article.imageDroite) }}"
+                                     alt="Image droite de {{ article.titre }}"
+                                     class="img-fluid rounded shadow">
+                                {% if article.legendeImageDroite %}
+                                    <figcaption class="text-muted small text-center mt-2">{{ article.legendeImageDroite }}</figcaption>
+                                {% endif %}
+                            </figure>
+                        </div>
+                        <div class="text-container">
+                            <p>{{ article.intro2|raw }}</p>
+                        </div>
+                    </div>
+                {% endif %}
+
+                <div class="advertisement-placeholder my-5 p-4 text-center bg-light border rounded">
+                    <p class="text-muted fst-italic">[Espace publicitaire réservé]</p>
+                </div>
+
+                <div class="full-text mt-5">
+                    <p>{{ article.contenu|raw }}</p>
+                </div>
             </div>
-        {% else %}
-            <p class="text-muted mt-3">Aucun commentaire pour cet article pour le moment.</p>
-        {% endif %}
-    </div>
 
-    <hr class="my-5">
+            <!-- Zone Like + Commentaires alignées -->
+            <div class="d-flex align-items-center gap-4 mt-4 mb-3">
+                <div class="position-relative">
+                    <button class="like-button border-0 bg-transparent"
+                            data-article-id="{{ article.id }}"
+                            data-url="{{ path('app_like_toggle', {'id': article.id}) }}">
+                        <i class="bi bi-heart me-1"></i>
+                        <span class="like-count">{{ article.likes|length }}</span>
+                    </button>
+                    <div class="merci-message">Merci!</div>
+                </div>
+                <div class="text-muted">
+                    <i class="bi bi-chat-left-text me-1"></i>{{ article.commentaires|length }} commentaire{{ article.commentaires|length > 1 ? 's' }}
+                </div>
+            </div>
 
-    <!-- Formulaire de commentaire -->
-    <div class="card p-4 mt-4 shadow-sm">
-        <h4>📝 Laisser un commentaire</h4>
+            <!-- Auteur -->
+            <div class="article-footer d-flex justify-content-between align-items-center text-muted flex-wrap">
+                <div class="d-flex align-items-center flex-wrap">
+                    {% if article.user %}
+                        <span class="me-2">
+                            Rédigé par
+                            {% if article.user.pseudo is not empty %}
+                                <a href="{{ path('app_public_profile', {'pseudo': article.user.pseudo}) }}" class="fw-bold text-decoration-none">
+                                    <i class="bi bi-person-circle me-1"></i>{{ article.user.pseudo }}
+                                </a>
+                            {% else %}
+                                <strong>{{ article.user.email }}</strong>
+                            {% endif %}
+                        </span>
 
-        {{ form_start(commentaireForm) }}
-        <div class="mb-3">
-            {{ form_label(commentaireForm.contenu) }}
-            {{ form_widget(commentaireForm.contenu, {'attr': {'class': 'form-control'}}) }}
-            {{ form_errors(commentaireForm.contenu) }}
+                        {% if article.user.articles|length >= 10 %}
+                            <span class="badge bg-warning text-dark ms-2" title="Auteur régulier">🌟</span>
+                        {% elseif article.user.articles|length >= 1 %}
+                            <span class="badge bg-info text-white ms-2" title="Auteur occasionnel">✍️</span>
+                        {% endif %}
+                    {% else %}
+                        <span class="me-2">Rédigé par un auteur disparu</span>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <hr>
+
+        <!-- Commentaires -->
+        <div class="comments-section mt-5">
+            <h3>💬 Commentaires</h3>
+            {% if commentaires is not empty %}
+                <div class="list-group mt-4">
+                    {% for commentaire in commentaires %}
+                        <div class="list-group-item">
+                            <p class="mb-1">
+                                <strong>
+                                    {% if commentaire.auteur %}
+                                        {{ commentaire.auteur.email }}
+                                    {% else %}
+                                        Auteur supprimé
+                                    {% endif %}
+                                </strong>
+                                <span class="text-muted small">le {{ commentaire.dateCommentaire|date('d/m/Y H:i') }}</span>
+                            </p>
+                            <p class="mb-0">{{ commentaire.contenu }}</p>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <p class="text-muted mt-3">Aucun commentaire pour cet article pour le moment.</p>
+            {% endif %}
+        </div>
+
+        <hr class="my-5">
+
+        <!-- Formulaire de commentaire -->
+        <div class="card p-4 mt-4 shadow-sm">
+            <h4>📝 Laisser un commentaire</h4>
+            {{ form_start(commentaireForm) }}
+            <div class="mb-3">
+                {{ form_label(commentaireForm.contenu) }}
+                {{ form_widget(commentaireForm.contenu, {'attr': {'class': 'form-control'}}) }}
+                {{ form_errors(commentaireForm.contenu) }}
+            </div>
+            {% if is_granted('IS_AUTHENTICATED_FULLY') %}
+                <div class="mb-3">
+                    {{ form_label(commentaireForm.dateCommentaire) }}
+                    {{ form_widget(commentaireForm.dateCommentaire, {'attr': {'class': 'form-control'}}) }}
+                    {{ form_errors(commentaireForm.dateCommentaire) }}
+                </div>
+                <div class="form-check mb-3">
+                    {{ form_widget(commentaireForm.approuve, {'attr': {'class': 'form-check-input'}}) }}
+                    {{ form_label(commentaireForm.approuve, null, {'label_attr': {'class': 'form-check-label'}}) }}
+                    {{ form_errors(commentaireForm.approuve) }}
+                </div>
+                <div class="mb-3">
+                    {{ form_label(commentaireForm.auteur) }}
+                    {{ form_widget(commentaireForm.auteur, {'attr': {'class': 'form-select'}}) }}
+                    {{ form_errors(commentaireForm.auteur) }}
+                </div>
+                <div class="mb-3">
+                    {{ form_label(commentaireForm.article) }}
+                    {{ form_widget(commentaireForm.article, {'attr': {'class': 'form-select'}}) }}
+                    {{ form_errors(commentaireForm.article) }}
+                </div>
+            {% endif %}
+            <button type="submit" class="btn btn-primary">💬 Publier</button>
+            {{ form_end(commentaireForm) }}
+        </div>
+
+        <div class="text-center mt-4">
+            <a href="{{ path('app_articles') }}" class="btn btn-secondary">← Retour aux articles</a>
         </div>
 
         {% if is_granted('IS_AUTHENTICATED_FULLY') %}
-            <div class="mb-3">
-                {{ form_label(commentaireForm.dateCommentaire) }}
-                {{ form_widget(commentaireForm.dateCommentaire, {'attr': {'class': 'form-control'}}) }}
-                {{ form_errors(commentaireForm.dateCommentaire) }}
-            </div>
-
-            <div class="form-check mb-3">
-                {{ form_widget(commentaireForm.approuve, {'attr': {'class': 'form-check-input'}}) }}
-                {{ form_label(commentaireForm.approuve, null, {'label_attr': {'class': 'form-check-label'}}) }}
-                {{ form_errors(commentaireForm.approuve) }}
-            </div>
-
-            <div class="mb-3">
-                {{ form_label(commentaireForm.auteur) }}
-                {{ form_widget(commentaireForm.auteur, {'attr': {'class': 'form-select'}}) }}
-                {{ form_errors(commentaireForm.auteur) }}
-            </div>
-
-            <div class="mb-3">
-                {{ form_label(commentaireForm.article) }}
-                {{ form_widget(commentaireForm.article, {'attr': {'class': 'form-select'}}) }}
-                {{ form_errors(commentaireForm.article) }}
+            <div class="text-center mt-2">
+                <a href="{{ path('app_profile') }}" class="btn btn-outline-primary">
+                    👤 Retour à mon profil
+                </a>
             </div>
         {% endif %}
 
-        <button type="submit" class="btn btn-primary">💬 Publier</button>
-        {{ form_end(commentaireForm) }}
-    </div>
-
-    <!-- Liens de navigation -->
-    <div class="text-center mt-4">
-        <a href="{{ path('app_articles') }}" class="btn btn-secondary">← Retour aux articles</a>
-    </div>
-
-    {% if is_granted('IS_AUTHENTICATED_FULLY') %}
-        <div class="text-center mt-2">
-            <a href="{{ path('app_profile') }}" class="btn btn-outline-primary">
-                👤 Retour à mon profil
-            </a>
-        </div>
-    {% endif %}
-</div>
+    </div> {# Fin du container #}
+</div> {# Fin de .article-show-page #}
 {% endblock %}
+
+
 
 
 

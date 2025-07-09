@@ -123,11 +123,28 @@
     </small>
 </footer>
 
-{% block javascripts %}
-
+    {% block javascripts %}
     {{ encore_entry_script_tags('app') }}
-    
-{% endblock %}
+    <script>
+        document.addEventListener("scroll", () => {
+            const hero = document.querySelector(".hero-zoom");
+            if (!hero) return;
+
+            const scrolled = window.scrollY;
+            const zoomLevel = 100 + scrolled * 0.02;
+
+            hero.style.backgroundSize = `${zoomLevel}%`;
+        });
+
+        document.addEventListener("DOMContentLoaded", () => {
+            const hero = document.querySelector(".hero-zoom");
+            if (hero && hero.dataset.bg) {
+                hero.style.backgroundImage = `url('${hero.dataset.bg}')`;
+            }
+        });
+    </script>
+    {% endblock %}
+
 
 <svg width="0" height="0">
   <defs>

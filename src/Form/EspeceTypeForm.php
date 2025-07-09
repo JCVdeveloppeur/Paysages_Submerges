@@ -12,6 +12,8 @@ use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\File;
+use Vich\UploaderBundle\Form\Type\VichImageType;
+
 
 class EspeceType extends AbstractType
 {
@@ -108,22 +110,17 @@ class EspeceType extends AbstractType
                 'label' => 'Durée de vie',
                 'required' => false,
             ])
-            ->add('imageFile', FileType::class, [
+            ->add('imageFile', VichImageType::class, [
                 'label' => 'Image de l\'espèce',
-                'mapped' => false,
                 'required' => false,
-                'constraints' => [
-                    new File([
-                        'maxSize' => '2M',
-                        'mimeTypes' => ['image/jpeg', 'image/png', 'image/webp'],
-                        'mimeTypesMessage' => 'Merci d\'envoyer une image valide (JPEG, PNG ou WEBP)',
-                    ]),
-                ],
+                'allow_delete' => false,
+                'download_uri' => false,
             ]);
-    }
 
-    public function configureOptions(OptionsResolver $resolver): void
-    {
+            }
+
+            public function configureOptions(OptionsResolver $resolver): void
+            {
         $resolver->setDefaults([
             'data_class' => Espece::class,
         ]);

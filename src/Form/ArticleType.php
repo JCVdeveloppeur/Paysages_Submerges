@@ -28,8 +28,49 @@ class ArticleType extends AbstractType
     {
         $builder
             ->add('titre', TextType::class, [
-                'label' => 'Titre de l’article'
+                'label' => 'Titre de l\'article'
             ])
+            ->add('imageHeader', FileType::class, [
+                'label' => 'Image d\'en-tête',
+                'mapped' => false, 
+                'required' => false,
+            ])
+
+            ->add('legendeImageHeader', TextType::class, [
+                'label' => 'Légende de l’image d’en-tête',
+                'required' => false,
+            ])
+
+            ->add('intro1', TextareaType::class, [
+                'label' => 'Introduction (image gauche)',
+                'required' => false,
+                'attr' => ['rows' => 5]
+            ])
+            ->add('intro2', TextareaType::class, [
+                'label' => 'Introduction (image droite)',
+                'required' => false,
+                'attr' => ['rows' => 5]
+            ])
+            ->add('imageGauche', FileType::class, [
+                'label' => 'Image illustrant l’intro gauche',
+                'mapped' => false,
+                'required' => false
+            ])
+            ->add('imageDroite', FileType::class, [
+                'label' => 'Image illustrant l’intro droite',
+                'mapped' => false,
+                'required' => false
+            ])
+            ->add('legendeImageGauche', TextType::class, [
+                'label' => 'Légende image gauche',
+                'required' => false,
+            ])
+
+            ->add('legendeImageDroite', TextType::class, [
+                'label' => 'Légende image droite',
+                'required' => false,
+            ])
+
             ->add('contenu', TextareaType::class, [
                 'label' => 'Contenu',
                 'attr' => ['rows' => 10]
@@ -59,7 +100,7 @@ class ArticleType extends AbstractType
         if ($this->security->isGranted('ROLE_ADMIN')) {
             $builder->add('user', EntityType::class, [
                 'class' => User::class,
-                'choice_label' => 'email', // ou 'pseudo' si tu préfères
+                'choice_label' => 'email', // ou 'pseudo'
                 'label' => 'Auteur de l’article',
                 'required' => false,
                 'placeholder' => 'Sélectionnez un auteur',
