@@ -1,9 +1,11 @@
 {% extends 'base.html.twig' %}
 
+{% set body_class = 'degrade-aquatique-body' %}
+
 {% block title %}Liste des espèces{% endblock %}
 
 {% block body %}
-<div class="container mt-5">
+<div class="container degrade-bloc mt-5">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h1 class="h3">Toutes les espèces</h1>
         <a href="{{ path('espece_new') }}" class="btn btn-success">+ Ajouter une espèce</a>

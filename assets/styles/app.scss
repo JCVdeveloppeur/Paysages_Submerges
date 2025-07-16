@@ -12,6 +12,8 @@
 @use "like";
 @use "commentaire";
 @use "admin_dashboard";
+@use"pages/conditions";
+
 
 // Global reset
 html, body {
@@ -30,13 +32,21 @@ body.article-show-body {
   }
 }
 
-// Pour les autres pages, appliquer le fond bleu profond
-body:not(.article-show-body) {
+body:not(.article-show-body):not(.degrade-aquatique-body) {
   background-color: vars.$bleu-profond;
 
   > * {
     background-color: vars.$bleu-profond;
   }
+}
+
+body.degrade-aquatique-body {
+  background: vars.$degrade-aquatique;
+  background-attachment: fixed;
+  background-repeat: no-repeat;
+  background-size: cover;
+  color: #fff;
+  transition: background 0.8s ease;
 }
 
 .main-content {
@@ -102,3 +112,22 @@ button, .btn {
 * {
     box-sizing: border-box;
 }
+
+// Conteneurs sur fond clair
+.card, .container, .content-wrapper {
+  background-color: #ffffff;
+  border-radius: 0.75rem;
+  padding: 1rem;
+  color: #000;
+}
+
+// Optionnel : Conteneur spécifique pour le dégradé
+.container.degrade-bloc {
+  background-color: rgba(255, 255, 255, 0.95);
+  color: #000;
+  padding: 2rem;
+  border-radius: 1rem;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.05);
+}
+
+

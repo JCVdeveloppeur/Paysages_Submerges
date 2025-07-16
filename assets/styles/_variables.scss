@@ -32,8 +32,10 @@ $font-boutons:       'Roboto', sans-serif;
 $transition-douce:   all 0.3s ease;
 
 // --------------------------------------------------
-// Autres variables utiles (si besoin plus tard)
+// Autres variables utiles 
 // --------------------------------------------------
+ 
+$degrade-aquatique: linear-gradient(to bottom, #041f3d, #0a3b59, #0f5e6f, #1b7f83, #29a09a);
 
 // Alertes ou messages flash
 

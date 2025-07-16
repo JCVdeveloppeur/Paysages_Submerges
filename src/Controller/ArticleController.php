@@ -16,9 +16,21 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use Symfony\Component\String\Slugger\SluggerInterface;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
 class ArticleController extends AbstractController
 {
+    #[Route('/article/conditions', name: 'article_conditions')]
+    public function conditions(Request $request): Response
+    {
+        if ($request->isMethod('POST') && $request->request->get('accept_conditions')) {
+            $request->getSession()->set('hasAcceptedConditions', true);
+            return $this->redirectToRoute('article_create');
+        }
+
+        return $this->render('article/conditions.html.twig');
+    }
+
     #[Route('/articles', name: 'app_articles')]
     public function index(Request $request, ArticleRepository $articleRepository): Response
     {
@@ -26,10 +38,7 @@ class ArticleController extends AbstractController
         $auteurId = $request->query->get('auteur');
 
         if ($auteurId) {
-            $articles = $articleRepository->findBy(
-                ['user' => $auteurId],
-                ['createdAt' => 'DESC']
-            );
+            $articles = $articleRepository->findBy(['user' => $auteurId], ['createdAt' => 'DESC']);
         } elseif ($searchTerm) {
             $articles = $articleRepository->createQueryBuilder('a')
                 ->where('a.titre LIKE :searchTerm OR a.contenu LIKE :searchTerm')
@@ -98,12 +107,18 @@ class ArticleController extends AbstractController
     }
 
     #[Route('/articles/creer', name: 'article_create')]
-    public function create(Request $request, EntityManagerInterface $em, SluggerInterface $slugger): Response
+public function create(Request $request, EntityManagerInterface $em, SluggerInterface $slugger, SessionInterface $session): Response
     {
         if (!$this->getUser()) {
             $this->addFlash('info', 'Connecte-toi pour rédiger un article ! 🖊️');
             return $this->redirectToRoute('app_login');
         }
+        // 🚨 Vérifie si les conditions ont été acceptées
+    if (!$session->get('hasAcceptedConditions')) {
+        $this->addFlash('warning', 'Merci de lire et accepter les conditions avant de rédiger un article.');
+        return $this->redirectToRoute('article_conditions');
+    }
+        $session->remove('hasAcceptedConditions'); // Facultatif, pour ne pas garder l'autorisation trop longtemps
 
         $article = new Article();
         $form = $this->createForm(ArticleType::class, $article);
@@ -366,6 +381,7 @@ class ArticleController extends AbstractController
 
         return $this->redirectToRoute('app_articles');
     }
+
 }
 
 

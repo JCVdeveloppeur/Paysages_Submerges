@@ -1,0 +1,43 @@
+{# templates/article/conditions.html.twig #}
+{% extends 'base.html.twig' %}
+
+{% block title %}Conditions de rédaction{% endblock %}
+
+{% block body %}
+<div class="container my-5">
+    <h1 class="mb-4 text-center">📜 Conditions de rédaction</h1>
+
+    <div class="alert alert-info">
+        Avant toute rédaction d'un article, nous vous remercions de respecter impérativement les règles suivantes :
+    </div>
+
+    <ul class="list-group mb-4">
+        <li class="list-group-item">✅ L'article doit être en lien avec l'aquariophilie ou les biotopes aquatiques.</li>
+        <li class="list-group-item">🚫 Aucun contenu injurieux, politique, religieux ou discriminatoire ne sera toléré.</li>
+        <li class="list-group-item">🖋️ Utilisez un ton clair, pédagogique, et sourcé si nécessaire.</li>
+        <li class="list-group-item">📷 Les images doivent être libres de droits ou vous appartenir.</li>
+        <li class="list-group-item">🔎 Tous les articles sont modérés avant publication.</li>
+    </ul>
+
+    <form method="post">
+        <div class="form-check mb-4">
+            <input 
+                class="form-check-input" 
+                type="checkbox" 
+                id="accept_conditions" 
+                name="accept_conditions" 
+                value="1" 
+                required
+            >
+            <label class="form-check-label" for="accept_conditions">
+                J'ai lu et j'accepte les conditions de rédaction
+            </label>
+        </div>
+
+        <button type="submit" class="btn btn-primary">
+            ✍️ Commencer la rédaction
+        </button>
+    </form>
+</div>
+{% endblock %}
+

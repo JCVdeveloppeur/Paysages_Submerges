@@ -3,24 +3,22 @@
 {% block title %}Toutes les espèces{% endblock %}
 
 {% block body %}
-<div class="container my-5">
+    <div class="container my-5">
     <h1 class="mb-4 text-center">🌿 Encyclopédie des espèces</h1>
 
     {# --- Formulaire de recherche --- #}
-    <div class="row justify-content-center mb-4">
-        <div class="col-md-6">
-            {{ form_start(form, {'method': 'GET'}) }}
-                <div class="input-group">
-                    {{ form_widget(form.nom, {
-                        'attr': {
-                            'class': 'form-control',
-                            'placeholder': 'Rechercher une espèce (nom, biotope, etc.)'
-                        }
-                    }) }}
-                    <button class="btn btn-outline-success" type="submit">🔍 Rechercher</button>
-                </div>
-            {{ form_end(form) }}
-        </div>
+    <div class="row justify-content-center mb-4 bloc-recherche-espece">
+    <div class="col-md-6">
+        {{ form_start(form, {'method': 'GET', 'attr': {'id': 'recherche-espece-form'}}) }}
+            {{ form_widget(form.nom, {
+                'attr': {
+                    'class': 'form-control',
+                    'placeholder': '🔍 Rechercher une espèce…',
+                    'onchange': 'this.form.submit();'
+                }
+            }) }}
+        {{ form_end(form) }}
+    </div>
     </div>
 
     {# --- Résultats --- #}
@@ -59,6 +57,24 @@
     {% endif %}
 </div>
 {% endblock %}
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const input = document.querySelector("#{{ form.nom.vars.id }}");
+            const form = document.querySelector("#recherche-espece-form");
+
+            if (input && form) {
+                input.addEventListener("input", () => {
+                    if (input.value.trim() === "") {
+                        form.submit();
+                    }
+                });
+            }
+        });
+    </script>
+{% endblock %}
+
 
 
 
