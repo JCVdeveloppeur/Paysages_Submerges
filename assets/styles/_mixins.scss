@@ -1,0 +1,44 @@
+
+// Mixin pour les styles communs aux badges de catégorie
+@mixin badge-style($start-color, $end-color) {
+  background: linear-gradient(45deg, $start-color, $end-color);
+  color: #fff;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+
+  &:hover {
+    transform: scale(1.1);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  }
+}
+
+.badge {
+  font-size: 0.85rem;
+  padding: 0.4em 0.6em;
+  border-radius: 1rem;
+  transition: transform 0.2s, box-shadow 0.2s;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4em;
+}
+
+// Styles spécifiques à chaque biotope
+.badge-amerique-sud {
+  @include badge-style(#6b8e23, #556b2f); // Vert forêt amazonienne
+}
+
+.badge-asiatique {
+  @include badge-style(#20b2aa, #008b8b); // Turquoise asiatique, eau claire
+}
+
+.badge-africain {
+  @include badge-style(#c2b280, #a0522d); // Sable du désert, terre sèche
+}
+
+.badge-australien {
+  @include badge-style(#ffa07a, #ff4500); // Corail, récif australien
+}
+
+.badge-autre {
+  @include badge-style(#708090, #2f4f4f); // Gris ardoise, roche
+}

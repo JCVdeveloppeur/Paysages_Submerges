@@ -5,9 +5,9 @@
 {% block body %}
 <section class="section-articles py-6 bg-light">
     <div class="container">
-        <h1 class="mb-2 text-center">Nos derniers articles</h1>
+        <h1 class="mb-2 text-center">Tous nos articles</h1>
         <p class="lead text-center mb-5">
-            Explorez les secrets des biotopes aquatiques et laissez-vous émerveiller par la diversité sous-marine.
+            Laissez-vous émerveiller par la diversité sous-marine.
         </p>
 
         {% if searchTerm is defined and searchTerm %}
@@ -16,71 +16,85 @@
             </div>
         {% endif %}
 
-        <div class="row" id="articles-list">
-            {% if articles is not empty %}
-                {% for article in articles %}
-                    <div class="col-md-4 mb-4">
-                        <div class="card h-100 shadow-sm">
-                            {% if article.image %}
-                                <img src="{{ asset('uploads/articles/' ~ article.image) }}" class="card-img-top" alt="{{ article.titre }}">
-                            {% else %}
-                                <img src="{{ asset('build/images/default-article.jpg') }}" class="card-img-top" alt="Image par défaut">
-                            {% endif %}
+        <div class="row">
+            <!-- Colonne principale (articles) -->
+            <div class="col-lg-9">
+                {% if articles is not empty %}
+                    <div class="row" id="articles-list">
+                        {% for article in articles %}
+                            <div class="col-md-6 col-xl-4 mb-4">
+                                <div class="card h-100 shadow-sm">
+                                    {% if article.image %}
+                                        <img src="{{ asset('uploads/articles/' ~ article.image) }}" class="card-img-top" alt="{{ article.titre }}">
+                        {% else %}
+                            {% set dossierCategorie = {
+                                'Biotope Amérique du sud': 'amerique-sud',
+                                'Biotope asiatique': 'asiatique',
+                                'Biotope africain': 'africain',
+                                'Biotope australien': 'australien',
+                                'Autre': 'autre'
+                            }[article.categorie] ?? 'autre' %}
 
-                            <div class="card-body">
-                                <h5 class="card-title">{{ article.titre }}</h5>
-                                {% set badgeClass = {
-                            'Biotope Amérique du sud': 'badge-amerique-sud',
-                            'Biotope asiatique': 'badge-asiatique',
-                            'Biotope africain': 'badge-africain',
-                            'Biotope australien': 'badge-australien',
-                            'Autre': 'badge-autre'
-                            }[article.categorie] ?? 'badge-autre' %}
+                {% set randomImage = random([1, 2, 3]) %}
+                <img src="{{ asset('build/images/defaults/articles/' ~ dossierCategorie ~ '/' ~ randomImage ~ '.jpg') }}"
+                    class="card-img-top"
+                    alt="Image par défaut pour {{ article.categorie }}">
+            {% endif %}
 
-                           <span class="badge {{ badgeClass }}">
-                            {% if article.categorie == 'Biotope Amérique du sud' %}🌱
-                            {% elseif article.categorie == 'Biotope asiatique' %}🌊
-                            {% elseif article.categorie == 'Biotope africain' %}🏜️
-                            {% elseif article.categorie == 'Biotope australien' %}🪸
-                            {% else %}🌍
-                            {% endif %}
-                            {{ article.categorie }}
-                            </span>
+                                    <div class="card-body">
+                                        <h5 class="card-title">{{ article.titre }}</h5>
 
+                                        {% set badgeClass = {
+                                            'Biotope Amérique du sud': 'badge-amerique-sud',
+                                            'Biotope asiatique': 'badge-asiatique',
+                                            'Biotope africain': 'badge-africain',
+                                            'Biotope australien': 'badge-australien',
+                                            'Autre': 'badge-autre'
+                                        }[article.categorie] ?? 'badge-autre' %}
 
-                                <p class="card-text">
-                                    {{ article.contenu|length > 100 ? article.contenu|slice(0, 100) ~ '...' : article.contenu }}
-                                </p>
+                                        <span class="badge {{ badgeClass }}">
+                                            {% if article.categorie == 'Biotope Amérique du sud' %}🌱
+                                            {% elseif article.categorie == 'Biotope asiatique' %}🌊
+                                            {% elseif article.categorie == 'Biotope africain' %}🏜️
+                                            {% elseif article.categorie == 'Biotope australien' %}🪸
+                                            {% else %}🌍
+                                            {% endif %}
+                                            {{ article.categorie }}
+                                        </span>
 
-                                <div class="d-flex flex-column gap-2 mt-3">
-                                    <a href="{{ path('article_show', {'id': article.id}) }}" class="btn btn-primary">Lire la suite</a>
+                                        <p class="card-text">
+                                            {{ article.contenu|length > 100 ? article.contenu|slice(0, 100) ~ '...' : article.contenu }}
+                                        </p>
 
-                                    {% if app.user %}
-                                        {% if is_granted('ROLE_ADMIN') %}
-                                            <a href="{{ path('article_edit', {'id': article.id}) }}" class="btn btn-outline-secondary">✏️ Modifier</a>
-                                            <form method="post" action="{{ path('article_delete', {'id': article.id}) }}" onsubmit="return confirm('Voulez-vous vraiment supprimer cet article ?');">
-                                                <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ article.id) }}">
-                                                <button class="btn btn-danger btn-sm">🗑 Supprimer</button>
-                                            </form>
-                                        {% elseif article.user == app.user and not article.estApprouve %}
-                                            <a href="{{ path('article_edit', {'id': article.id}) }}" class="btn btn-outline-secondary">✏️ Modifier</a>
-                                            <form method="post" action="{{ path('article_delete', {'id': article.id}) }}" onsubmit="return confirm('Voulez-vous vraiment supprimer cet article ?');">
-                                                <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ article.id) }}">
-                                                <button class="btn btn-danger btn-sm">🗑 Supprimer</button>
-                                            </form>
-                                        {% endif %}
-                                    {% endif %}
+                                        <div class="d-flex flex-column gap-2 mt-3">
+                                            <a href="{{ path('article_show', {'id': article.id}) }}" class="btn btn-primary">Lire la suite</a>
+
+                                            {% if app.user %}
+                                                {% if is_granted('ROLE_ADMIN') %}
+                                                    <a href="{{ path('article_edit', {'id': article.id}) }}" class="btn btn-outline-secondary">✏️ Modifier</a>
+                                                    <form method="post" action="{{ path('article_delete', {'id': article.id}) }}" onsubmit="return confirm('Voulez-vous vraiment supprimer cet article ?');">
+                                                        <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ article.id) }}">
+                                                        <button class="btn btn-danger btn-sm">🗑 Supprimer</button>
+                                                    </form>
+                                                {% elseif article.user == app.user and not article.estApprouve %}
+                                                    <a href="{{ path('article_edit', {'id': article.id}) }}" class="btn btn-outline-secondary">✏️ Modifier</a>
+                                                    <form method="post" action="{{ path('article_delete', {'id': article.id}) }}" onsubmit="return confirm('Voulez-vous vraiment supprimer cet article ?');">
+                                                        <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ article.id) }}">
+                                                        <button class="btn btn-danger btn-sm">🗑 Supprimer</button>
+                                                    </form>
+                                                {% endif %}
+                                            {% endif %}
+                                        </div>
+                                    </div>
+
+                                    <div class="card-footer text-muted">
+                                        Publié {{ article.createdAt|human_date }}
+                                    </div>
                                 </div>
                             </div>
-
-                            <div class="card-footer text-muted">
-                                Publié le {{ article.createdAt ? article.createdAt|date('d F Y') : 'Non publié' }}
-                            </div>
-                        </div>
+                        {% endfor %}
                     </div>
-                {% endfor %}
-            {% else %}
-                <div class="col-12">
+                {% else %}
                     <div class="alert alert-warning text-center">
                         {% if searchTerm is defined and searchTerm %}
                             Aucun article ne correspond à votre recherche « {{ searchTerm }} ».
@@ -88,12 +102,84 @@
                             Aucun article disponible pour le moment.
                         {% endif %}
                     </div>
+                {% endif %}
+            </div>
+
+            <!-- Sidebar -->
+            <div class="col-lg-3">
+                <div class="sticky-top" style="top: 100px;">
+                    <div class="mb-4 p-3 bg-white rounded shadow-sm">
+                        <h5 class="mb-3">🔔 Espace publicitaire</h5>
+                        <p>Votre publicité ici ? Contactez-nous.</p>
+                    </div>
+
+                    {# À venir : cartes derniers articles et lien aquascaping #}
+                    <div class="mb-4 p-3 bg-white rounded shadow-sm">
+    <h5 class="mb-3">🌿 Concours Aquascaping</h5>
+    <p>Découvrez le concour  d'aquascaping et de paysages aquatiques, des œuvres d'art vivantes !</p>
+    <a href="https://capa-aquascaping.fr/" class="btn btn-success btn-sm" target="_blank" rel="noopener noreferrer">
+        Voir les concours 🌍
+    </a>
+</div>
+{% if lastArticles is defined and lastArticles|length > 0 %}
+    <div class="mb-4 p-3 bg-white rounded shadow-sm">
+        <h5 class="mb-3">📰 Derniers articles publiés</h5>
+        {% set defaultImages = {
+            'Biotope Amérique du sud': ['sud1.jpg', 'sud2.jpg', 'sud3.jpg'],
+            'Biotope asiatique': ['asie1.jpg', 'asie2.jpg', 'asie3.jpg'],
+            'Biotope africain': ['afrique1.jpg', 'afrique2.jpg'],
+            'Biotope australien': ['australie1.jpg', 'australie2.jpg'],
+            'Autre': ['autre1.jpg', 'autre2.jpg']
+        } %}
+
+        {% for last in lastArticles|slice(0, 3) %}
+            {% set badgeClass = {
+                'Biotope Amérique du sud': 'badge-amerique-sud',
+                'Biotope asiatique': 'badge-asiatique',
+                'Biotope africain': 'badge-africain',
+                'Biotope australien': 'badge-australien',
+                'Autre': 'badge-autre'
+            }[last.categorie] ?? 'badge-autre' %}
+
+            {% set icon = {
+                'Biotope Amérique du sud': '🌱',
+                'Biotope asiatique': '🌊',
+                'Biotope africain': '🏜️',
+                'Biotope australien': '🪸',
+                'Autre': '🌍'
+            }[last.categorie] ?? '🌍' %}
+
+            {% set defaultImage = defaultImages[last.categorie]|default(['default.jpg'])|random_element %}
+
+            <a href="{{ path('article_show', {'id': last.id}) }}" class="text-decoration-none text-dark">
+                <div class="card mb-3">
+                    {% if last.image %}
+                        <img src="{{ asset('uploads/articles/' ~ last.image) }}" class="card-img-top" alt="{{ last.titre }}">
+                    {% else %}
+                        <img src="{{ asset('build/images/defaults/' ~ defaultImage) }}" class="card-img-top" alt="Image par défaut">
+                    {% endif %}
+                    <div class="card-body p-2">
+                        <h6 class="card-title mb-1" style="font-size: 0.95rem;">
+                            {{ last.titre|length > 40 ? last.titre|slice(0, 40) ~ '…' : last.titre }}
+                        </h6>
+                        <span class="badge {{ badgeClass }} mb-1 d-inline-block">
+                            {{ icon }} {{ last.categorie }}
+                        </span>
+                        <small class="text-muted d-block">{{ last.createdAt|human_date }}</small>
+                    </div>
                 </div>
-            {% endif %}
+            </a>
+        {% endfor %}
+    </div>
+{% endif %}
+
+                </div>
+            </div>
         </div>
     </div>
 </section>
 {% endblock %}
+
 
 
 

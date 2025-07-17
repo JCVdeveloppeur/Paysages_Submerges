@@ -58,11 +58,15 @@ class ArticleController extends AbstractController
             'Autre' => 'badge-autre',
         ];
 
-        return $this->render('article/index.html.twig', [
-            'articles' => $articles,
-            'badgeClasses' => $badgeClasses,
-            'searchTerm' => $searchTerm,
-        ]);
+        $lastArticles = $articleRepository->findBy([], ['createdAt' => 'DESC'], 3);
+
+    return $this->render('article/index.html.twig', [
+    'articles' => $articles,
+    'badgeClasses' => $badgeClasses,
+    'searchTerm' => $searchTerm,
+    'lastArticles' => $lastArticles, 
+]);
+
     }
 
     #[Route('/articles/test-badges', name: 'article_test_badges')]
@@ -108,18 +112,23 @@ class ArticleController extends AbstractController
 
     #[Route('/articles/creer', name: 'article_create')]
 public function create(Request $request, EntityManagerInterface $em, SluggerInterface $slugger, SessionInterface $session): Response
-    {
-        if (!$this->getUser()) {
-            $this->addFlash('info', 'Connecte-toi pour rédiger un article ! 🖊️');
-            return $this->redirectToRoute('app_login');
-        }
-        // 🚨 Vérifie si les conditions ont été acceptées
+{
+    if (!$this->getUser()) {
+        $this->addFlash('info', 'Connecte-toi pour rédiger un article ! 🖊️');
+        return $this->redirectToRoute('app_login');
+    }
+
+    // 🚨 Vérifie si les conditions ont été acceptées
     if (!$session->get('hasAcceptedConditions')) {
         $this->addFlash('warning', 'Merci de lire et accepter les conditions avant de rédiger un article.');
         return $this->redirectToRoute('article_conditions');
     }
-        $session->remove('hasAcceptedConditions'); // Facultatif, pour ne pas garder l'autorisation trop longtemps
 
+    // ✅ Affiche le message UNE SEULE FOIS après acceptation
+        if ($session->get('hasAcceptedConditions')) {
+            $this->addFlash('info', 'Tu peux maintenant rédiger ton article, les conditions sont bien acceptées.');
+            $session->remove('hasAcceptedConditions');
+        }
         $article = new Article();
         $form = $this->createForm(ArticleType::class, $article);
         $form->handleRequest($request);
@@ -196,9 +205,12 @@ public function create(Request $request, EntityManagerInterface $em, SluggerInte
                     $this->addFlash('danger', "Erreur lors de l'upload de l'image d'en-tête.");
                 }
             }
+           
 
             $em->persist($article);
             $em->flush();
+
+            $session->remove('hasAcceptedConditions'); // Facultatif, pour ne pas garder l'autorisation trop longtemps
 
             $this->addFlash('success', 'Article créé avec succès !');
             return $this->redirectToRoute('app_articles');
