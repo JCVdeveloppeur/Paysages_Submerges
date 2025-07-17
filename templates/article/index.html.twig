@@ -29,7 +29,25 @@
 
                             <div class="card-body">
                                 <h5 class="card-title">{{ article.titre }}</h5>
-                                <span class="badge bg-primary">{{ article.categorie }}</span>
+                                {% set badgeClass = {
+                            'Biotope Amérique du sud': 'badge-amerique-sud',
+                            'Biotope asiatique': 'badge-asiatique',
+                            'Biotope africain': 'badge-africain',
+                            'Biotope australien': 'badge-australien',
+                            'Autre': 'badge-autre'
+                            }[article.categorie] ?? 'badge-autre' %}
+
+                           <span class="badge {{ badgeClass }}">
+                            {% if article.categorie == 'Biotope Amérique du sud' %}🌱
+                            {% elseif article.categorie == 'Biotope asiatique' %}🌊
+                            {% elseif article.categorie == 'Biotope africain' %}🏜️
+                            {% elseif article.categorie == 'Biotope australien' %}🪸
+                            {% else %}🌍
+                            {% endif %}
+                            {{ article.categorie }}
+                            </span>
+
+
                                 <p class="card-text">
                                     {{ article.contenu|length > 100 ? article.contenu|slice(0, 100) ~ '...' : article.contenu }}
                                 </p>
