@@ -5,10 +5,10 @@ import './styles/app.scss';
 // Import Bootstrap JS avec Popper inclus (obligatoire pour dropdowns, modals, etc.)
 import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 
-// Import de ton fichier like.js (gestion des likes)
+// Import du fichier like.js (gestion des likes)
 import './like.js';
 
-// (Optionnel) Import de CSS pur si tu en as besoin
+// (Optionnel) Import de CSS pur 
 // import './styles/app.css';
 
 // Console de test

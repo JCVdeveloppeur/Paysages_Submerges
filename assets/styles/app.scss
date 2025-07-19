@@ -1,7 +1,9 @@
 
+// ----------------------
+// Chargement des dépendances (obligatoire en haut)
+// ----------------------
 @use "bootstrap/scss/bootstrap" as *;
-@use "variables" as vars;
-@use "accueil";
+@use "variables" as *;
 @use "article";
 @use "article_show";
 @use "badges";
@@ -15,6 +17,30 @@
 @use "admin_dashboard";
 @use "pages/conditions";
 @use "sidebar";
+@use "accueil"; 
+
+// ----------------------
+// Déclarations CSS
+// ----------------------
+
+html, body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Lato', sans-serif;
+}
+
+body.article-show-body {
+  background-color: #ffffff !important;
+
+  > * {
+    background-color: #ffffff !important;
+  }
+}
+
+// ... tout le reste comme tu l'avais (background, body, navbar, etc.)
+
 
 
 // Global reset
@@ -35,15 +61,15 @@ body.article-show-body {
 }
 
 body:not(.article-show-body):not(.degrade-aquatique-body) {
-  background-color: vars.$bleu-profond;
+  background-color: $bleu-profond;
 
   > * {
-    background-color: vars.$bleu-profond;
+    background-color: $bleu-profond;
   }
 }
 
 body.degrade-aquatique-body {
-  background: vars.$degrade-aquatique;
+  background: $degrade-aquatique;
   background-attachment: fixed;
   background-repeat: no-repeat;
   background-size: cover;
@@ -54,7 +80,7 @@ body.degrade-aquatique-body {
 .main-content {
     flex: 1;
     width: 100%;
-    background-color: vars.$crème-clair;
+    background-color:$crème-clair;
 }
 
 h1, h2, h3, h4 {
@@ -131,5 +157,12 @@ button, .btn {
   border-radius: 1rem;
   box-shadow: 0 0 20px rgba(0, 0, 0, 0.05);
 }
+.text-gradient-hover {
+  @include gradient-text-hover(#18c6c1, #1abc9c, #0ff, #18c6c1);
+}
+.text-gradient-feu {
+  @include gradient-text-hover(#ff9966, #ff5e62, #ff9966);
+}
+
 
 

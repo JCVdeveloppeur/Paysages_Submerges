@@ -1,0 +1,42 @@
+// -----------------------------------------------------------------------------
+// 📘 DOCUMENTATION INTERNE : UTILITAIRES ET MIXINS SCSS
+// Projet : Paysages Submergés
+// Auteur : Jean-Christophe 🐠
+// -----------------------------------------------------------------------------
+
+// 🎨 Mixin : badge-style
+// Utilisé pour les badges de biotope
+// Paramètres : $start-color (couleur de départ), $end-color (couleur de fin)
+//
+// Exemple :
+// .badge-asiatique {
+//   @include badge-style(#20b2aa, #008b8b);
+// }
+
+// 💫 Mixin : gradient-text-hover
+// Applique un texte transparent avec un fond en dégradé animé au hover
+// Paramètre(s) : $colors... (plusieurs couleurs pour le dégradé)
+//
+// Exemple d’inclusion directe :
+// .text-gradient-hover {
+//   @include gradient-text-hover(#18c6c1, #1abc9c, #0ff);
+// }
+//
+// HTML :
+// <span class="text-gradient-hover">Paysages Submergés</span>
+
+// 🔁 Classe utilitaire : .text-gradient-hover
+// Applique un effet de texte avec dégradé lumineux au survol
+//
+// À utiliser sur : titres, marques, logos ou boutons stylisés
+//
+// ⚠️ Attention : nécessite une compatibilité WebKit pour Chrome/Safari
+
+// 🎯 Conseil : Ajouter des variantes si besoin (ex. .text-gradient-feu, etc.)
+
+// 🧼 Bonnes pratiques :
+// - Regrouper les styles utilitaires dans `utilities.scss`
+// - Préfixer les mixins avec des noms explicites
+// - Centraliser les couleurs dans `_variables.scss`
+
+// 🧪 Testé sur : Chrome, Firefox, Edge

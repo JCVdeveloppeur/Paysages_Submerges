@@ -23,7 +23,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 const data = await response.json();
 
-                // 💡 Met à jour le HTML du bouton
+                // Met à jour le HTML du bouton
                 button.innerHTML = `
                     <i class="bi ${data.liked ? 'bi-heart-fill' : 'bi-heart'} me-1"></i>
                     <span class="like-count">${data.likeCount}</span>
@@ -35,10 +35,10 @@ document.addEventListener('DOMContentLoaded', () => {
     button.classList.add('liked');
     icon.classList.add('text-danger');
 
-    // 🔧 Forcer le reflow pour garantir le déclenchement de l'animation
+    // Forcer le reflow pour garantir le déclenchement de l'animation
     void icon.offsetWidth;
 
-    // 💓 Battement de cœur sur l’icône
+    // Battement de cœur sur l’icône
     icon.classList.add('beating');
     setTimeout(() => {
     icon.classList.remove('beating');
@@ -69,7 +69,7 @@ if (merciMessage) {
                     icon.classList.remove('text-danger');
                 }
 
-                // 💥 Animation de clic
+                // Animation de clic
                 button.classList.add('animated');
                 setTimeout(() => {
                     button.classList.remove('animated');

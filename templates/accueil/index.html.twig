@@ -4,7 +4,10 @@
 
 {% block body %}
 <div class="banner accueil-page">
-    <h1>PAYSAGES SUBMERGÉS</h1>
+    <div class="banner-content">
+        <h1>PAYSAGES SUBMERGÉS</h1>
+        <p class="subtitle">Votre guide pour un aquarium naturel, vivant et inspiré de la nature </p>
+    </div>
 </div>
 
 <div class="bottom-section">
@@ -20,18 +23,23 @@
             </a>
         </div>
 
-        {# Encart Bienvenue : au centre et plus large #}
+        {# Encart Bienvenue : version enrichie #}
         <div class="home-center fade-in fade-delay-2">
             <p>
-                Bienvenue sur Paysages Submergés, votre guide pour réaliser un aquarium naturel et équilibré.<br>
-                Que vous débutiez en aquariophilie ou que vous souhaitiez recréer un décor inspiré de la nature, ce site est fait pour vous.<p>
+                Bienvenue sur <strong>Paysages Submergés</strong>, votre guide pour réaliser un aquarium naturel et équilibré.<br>
+                Que vous débutiez en aquariophilie ou que vous souhaitiez recréer un décor inspiré de la nature, ce site est fait pour vous.
+            </p>
+
+            <div class="decorative-line"></div>
+
+            <p>
                 <img src="{{ asset('images/Goutte.png') }}" alt="Goutte d'eau" class="icon-drop">
                 <strong>Mais l'aquariophilie, c'est mieux quand ça se partage !</strong><br>
-                Vous avez des conseils, des anecdotes ou des découvertes à partager?<br>
-                Plongez dans l'aventure, écrivez votre article et inspirez la communauté !<br>
-                <br>
-                <strong>Un clic sur " Je me lance " et c'est parti !</strong>
+                Vous avez des conseils, des anecdotes ou des découvertes à partager ?<br>
+                Plongez dans l'aventure, écrivez votre article et inspirez la communauté !
             </p>
+
+            <p><strong>Un clic sur " Je me lance " et c'est parti !</strong></p>
         </div>
 
         {# Carte : Rédiger un article #}
@@ -39,21 +47,21 @@
             <img src="{{ asset('images/Poisson_écrivain2.jpeg') }}" alt="Rédiger un article" class="card-image">
             <div class="card-title">Rédiger un article</div>
             <p>Partagez vos connaissances, astuces ou découvertes en rédigeant un article.</p>
-        {% if is_granted('IS_AUTHENTICATED_FULLY') %}
-            <a href="{{ path('article_create') }}" class="btn btn-primary mt-3">
-            ✍️ Je me lance
-             </a>
-        {% else %}
-            <a href="{{ path('app_login') }}" class="btn btn-outline-secondary mt-3" title="Connectez-vous pour rédiger un article">
-            🔒 Je me lance
-            </a>
-        {% endif %}
-
+            {% if is_granted('IS_AUTHENTICATED_FULLY') %}
+                <a href="{{ path('article_create') }}" class="btn btn-primary mt-3">
+                    ✍️ Je me lance
+                </a>
+            {% else %}
+                <a href="{{ path('app_login') }}" class="btn btn-outline-secondary mt-3" title="Connectez-vous pour rédiger un article">
+                    🔒 Je me lance
+                </a>
+            {% endif %}
         </div>
 
     </div>
 </div>
 {% endblock %}
+
 
 
 

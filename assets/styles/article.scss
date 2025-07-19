@@ -1,4 +1,4 @@
-@use 'variables' as vars;
+@use 'variables' as *;
 
 .section-articles {
     padding: 4rem 0;
@@ -18,10 +18,10 @@
     }
 
     .card {
-        border-radius: vars.$border-radius;
+        border-radius: $border-radius;
         overflow: hidden;
         background: #fff;
-        box-shadow: vars.$shadow-light;
+        box-shadow: $shadow-light;
         transition: transform 0.3s ease, box-shadow 0.3s ease;
 
         &:hover {

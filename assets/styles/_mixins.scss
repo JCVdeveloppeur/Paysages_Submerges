@@ -42,3 +42,20 @@
 .badge-autre {
   @include badge-style(#708090, #2f4f4f); // Gris ardoise, roche
 }
+// Mixin : Texte avec dégradé animé au survol
+@mixin gradient-text-hover($colors...) {
+  background: linear-gradient(90deg, $colors...);
+  background-size: 300% auto;
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.4);
+  transition: background-position 0.8s ease-in-out, text-shadow 0.3s ease;
+
+  &:hover {
+    background-position: 100% 50%;
+    text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);
+  }
+}
+

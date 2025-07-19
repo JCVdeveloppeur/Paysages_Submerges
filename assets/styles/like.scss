@@ -1,6 +1,6 @@
 @use "variables" as *;
 
-// 🌊 Bouton like général
+// Bouton like général
 .like-button {
   cursor: pointer;
   transition: transform 0.2s ease;
@@ -25,14 +25,14 @@
   }
 }
 
-// 💥 Effet "pop" au clic
+// Effet "pop" au clic
 @keyframes pop {
   0%   { transform: scale(1); }
   50%  { transform: scale(1.5); }
   100% { transform: scale(1); }
 }
 
-// ❤️ Battement de cœur uniquement sur l’icône
+// Battement de cœur uniquement sur l’icône
 @keyframes beat {
   0%, 100% { transform: scale(1); }
   25%      { transform: scale(1.2); }
@@ -45,7 +45,7 @@ i.beating {
   transform-origin: center;
 }
 
-// 🙏 Message "Merci ❤️"
+// Message "Merci "
 .merci-message {
   position: absolute;
   top: -1.5rem;
