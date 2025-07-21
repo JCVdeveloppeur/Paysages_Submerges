@@ -14,11 +14,11 @@
     <div class="horizontal-layout">
 
         {# Carte : Voir les articles #}
-        <div class="home-card fade-in fade-delay-1">
-            <img src="{{ asset('images/Betta en bocal.jpeg') }}" alt="Articles" class="card-image">
+        <div class="home-card fade-in fade-delay-1 d-flex flex-column">
+            <img src="{{ asset('images/Betta en bocal.jpeg') }}" alt="Poisson Combattant" class="card-image">
             <div class="card-title">Voir les articles</div>
-            <p>Parcourez nos derniers articles rédigés par la communauté.</p>
-            <a href="{{ path('app_articles') }}" class="btn btn-primary">
+            <p class="flex-grow-1">Parcourez nos derniers articles rédigés par la communauté.</p>
+            <a href="{{ path('app_articles') }}" class="btn btn-gris mt-auto">
                 <i class="bi bi-eye"></i> Découvrir
             </a>
         </div>
@@ -39,20 +39,22 @@
                 Plongez dans l'aventure, écrivez votre article et inspirez la communauté !
             </p>
 
-            <p><strong>Un clic sur " Je me lance " et c'est parti !</strong></p>
+            <p class="cta-lancer"><strong>Un clic sur "Je me lance" et c'est parti&nbsp;!</strong></p>
+
         </div>
 
         {# Carte : Rédiger un article #}
-        <div class="home-card fade-in fade-delay-3">
-            <img src="{{ asset('images/Poisson_écrivain2.jpeg') }}" alt="Rédiger un article" class="card-image">
+        <div class="home-card fade-in fade-delay-3 d-flex flex-column">
+            <img src="{{ asset('images/Poisson_écrivain2.jpeg') }}" alt="Poisson rouge écrivant un article" class="card-image">
             <div class="card-title">Rédiger un article</div>
-            <p>Partagez vos connaissances, astuces ou découvertes en rédigeant un article.</p>
+            <p class="flex-grow-1">Partagez vos connaissances, astuces ou découvertes en rédigeant un article.</p>
+
             {% if is_granted('IS_AUTHENTICATED_FULLY') %}
-                <a href="{{ path('article_create') }}" class="btn btn-primary mt-3">
+                <a href="{{ path('article_create') }}" class="btn btn-gris mt-auto">
                     ✍️ Je me lance
                 </a>
             {% else %}
-                <a href="{{ path('app_login') }}" class="btn btn-outline-secondary mt-3" title="Connectez-vous pour rédiger un article">
+                <a href="{{ path('app_login') }}" class="btn btn-gris mt-auto" title="Connectez-vous pour rédiger un article">
                     🔒 Je me lance
                 </a>
             {% endif %}
@@ -61,6 +63,7 @@
     </div>
 </div>
 {% endblock %}
+
 
 
 

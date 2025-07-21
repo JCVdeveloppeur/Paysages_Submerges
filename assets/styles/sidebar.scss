@@ -59,7 +59,13 @@
     background-color: #fafafa;
     border: 1px solid #e0e0e0;
   }
-}
+  }
+  
+  a.btn-concours {
+  @include bouton-nature($btn-brun, $btn-brun-hover);
+  }
+
+
 
 /* ========== RESPONSIVE : MARGE AU-DESSUS EN MOBILE ========== */
 @media (max-width: 991px) {

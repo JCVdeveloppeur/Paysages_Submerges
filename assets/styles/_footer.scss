@@ -1,0 +1,43 @@
+@use "variables" as *;
+@use 'mixins' as *;
+
+.site-footer {
+  background-color: rgba(5, 33, 59, 0.9);
+  color: #ffffff;
+  padding: 2rem 1rem;
+  font-size: 0.95rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  text-align: center;
+
+  a {
+    color: lighten($bleu-accent, 10%);
+    text-decoration: none;
+
+    &:hover {
+      color: #ffffff;
+      text-shadow: 0 0 6px rgba(255, 255, 255, 0.6);
+    }
+  }
+
+  .footer-links {
+    margin-top: 1rem;
+
+    a {
+      margin: 0 0.8rem;
+      font-weight: bold;
+    }
+  }
+
+  .footer-logo {
+    font-family: $font-titres;
+    font-size: 1.2rem;
+    margin-bottom: 1rem;
+    display: inline-block;
+  }
+
+  .footer-credits {
+    margin-top: 1rem;
+    font-size: 0.85rem;
+    color: rgba(255, 255, 255, 0.6);
+  }
+}

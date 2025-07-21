@@ -58,4 +58,49 @@
     text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);
   }
 }
+/// Mixin : Effet de texte en dégradé au hover uniquement
+/// @param $start Le début du dégradé
+/// @param $middle Le centre
+/// @param $end La fin
+/// @param $fallback Couleur fallback si le dégradé échoue
+@mixin gradient-text-hover($start, $middle, $end, $fallback) {
+  background: $fallback;
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+  transition: background 0.8s ease;
+
+  &:hover {
+    background: linear-gradient(90deg, $start, $middle, $end);
+    background-clip: text;
+    -webkit-background-clip: text;
+    color: transparent;
+    -webkit-text-fill-color: transparent;
+  }
+}
+@mixin bouton-nature($couleur-base, $couleur-hover) {
+  background-color: $couleur-base;
+  color: #fff;
+  border: none;
+  padding: 0.5rem 1rem;
+  font-weight: 500;
+  border-radius: 0.3rem;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+
+  &:hover {
+    background-color: $couleur-hover;
+    color: #fff; // texte blanc au hover aussi
+    transform: translateY(-2px);
+  }
+}
+
+// // Classes réutilisables pour texte à gradient animé
+// .text-gradient-hover {
+//   @include gradient-text-hover(#18c6c1, #1abc9c, #0ff, #18c6c1);
+// }
+
+// .text-gradient-feu {
+//   @include gradient-text-hover(#ff9966, #ff5e62, #ff9966);
+// }
 

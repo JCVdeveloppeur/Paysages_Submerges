@@ -1,4 +1,5 @@
 @use "variables" as *;
+@use 'mixins' as *;
 
 // --- Fiche espèce : style épuré et naturaliste + animation d'apparition ---
 .fiche-espece {
@@ -152,6 +153,10 @@
     background-color: $bleu-profond;
   }
 }
+a.btn-espece {
+  @include bouton-nature($btn-vert, $btn-vert-hover);
+}
+
 
 // --- Animation keyframes ---
 @keyframes fadeInUp {
@@ -173,6 +178,7 @@
     border-color: #588157;
   }
 }
+
 // --- Style personnalisé pour la barre de recherche ---
 // --- Style personnalisé pour la barre de recherche avec effet glow ---
 .bloc-recherche-espece {

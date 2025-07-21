@@ -67,7 +67,7 @@
                                         </p>
 
                                         <div class="d-flex flex-column gap-2 mt-3">
-                                            <a href="{{ path('article_show', {'id': article.id}) }}" class="btn btn-primary">Lire la suite</a>
+                                            <a href="{{ path('article_show', {'id': article.id}) }}" class="btn btn-lire-suite">Lire la suite</a>
 
                                             {% if app.user %}
                                                 {% if is_granted('ROLE_ADMIN') %}
@@ -117,9 +117,9 @@
                     <div class="mb-4 p-3 bg-white rounded shadow-sm">
     <h5 class="mb-3">🌿 Concours Aquascaping</h5>
     <p>Découvrez le concour  d'aquascaping et de paysages aquatiques, des œuvres d'art vivantes !</p>
-    <a href="https://capa-aquascaping.fr/" class="btn btn-success btn-sm" target="_blank" rel="noopener noreferrer">
-        Voir les concours 🌍
-    </a>
+    <a href="https://capa-aquascaping.fr/" class="btn btn-concours" target="_blank" rel="noopener noreferrer">
+    Voir les concours 🌍
+</a>
 </div>
 {% if lastArticles is defined and lastArticles|length > 0 %}
     <div class="mb-4 p-3 bg-white rounded shadow-sm">

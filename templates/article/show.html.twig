@@ -6,11 +6,28 @@
 <div class="article-show-page"> {# Toute la page article, sans container ici #}
 
     {% if article.imageHeader %}
+    {% set badgeClass = {
+        'Biotope Amérique du sud': 'badge-amerique-sud',
+        'Biotope asiatique': 'badge-asiatique',
+        'Biotope africain': 'badge-africain',
+        'Biotope australien': 'badge-australien',
+        'Autre': 'badge-autre'
+    }[article.categorie] ?? 'badge-autre' %}
+
+                                        
         <section class="hero-header hero-zoom mb-4" data-bg="{{ asset('uploads/articles/' ~ article.imageHeader) }}">
             <div class="hero-overlay d-flex justify-content-center align-items-center text-center">
                 <div>
                     <h1 class="hero-title">{{ article.titre }}</h1>
-                    <span class="badge bg-primary">{{ article.categorie }}</span>
+                    <span class="badge {{ badgeClass }}">
+                                            {% if article.categorie == 'Biotope Amérique du sud' %}🌱
+                                            {% elseif article.categorie == 'Biotope asiatique' %}🌊
+                                            {% elseif article.categorie == 'Biotope africain' %}🏜️
+                                            {% elseif article.categorie == 'Biotope australien' %}🪸
+                                            {% else %}🌍
+                                            {% endif %}
+                                            {{ article.categorie }}
+                                        </span>
                 </div>
             </div>
         </section>
@@ -175,12 +192,13 @@
                     {{ form_errors(commentaireForm.article) }}
                 </div>
             {% endif %}
-            <button type="submit" class="btn btn-primary">💬 Publier</button>
+            <button type="submit" class="btn btn-publier">Publier</button>
+
             {{ form_end(commentaireForm) }}
         </div>
 
         <div class="text-center mt-4">
-            <a href="{{ path('app_articles') }}" class="btn btn-secondary">← Retour aux articles</a>
+            <a href="{{ path('app_articles') }}" class="btn btn-retour-articles">← Retour aux articles</a>
         </div>
 
         {% if is_granted('IS_AUTHENTICATED_FULLY') %}

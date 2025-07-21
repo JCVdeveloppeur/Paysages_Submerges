@@ -1,0 +1,53 @@
+@use "variables" as *;
+@use 'mixins' as *;
+
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.6rem 1.2rem;
+  font-size: 1rem;
+  font-family: $font-boutons;
+  border: none;
+  border-radius: $border-radius;
+  cursor: pointer;
+  transition: background-color 0.3s ease, color 0.3s ease;
+
+  i {
+    margin-right: 0.4rem;
+  }
+  
+}
+
+// Bouton vert (comme sur la home)
+.btn-vert {
+  background-color: $btn-vert;
+  color: #fff;
+
+  &:hover {
+    background-color: $btn-vert-hover;
+    color: #fff;
+  }
+}
+
+// Bouton brun
+.btn-brun {
+  background-color: #7a5c3b;
+  color: #fff;
+
+  &:hover {
+    background-color: darken(#7a5c3b, 8%);
+    color: #fff;
+  }
+}
+.btn-gris {
+    background-color: #4c6a74;
+    color: #fff;
+    transition: background-color 0.3s ease;
+
+  &:hover {
+    background-color: lighten(#4c6a74, 8%);
+    color: #fff;
+    }
+  }

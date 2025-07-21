@@ -1,5 +1,6 @@
 
 @use "variables" as *;
+@use 'mixins' as *;
 
 /* --------- STRUCTURE PRINCIPALE --------- */
 .article-show-page {
@@ -232,6 +233,10 @@
     }
   }
 }
+
+
+
+
 
 
 
