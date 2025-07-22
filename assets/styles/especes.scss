@@ -206,6 +206,34 @@ a.btn-espece {
     }
   }
 }
+.pagination {
+  justify-content: center;
+  margin-top: 2rem;
+
+  .page-item {
+    margin: 0 0.2rem;
+
+    .page-link {
+      background-color: #f8f5ee;
+      color: $btn-brun;
+      border: 1px solid $btn-brun;
+      border-radius: 6px;
+      transition: background-color 0.3s ease, color 0.3s ease;
+
+      &:hover {
+        background-color: $btn-brun;
+        color: #fff;
+      }
+    }
+
+    &.active .page-link {
+      background-color: $btn-brun;
+      color: #fff;
+      border-color: $btn-brun;
+    }
+  }
+}
+
 
 
 

@@ -1,4 +1,6 @@
 @use "variables" as *;
+@use 'mixins' as *;
+@use 'bouton' as *;
 
 .login-page {
   min-height: 100vh;
@@ -18,15 +20,6 @@
 
   .form-control {
     margin-bottom: 1rem;
-  }
-
-  .btn-primary {
-    background-color: $bleu-accent;
-    transition: $transition-douce;
-
-    &:hover {
-      background-color: $bleu-accent-hover;
-    }
   }
 }
 

@@ -21,7 +21,8 @@
 @use "sidebar";
 @use "accueil"; 
 @use "footer";
-@use 'bouton';
+@use "bouton";
+
 
 
 
@@ -138,6 +139,8 @@ button, .btn {
   border-radius: 1rem;
   box-shadow: 0 0 20px rgba(0, 0, 0, 0.05);
 }
+
+
 
 
 

@@ -1,5 +1,6 @@
 @use "variables" as *;
-@use "mixins" as *;
+@use 'mixins' as *;
+@use 'bouton' as *;
 
 // --- BANNIÈRE ---
 
@@ -103,42 +104,42 @@
   }
 
   .card-title {
-  font-weight: bold;
-  font-size: 1.6rem;
-  margin-bottom: 0.8rem;
-  position: relative;
-  display: inline-block;
+    font-weight: bold;
+    font-size: 1.6rem;
+    margin-bottom: 0.8rem;
+    position: relative;
+    display: inline-block;
 
-  &::after {
-    content: "";
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    height: 2px;
-    background-color: $btn-brun;
-    transform: scaleX(0);
-    transform-origin: left;
-    transition: transform 0.3s ease;
+    &::after {
+      content: "";
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 2px;
+      background-color: $btn-brun;
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform 0.3s ease;
+    }
+
+    &:hover::after {
+      transform: scaleX(1);
+    }
   }
-
-  &:hover::after {
-    transform: scaleX(1);
-  }
-}
-
 
   p {
     font-size: 1.3rem;
     margin-bottom: 1rem;
     flex-grow: 1;
   }
-}
-.home-card .btn {
-  margin-top: 2rem; // ← ou 1.5rem si tu préfères plus subtil
-  align-self: center;
-  min-width: 180px;
-  text-align: center;
+
+  .btn {
+    margin-top: 2rem;
+    align-self: center;
+    min-width: 180px;
+    text-align: center;
+  }
 }
 
 // --- HOME CENTER ---
@@ -147,8 +148,8 @@
   flex: 2 1 500px;
   max-width: 650px;
   text-align: left;
-  font-size: 1.15rem;
-  line-height: 1.7;
+  font-size: 1.3rem;
+  line-height: 1.6;
   background: url("../images/textures/papier-fibre.png") repeat;
   background-color: #f9f5e6;
   backdrop-filter: blur(1.5px);
@@ -172,7 +173,6 @@
     box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
   }
 
-  // Badge avec effet ruban
   &::before {
     content: "À propos du site";
     position: absolute;
@@ -204,27 +204,31 @@
   p {
     margin-bottom: 0.8rem;
     text-align: justify;
+    font-size: 1.3rem;
+    
 
     strong {
       display: inline-block;
       font-weight: bold;
       margin-top: 0.8rem;
     }
-  }
 
-  p:last-child {
-    flex-grow: 0 !important;
-    margin-bottom: 0.5rem;
+    &:last-child {
+      flex-grow: 0 !important;
+      margin-bottom: 0.5rem;
+    }
   }
 
   .icon-drop {
-    width: 26px;
-    height: 26px;
-    vertical-align: middle;
+    width: 36px;
+    height: 36px;
+    vertical-align: baseline;
     margin-right: 0.5rem;
-    filter: drop-shadow(1px 1px 2px rgba(0, 0, 0, 0.2));
+    filter: drop-shadow(1px 1px 2px rgba(0, 0, 0, 0.2)) saturate(1.5) brightness(1.1);
+
   }
 }
+
 // --- LIGNE DÉCO ---
 
 .decorative-line {
@@ -238,10 +242,12 @@
 // --- ICÔNE GÉNÉRALE ---
 
 .icon-drop {
-  width: 26px;
-  height: 26px;
-  vertical-align: middle;
-  margin-right: 0.5rem;
+  width: 36px;
+  height: 36px;
+  vertical-align: baseline;
+  margin-right: 0.3rem;
+  filter: drop-shadow(1px 1px 2px rgba(0, 0, 0, 0.2)) saturate(1.5) brightness(1.1);
+
 }
 
 // --- BOUTONS ---
@@ -264,35 +270,45 @@ input[type="search"] {
     max-width: 100%;
     font-size: 1rem;
     padding: 1.5rem 1rem 2rem 1rem;
-    margin-bottom: 2rem; // ← espace entre les cartes
+    margin-bottom: 2rem;
     overflow: visible;
     position: relative;
-    min-height: auto; // ← permet d'étendre la carte naturellement
+    min-height: auto;
 
-  }
-  .home-center p:last-child {
-  margin-bottom: 0;
-  overflow-wrap: break-word;
-  flex-grow: 0 !important;
+    p {
+      text-align: left;
+      font-size: 1.05rem;
+      margin-bottom: 0.8rem;
+
+      &:last-child {
+        margin-bottom: 0;
+        overflow-wrap: break-word;
+        flex-grow: 0 !important;
+      }
+    }
+
+    strong {
+      margin-top: 0.5rem;
+      display: block;
+    }
   }
 
   .home-card {
-  width: 100%;
-  max-width: 100%;
-  min-width: 260px;
-  min-height: auto;
-  margin-bottom: 1.5rem;
-  overflow: visible;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between; // ← essentiel
-  padding-bottom: 1.5rem; // ← espace pour le bouton
+    width: 100%;
+    max-width: 100%;
+    min-width: 260px;
+    min-height: auto;
+    margin-bottom: 1.5rem;
+    overflow: visible;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding-bottom: 1.5rem;
   }
 
   .btn {
     width: auto;
   }
-
 }
 
 // --- CTA texte ---
@@ -303,6 +319,9 @@ input[type="search"] {
   text-align: center;
   font-size: 1.05rem;
 }
+
+// --- Effets au survol uniquement si supporté ---
+
 @media (hover: hover) {
   .home-card:hover {
     transform: translateY(-8px) scale(1.02);
@@ -313,8 +332,43 @@ input[type="search"] {
     transform: translateY(-6px) scale(1.01);
     box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
   }
-  
 }
+
+// --- ALIGNEMENT INTRO ---
+
+.intro-line {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin: 1rem 0;
+
+  .icon-drop {
+    width: 36px;
+    height: 36px;
+    flex-shrink: 0;
+    margin: 0;
+    filter: drop-shadow(1px 1px 2px rgba(0, 0, 0, 0.2)) saturate(1.5) brightness(1.1);
+
+  }
+
+  strong {
+    font-size: 1.3rem;
+    font-weight: bold;
+    line-height: 1.3;
+  }
+}
+.icon-drop:hover {
+  transform: scale(1.1);
+  transition: transform 0.3s ease;
+}
+
+
+
+
+
+
+
+
 
 
 

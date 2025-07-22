@@ -51,3 +51,43 @@
     color: #fff;
     }
   }
+  // Bouton gris (style accueil)
+
+.btn-bleu-profil {
+  background-color: #4a6fa5;
+  color: #fff;
+  font-weight: 500;
+  letter-spacing: 0.3px;
+
+  &:hover {
+    background-color: lighten(#4a6fa5, 8%);
+    color: #fff;
+  }
+}
+
+
+// Bouton rouge personnalisé
+.btn-rouge {
+  background-color: #b23c3c; // rouge terre cuite
+  color: #fff;
+
+  &:hover {
+    background-color: darken(#b23c3c, 10%);
+    color: #fff;
+  }
+}
+.btn-dashboard {
+  height: 40px;
+  padding: 0.375rem 0.75rem;
+  font-size: 0.9rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 130px;
+
+}
+
+
+
+
+

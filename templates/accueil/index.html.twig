@@ -6,14 +6,14 @@
 <div class="banner accueil-page">
     <div class="banner-content">
         <h1>PAYSAGES SUBMERGÉS</h1>
-        <p class="subtitle">Votre guide pour un aquarium naturel, vivant et inspiré de la nature </p>
+        <p class="subtitle">Votre guide pour un aquarium naturel, vivant et inspiré de la nature</p>
     </div>
 </div>
 
 <div class="bottom-section">
     <div class="horizontal-layout">
 
-        {# Carte : Voir les articles #}
+        {# --- Carte : Voir les articles --- #}
         <div class="home-card fade-in fade-delay-1 d-flex flex-column">
             <img src="{{ asset('images/Betta en bocal.jpeg') }}" alt="Poisson Combattant" class="card-image">
             <div class="card-title">Voir les articles</div>
@@ -23,7 +23,7 @@
             </a>
         </div>
 
-        {# Encart Bienvenue : version enrichie #}
+        {# --- Encart central : À propos du site --- #}
         <div class="home-center fade-in fade-delay-2">
             <p>
                 Bienvenue sur <strong>Paysages Submergés</strong>, votre guide pour réaliser un aquarium naturel et équilibré.<br>
@@ -32,18 +32,21 @@
 
             <div class="decorative-line"></div>
 
+            <p class="intro-line">
+            <img src="{{ asset('images/Goutte.png') }}" alt="Goutte d'eau" class="icon-drop">
+            <strong>Mais l'aquariophilie, c'est mieux quand ça se partage&nbsp;!</strong>
+            </p>
+
+
             <p>
-                <img src="{{ asset('images/Goutte.png') }}" alt="Goutte d'eau" class="icon-drop">
-                <strong>Mais l'aquariophilie, c'est mieux quand ça se partage !</strong><br>
                 Vous avez des conseils, des anecdotes ou des découvertes à partager ?<br>
                 Plongez dans l'aventure, écrivez votre article et inspirez la communauté !
             </p>
 
             <p class="cta-lancer"><strong>Un clic sur "Je me lance" et c'est parti&nbsp;!</strong></p>
-
         </div>
 
-        {# Carte : Rédiger un article #}
+        {# --- Carte : Rédiger un article --- #}
         <div class="home-card fade-in fade-delay-3 d-flex flex-column">
             <img src="{{ asset('images/Poisson_écrivain2.jpeg') }}" alt="Poisson rouge écrivant un article" class="card-image">
             <div class="card-title">Rédiger un article</div>
@@ -63,6 +66,7 @@
     </div>
 </div>
 {% endblock %}
+
 
 
 

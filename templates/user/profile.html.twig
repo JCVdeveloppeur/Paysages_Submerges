@@ -16,16 +16,43 @@
                 <li class="list-group-item"><strong>Email :</strong> {{ app.user.email }}</li>
                 <li class="list-group-item"><strong>Pseudo :</strong> {{ app.user.pseudo ?? 'Non défini' }}</li>
                 <li class="list-group-item">
-                    <a href="{{ path('app_change_password') }}" class="btn btn-sm btn-outline-primary">Modifier le mot de passe</a>
+                    <a href="{{ path('app_change_password') }}" class="btn btn-sm btn-bleu-profil">
+                    Modifier le mot de passe</a>
                 </li>
                 <li class="list-group-item">
-                    <form method="post" action="{{ path('app_delete_account') }}" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer votre compte ?');">
-                        <input type="hidden" name="_token" value="{{ csrf_token('delete-user') }}">
-                        <button class="btn btn-sm btn-outline-danger">Supprimer mon compte</button>
-                    </form>
+                <!-- Bouton qui ouvre la modale -->
+                <button type="button" class="btn btn-sm btn-rouge" data-bs-toggle="modal" data-bs-target="#confirmDeleteModal">
+                    Supprimer mon compte
+                </button>
                 </li>
+
+                    
             </ul>
         </div>
+        <!-- Modale Bootstrap : Supprimer mon compte -->
+        <div class="modal fade" id="confirmDeleteModal" tabindex="-1" aria-labelledby="confirmDeleteModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+            <div class="modal-header bg-danger text-white">
+                <h5 class="modal-title" id="confirmDeleteModalLabel">⚠️ Confirmation de suppression</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
+            </div>
+            <div class="modal-body">
+                <p>Cette action est <strong>irréversible</strong>.<br>
+                Votre compte et toutes vos données seront définitivement supprimés.<br>
+                Êtes-vous certain de vouloir continuer ? 🧨</p>
+            </div>
+            <div class="modal-footer">
+                <form method="post" action="{{ path('app_delete_account') }}">
+                    <input type="hidden" name="_token" value="{{ csrf_token('delete-user') }}">
+                    <button type="submit" class="btn btn-danger">🗑️ Oui, supprimer</button>
+                </form>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+            </div>
+            </div>
+        </div>
+        </div>
+
 
         <!-- Bloc activité -->
         <div class="card mb-4">
@@ -43,15 +70,12 @@
     <div class="card-body">
         <h5 class="card-title">📝 Partage ton expertise de l'aquariophilie !</h5>
         <p class="card-text">Tu as des connaissances à transmettre ? Rédige un article pour enrichir la communauté.</p>
-        <a href="{{ path('article_conditions') }}" class="btn btn-success">
+        <a href="{{ path('article_conditions') }}" class="btn btn-vert">
         ✍️ Rédiger un article
         </a>
 
     </div>
     </div>
-
-
-
         <!-- Bloc articles -->
         <div class="card">
             <div class="card-header">

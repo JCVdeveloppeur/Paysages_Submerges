@@ -1,6 +1,7 @@
 
-
 @use "variables" as *;
+@use 'mixins' as *;
+@use 'bouton' as *;
 
 .profile-page {
   padding: 2rem;
@@ -107,6 +108,19 @@
     }
   }
 }
+.modal-header.bg-danger {
+  background-color: #a94442;
+}
+
+.modal-footer .btn-danger {
+  background-color: #a94442;
+  border-color: #a94442;
+
+  &:hover {
+    background-color: darken(#a94442, 8%);
+  }
+}
+
 
 
 
