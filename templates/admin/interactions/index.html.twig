@@ -10,7 +10,7 @@
         <!-- Bloc Commentaires -->
         <div class="col-md-6">
             <h3 class="mb-3">🔔 Commentaires
-                <span class="badge bg-primary">{{ totalCommentaires }}</span>
+                <span class="badge-compteur pastel-blue">{{ totalCommentaires }}</span>
             </h3>
 
             {% if commentaires is empty %}
@@ -32,7 +32,7 @@
                                 <td>{{ commentaire.auteur.pseudo ?? commentaire.auteur.email ?? 'Utilisateur supprimé' }}</td>
                                 <td>
                                     {% if commentaire.article %}
-                                        <a href="{{ path('article_show', { id: commentaire.article.id }) }}" target="_blank">
+                                        <a href="{{ path('app_article_show', { id: commentaire.article.id }) }}" target="_blank">
                                             {{ commentaire.article.titre|length > 30 ? commentaire.article.titre[:30] ~ '…' : commentaire.article.titre }}
                                         </a>
                                     {% else %}
@@ -53,13 +53,18 @@
                                         {% if not commentaire.approuve %}
                                             <form method="post" action="{{ path('commentaire_approve', { id: commentaire.id }) }}">
                                                 <input type="hidden" name="_token" value="{{ csrf_token('approve' ~ commentaire.id) }}">
-                                                <button class="btn btn-sm btn-success" title="Approuver">✅</button>
+                                                <button class="btn-approve" title="Approuver">
+                                                    <i class="bi bi-check-circle"></i>
+                                                </button>
                                             </form>
                                         {% endif %}
                                         <form method="post" action="{{ path('admin_comment_delete', { id: commentaire.id }) }}"
                                               onsubmit="return confirm('Supprimer ce commentaire ?');">
                                             <input type="hidden" name="_token" value="{{ csrf_token('delete-comment-' ~ commentaire.id) }}">
-                                            <button class="btn btn-sm btn-outline-danger" title="Supprimer">🗑️</button>
+                                            <button class="btn-icon-supprimer" title="Supprimer">
+                                                <i class="bi bi-trash3"></i>
+                                            </button>
+
                                         </form>
                                     </div>
                                 </td>
@@ -77,7 +82,7 @@
         <!-- Bloc Likes -->
         <div class="col-md-6">
             <h3 class="mb-3">❤️ Likes
-                <span class="badge bg-danger">{{ totalLikes }}</span>
+                <span class="badge-compteur pastel-pink">{{ totalLikes }}</span>
             </h3>
 
             {% if likes is empty %}
@@ -98,7 +103,7 @@
                                 <td>{{ like.user.pseudo ?? like.user.email ?? 'Utilisateur supprimé' }}</td>
                                 <td>
                                     {% if like.article %}
-                                        <a href="{{ path('article_show', { id: like.article.id }) }}">
+                                        <a href="{{ path('app_article_show', { id: like.article.id }) }}">
                                             {{ like.article.titre|length > 30 ? like.article.titre[:30] ~ '…' : like.article.titre }}
                                         </a>
                                     {% else %}
@@ -109,7 +114,10 @@
                                 <td>
                                     <form method="post" action="{{ path('admin_like_delete', { id: like.id }) }}" onsubmit="return confirm('Supprimer ce like ?');">
                                         <input type="hidden" name="_token" value="{{ csrf_token('delete-like-' ~ like.id) }}">
-                                        <button class="btn btn-sm btn-outline-danger">🗑️</button>
+                                        <button class="btn-icon-supprimer" title="Supprimer">
+                                            <i class="bi bi-trash3"></i>
+                                        </button>
+
                                     </form>
                                 </td>
                             </tr>
@@ -125,7 +133,9 @@
     </div>
 
     <div class="mt-4">
-        <a href="{{ path('admin_dashboard') }}" class="btn btn-outline-secondary">← Retour au tableau de bord</a>
+        <a href="{{ path('admin_dashboard') }}" class="btn-admin-retour">
+    ← Retour au tableau de bord</a>
+
     </div>
 </div>
 {% endblock %}

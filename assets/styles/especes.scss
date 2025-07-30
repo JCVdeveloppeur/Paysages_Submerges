@@ -1,5 +1,6 @@
 @use "variables" as *;
-@use 'mixins' as *;
+@use "mixins" as *;
+@use "bouton" as *;
 
 // --- Fiche espèce : style épuré et naturaliste + animation d'apparition ---
 .fiche-espece {

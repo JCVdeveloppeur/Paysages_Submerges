@@ -53,7 +53,7 @@
             <p class="flex-grow-1">Partagez vos connaissances, astuces ou découvertes en rédigeant un article.</p>
 
             {% if is_granted('IS_AUTHENTICATED_FULLY') %}
-                <a href="{{ path('article_create') }}" class="btn btn-gris mt-auto">
+                <a href="{{ path('app_article_new') }}" class="btn btn-gris mt-auto">
                     ✍️ Je me lance
                 </a>
             {% else %}

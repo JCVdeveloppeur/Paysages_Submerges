@@ -1,6 +1,6 @@
 @use "variables" as *;
-@use 'mixins' as *;
-@use 'bouton' as *;
+@use "mixins" as *;
+@use "bouton" as *;
 
 .login-page {
   min-height: 100vh;

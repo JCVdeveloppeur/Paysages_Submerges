@@ -6,9 +6,7 @@
 <section class="section-articles py-6 bg-light">
     <div class="container">
         <h1 class="mb-2 text-center">Tous nos articles</h1>
-        <p class="lead text-center mb-5">
-            Laissez-vous émerveiller par la diversité sous-marine.
-        </p>
+        <p class="lead text-center mb-5">Laissez-vous émerveiller par la diversité sous-marine.</p>
 
         {% if searchTerm is defined and searchTerm %}
             <div class="alert alert-info text-center">
@@ -17,7 +15,7 @@
         {% endif %}
 
         <div class="row">
-            <!-- Colonne principale (articles) -->
+            <!-- Colonne principale -->
             <div class="col-lg-9">
                 {% if articles is not empty %}
                     <div class="row" id="articles-list">
@@ -26,20 +24,17 @@
                                 <div class="card h-100 shadow-sm">
                                     {% if article.image %}
                                         <img src="{{ asset('uploads/articles/' ~ article.image) }}" class="card-img-top" alt="{{ article.titre }}">
-                        {% else %}
-                            {% set dossierCategorie = {
-                                'Biotope Amérique du sud': 'amerique-sud',
-                                'Biotope asiatique': 'asiatique',
-                                'Biotope africain': 'africain',
-                                'Biotope australien': 'australien',
-                                'Autre': 'autre'
-                            }[article.categorie] ?? 'autre' %}
-
-                {% set randomImage = random([1, 2, 3]) %}
-                <img src="{{ asset('build/images/defaults/articles/' ~ dossierCategorie ~ '/' ~ randomImage ~ '.jpg') }}"
-                    class="card-img-top"
-                    alt="Image par défaut pour {{ article.categorie }}">
-            {% endif %}
+                                    {% else %}
+                                        {% set dossierCategorie = {
+                                            'Biotope Amérique du sud': 'amerique-sud',
+                                            'Biotope asiatique': 'asiatique',
+                                            'Biotope africain': 'africain',
+                                            'Biotope australien': 'australien',
+                                            'Autre': 'autre'
+                                        }[article.categorie] ?? 'autre' %}
+                                        {% set randomImage = random([1, 2, 3]) %}
+                                        <img src="{{ asset('build/images/defaults/articles/' ~ dossierCategorie ~ '/' ~ randomImage ~ '.jpg') }}" class="card-img-top" alt="Image par défaut pour {{ article.categorie }}">
+                                    {% endif %}
 
                                     <div class="card-body">
                                         <h5 class="card-title">{{ article.titre }}</h5>
@@ -53,12 +48,13 @@
                                         }[article.categorie] ?? 'badge-autre' %}
 
                                         <span class="badge {{ badgeClass }}">
-                                            {% if article.categorie == 'Biotope Amérique du sud' %}🌱
-                                            {% elseif article.categorie == 'Biotope asiatique' %}🌊
-                                            {% elseif article.categorie == 'Biotope africain' %}🏜️
-                                            {% elseif article.categorie == 'Biotope australien' %}🪸
-                                            {% else %}🌍
-                                            {% endif %}
+                                            {{ {
+                                                'Biotope Amérique du sud': '🌱',
+                                                'Biotope asiatique': '🌊',
+                                                'Biotope africain': '🏜️',
+                                                'Biotope australien': '🪸',
+                                                'Autre': '🌍'
+                                            }[article.categorie] ?? '🌍' }}
                                             {{ article.categorie }}
                                         </span>
 
@@ -67,21 +63,37 @@
                                         </p>
 
                                         <div class="d-flex flex-column gap-2 mt-3">
-                                            <a href="{{ path('article_show', {'id': article.id}) }}" class="btn btn-lire-suite">Lire la suite</a>
+                                            <a href="{{ path('app_article_show', {'id': article.id}) }}" class="btn btn-lire-suite">Lire la suite</a>
 
                                             {% if app.user %}
                                                 {% if is_granted('ROLE_ADMIN') %}
-                                                    <a href="{{ path('article_edit', {'id': article.id}) }}" class="btn btn-outline-secondary">✏️ Modifier</a>
-                                                    <form method="post" action="{{ path('article_delete', {'id': article.id}) }}" onsubmit="return confirm('Voulez-vous vraiment supprimer cet article ?');">
-                                                        <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ article.id) }}">
-                                                        <button class="btn btn-danger btn-sm">🗑 Supprimer</button>
-                                                    </form>
+                                                    <a href="{{ path('article_edit', {'id': article.id}) }}" class="btn-admin-modifier">
+                                                        <i class="bi bi-pencil-square"></i> Modifier
+                                                    </a>
+                                                    <button
+                                                        type="button"
+                                                        class="btn-admin-supprimer"
+                                                        data-bs-toggle="modal"
+                                                        data-bs-target="#deleteModal"
+                                                        data-action="{{ path('article_delete', {'id': article.id}) }}"
+                                                        data-token="{{ csrf_token('delete' ~ article.id) }}"
+                                                        title="Supprimer">
+                                                        <i class="bi bi-trash3"></i> Supprimer
+                                                    </button>
                                                 {% elseif article.user == app.user and not article.estApprouve %}
-                                                    <a href="{{ path('article_edit', {'id': article.id}) }}" class="btn btn-outline-secondary">✏️ Modifier</a>
-                                                    <form method="post" action="{{ path('article_delete', {'id': article.id}) }}" onsubmit="return confirm('Voulez-vous vraiment supprimer cet article ?');">
-                                                        <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ article.id) }}">
-                                                        <button class="btn btn-danger btn-sm">🗑 Supprimer</button>
-                                                    </form>
+                                                    <a href="{{ path('article_edit', {'id': article.id}) }}" class="btn-admin-modifier">
+                                                        <i class="bi bi-pencil-square"></i> Modifier
+                                                    </a>
+                                                    <button
+                                                        type="button"
+                                                        class="btn-admin-supprimer"
+                                                        data-bs-toggle="modal"
+                                                        data-bs-target="#deleteModal"
+                                                        data-action="{{ path('article_delete', {'id': article.id}) }}"
+                                                        data-token="{{ csrf_token('delete' ~ article.id) }}"
+                                                        title="Supprimer">
+                                                        <i class="bi bi-trash3"></i> Supprimer
+                                                    </button>
                                                 {% endif %}
                                             {% endif %}
                                         </div>
@@ -105,7 +117,7 @@
                 {% endif %}
             </div>
 
-            <!-- Sidebar -->
+            <!-- Colonne droite -->
             <div class="col-lg-3">
                 <div class="sticky-top" style="top: 100px;">
                     <div class="mb-4 p-3 bg-white rounded shadow-sm">
@@ -113,72 +125,153 @@
                         <p>Votre publicité ici ? Contactez-nous.</p>
                     </div>
 
-                    {# À venir : cartes derniers articles et lien aquascaping #}
                     <div class="mb-4 p-3 bg-white rounded shadow-sm">
-    <h5 class="mb-3">🌿 Concours Aquascaping</h5>
-    <p>Découvrez le concour  d'aquascaping et de paysages aquatiques, des œuvres d'art vivantes !</p>
-    <a href="https://capa-aquascaping.fr/" class="btn btn-concours" target="_blank" rel="noopener noreferrer">
-    Voir les concours 🌍
-</a>
-</div>
-{% if lastArticles is defined and lastArticles|length > 0 %}
-    <div class="mb-4 p-3 bg-white rounded shadow-sm">
-        <h5 class="mb-3">📰 Derniers articles publiés</h5>
-        {% set defaultImages = {
-            'Biotope Amérique du sud': ['sud1.jpg', 'sud2.jpg', 'sud3.jpg'],
-            'Biotope asiatique': ['asie1.jpg', 'asie2.jpg', 'asie3.jpg'],
-            'Biotope africain': ['afrique1.jpg', 'afrique2.jpg'],
-            'Biotope australien': ['australie1.jpg', 'australie2.jpg'],
-            'Autre': ['autre1.jpg', 'autre2.jpg']
-        } %}
-
-        {% for last in lastArticles|slice(0, 3) %}
-            {% set badgeClass = {
-                'Biotope Amérique du sud': 'badge-amerique-sud',
-                'Biotope asiatique': 'badge-asiatique',
-                'Biotope africain': 'badge-africain',
-                'Biotope australien': 'badge-australien',
-                'Autre': 'badge-autre'
-            }[last.categorie] ?? 'badge-autre' %}
-
-            {% set icon = {
-                'Biotope Amérique du sud': '🌱',
-                'Biotope asiatique': '🌊',
-                'Biotope africain': '🏜️',
-                'Biotope australien': '🪸',
-                'Autre': '🌍'
-            }[last.categorie] ?? '🌍' %}
-
-            {% set defaultImage = defaultImages[last.categorie]|default(['default.jpg'])|random_element %}
-
-            <a href="{{ path('article_show', {'id': last.id}) }}" class="text-decoration-none text-dark">
-                <div class="card mb-3">
-                    {% if last.image %}
-                        <img src="{{ asset('uploads/articles/' ~ last.image) }}" class="card-img-top" alt="{{ last.titre }}">
-                    {% else %}
-                        <img src="{{ asset('build/images/defaults/' ~ defaultImage) }}" class="card-img-top" alt="Image par défaut">
-                    {% endif %}
-                    <div class="card-body p-2">
-                        <h6 class="card-title mb-1" style="font-size: 0.95rem;">
-                            {{ last.titre|length > 40 ? last.titre|slice(0, 40) ~ '…' : last.titre }}
-                        </h6>
-                        <span class="badge {{ badgeClass }} mb-1 d-inline-block">
-                            {{ icon }} {{ last.categorie }}
-                        </span>
-                        <small class="text-muted d-block">{{ last.createdAt|human_date }}</small>
+                        <h5 class="mb-3">🌿 Concours Francçais d'Aquascaping</h5>
+                        <p>Découvrez le concours d'aquascaping et de paysages aquatiques, des œuvres d'art vivantes !</p>
+                        <a href="https://capa-aquascaping.fr/" class="btn btn-concours" target="_blank" rel="noopener noreferrer">Voir les concours 🌍</a>
                     </div>
-                </div>
-            </a>
-        {% endfor %}
-    </div>
-{% endif %}
+                    <div class="mb-4 p-3 bg-white rounded shadow-sm">
+                        <h5 class="mb-3">🌿 Concours internationaux d'Aquascaping</h5>
+                        <p>Découvrez le concours international d'aquascaping, des œuvres d'art vivantes !</p>
+                        <a href="https://showcase.aquatic-gardeners.org/" class="btn btn-concours" target="_blank" rel="noopener noreferrer">Voir les concours 🌍</a>
+                    </div>
 
+                    {% if lastArticles is defined and lastArticles|length > 0 %}
+                        <div class="mb-4 p-3 bg-white rounded shadow-sm">
+                            <h5 class="mb-3">📰 Derniers articles publiés</h5>
+                            {% set defaultImages = {
+                                'Biotope Amérique du sud': ['sud1.jpg', 'sud2.jpg', 'sud3.jpg'],
+                                'Biotope asiatique': ['asie1.jpg', 'asie2.jpg', 'asie3.jpg'],
+                                'Biotope africain': ['afrique1.jpg', 'afrique2.jpg'],
+                                'Biotope australien': ['australie1.jpg', 'australie2.jpg'],
+                                'Autre': ['autre1.jpg', 'autre2.jpg']
+                            } %}
+
+                            {% for last in lastArticles|slice(0, 3) %}
+                                {% set badgeClass = {
+                                    'Biotope Amérique du sud': 'badge-amerique-sud',
+                                    'Biotope asiatique': 'badge-asiatique',
+                                    'Biotope africain': 'badge-africain',
+                                    'Biotope australien': 'badge-australien',
+                                    'Autre': 'badge-autre'
+                                }[last.categorie] ?? 'badge-autre' %}
+
+                                {% set icon = {
+                                    'Biotope Amérique du sud': '🌱',
+                                    'Biotope asiatique': '🌊',
+                                    'Biotope africain': '🏜️',
+                                    'Biotope australien': '🪸',
+                                    'Autre': '🌍'
+                                }[last.categorie] ?? '🌍' %}
+
+                                {% set defaultImage = defaultImages[last.categorie]|default(['default.jpg'])|random_element %}
+
+                                <a href="{{ path('app_article_show', {'id': last.id}) }}" class="text-decoration-none text-dark">
+                                    <div class="card mb-3">
+                                        {% if last.image %}
+                                            <img src="{{ asset('uploads/articles/' ~ last.image) }}" class="card-img-top" alt="{{ last.titre }}">
+                                        {% else %}
+                                            <img src="{{ asset('build/images/defaults/' ~ defaultImage) }}" class="card-img-top" alt="Image par défaut">
+                                        {% endif %}
+                                        <div class="card-body p-2">
+                                            <h6 class="card-title mb-1" style="font-size: 0.95rem;">
+                                                {{ last.titre|length > 40 ? last.titre|slice(0, 40) ~ '…' : last.titre }}
+                                            </h6>
+                                            <span class="badge {{ badgeClass }} mb-1 d-inline-block">
+                                                {{ icon }} {{ last.categorie }}
+                                            </span>
+                                            <small class="text-muted d-block">{{ last.createdAt|human_date }}</small>
+                                        </div>
+                                    </div>
+                                </a>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
                 </div>
             </div>
         </div>
     </div>
 </section>
+
+<!-- Modale Bootstrap de suppression -->
+<div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content shadow-sm border-0 rounded-3">
+      <div class="modal-header bg-light border-0">
+        <h5 class="modal-title text-dark" id="deleteModalLabel">
+          <i class="bi bi-exclamation-circle-fill text-warning me-2 fs-4"></i>
+          Attention !
+        </h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
+      </div>
+      <div class="modal-body text-center">
+        <p class="mb-0">
+          Êtes-vous sûr de vouloir supprimer cet article ?<br>
+          <small class="text-muted">Cette action sera irréversible.</small>
+        </p>
+      </div>
+      <div class="modal-footer border-0 d-flex justify-content-center gap-3">
+        <button type="button" class="btn btn-outline-secondary px-4" data-bs-dismiss="modal">
+          Annuler
+        </button>
+        <form id="deleteForm" method="post" class="d-inline">
+        <input type="hidden" name="_token" id="deleteFormToken">
+        <button type="submit" class="btn btn-confirm-suppression btn-sm px-4 rounded-pill">
+        <i class="bi bi-trash3 me-1"></i> Oui, supprimer
+        </button>
+
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
 {% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        const deleteModal = document.getElementById('deleteModal');
+        deleteModal.addEventListener('show.bs.modal', function (event) {
+            const button = event.relatedTarget;
+            const action = button.getAttribute('data-action');
+            const token = button.getAttribute('data-token');
+
+            const form = deleteModal.querySelector('#deleteForm');
+            const tokenInput = deleteModal.querySelector('#deleteFormToken');
+
+            form.setAttribute('action', action);
+            tokenInput.value = token;
+        });
+    </script>
+    
+    <script>
+        // Lors de l’ouverture de la modale
+        const deleteModal = document.getElementById('deleteModal');
+        deleteModal.addEventListener('show.bs.modal', function (event) {
+            const button = event.relatedTarget;
+            const action = button.getAttribute('data-action');
+            const token = button.getAttribute('data-token');
+
+            const form = deleteModal.querySelector('#deleteForm');
+            const tokenInput = deleteModal.querySelector('#deleteFormToken');
+
+            form.setAttribute('action', action);
+            tokenInput.value = token;
+
+            // Ajoute une classe spéciale au backdrop pour appliquer le flou
+            setTimeout(() => {
+                const backdrop = document.querySelector('.modal-backdrop');
+                if (backdrop) {
+                    backdrop.classList.add('blur-backdrop');
+                }
+            }, 10);
+        });
+    </script>
+{% endblock %}
+
+
+
 
 
 

@@ -1,0 +1,14 @@
+<div class="card profil-card mb-4">
+  <div class="card-header">👤 Informations du compte</div>
+  <ul class="list-group list-group-flush">
+    <li class="list-group-item"><strong>Email :</strong> {{ app.user.email }}</li>
+    <li class="list-group-item"><strong>Pseudo :</strong> {{ app.user.pseudo ?? 'Non défini' }}</li>
+    <li class="list-group-item">
+      <a href="{{ path('app_change_password') }}" class="btn btn-sm btn-pastel-bleu">🔒 Modifier le mot de passe</a>
+      <button type="button" class="btn btn-sm btn-pastel-rouge" data-bs-toggle="modal" data-bs-target="#confirmDeleteModal">
+        🗑️ Supprimer mon compte
+      </button>
+
+    </li>
+  </ul>
+</div>

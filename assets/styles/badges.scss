@@ -2,37 +2,159 @@
 @use "mixins" as *;
 
 .badge {
-    font-size: 0.85rem;
-    padding: 0.4em 0.6em;
-    border-radius: 1rem;
-    color: #fff;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
-    transition: transform 0.2s, box-shadow 0.2s;
-    border: 1px solid rgba(255, 255, 255, 0.3);
+  font-size: 0.85rem;
+  padding: 0.4em 0.6em;
+  border-radius: 1rem;
+  font-weight: 500;
+  color: #fff;
+  font-family: $font-corps;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  transition: transform 0.2s, box-shadow 0.2s;
 
-    &:hover {
-        transform: scale(1.1);
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-    }
+  &:hover {
+    transform: scale(1.05);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  }
 }
 
-/* Catégories personnalisées */
+// --------------------------------------------------
+// 🎖️ Statuts utilisateur (connecté, inactif...)
+// --------------------------------------------------
+
+.badge-statut {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.35rem 0.75rem;
+  font-size: 0.9rem;
+  border: 1px solid transparent;
+  border-radius: 0.75rem;
+
+  i {
+    margin-right: 0.4rem;
+  }
+}
+
+.badge-actif {
+  @extend .badge-statut;
+  background-color: rgba(0, 128, 0, 0.15);
+  color: #1c6e1c;
+  border-color: #1c6e1c;
+}
+
+.badge-inactif {
+  @extend .badge-statut;
+  background-color: rgba(128, 128, 128, 0.15);
+  color: #555;
+  border-color: #888;
+}
+
+// --------------------------------------------------
+// 🧑‍💼 Rôles (utilisateur, admin, etc.)
+// --------------------------------------------------
+
+.badge-utilisateur {
+  background-color: rgba(74, 111, 165, 0.15);
+  color: #4a6fa5;
+}
+
+.badge-admin {
+  background-color: rgba(178, 60, 60, 0.15);
+  color: #b23c3c;
+}
+
+// --------------------------------------------------
+// 🌍 Biotopes (catégories espèces)
+// --------------------------------------------------
+
 .badge-amerique-sud {
-    background: linear-gradient(45deg, #6b8e23, #556b2f); // vert forêt amazonienne
+  background: linear-gradient(45deg, #6b8e23, #556b2f);
 }
 
 .badge-asiatique {
-    background: linear-gradient(45deg, #20b2aa, #008b8b); // turquoise asiatique, eau claire
+  background: linear-gradient(45deg, #20b2aa, #008b8b);
 }
 
 .badge-africain {
-    background: linear-gradient(45deg, #c2b280, #a0522d); // sable du désert, terre sèche
+  background: linear-gradient(45deg, #c2b280, #a0522d);
 }
 
 .badge-australien {
-    background: linear-gradient(45deg, #ffa07a, #ff4500); // corail, récif australien
+  background: linear-gradient(45deg, #ffa07a, #ff4500);
 }
 
 .badge-autre {
-    background: linear-gradient(45deg, #708090, #2f4f4f); // gris ardoise, roche
+  background: linear-gradient(45deg, #708090, #2f4f4f);
 }
+
+// --------------------------------------------------
+// 📄 Publication d’articles
+// --------------------------------------------------
+
+.badge-publie {
+  background-color: $btn-vert;
+  color: #fff;
+  border-radius: 0.8rem;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+.badge-brouillon {
+  background-color: $warning;
+  color: #212529;
+}
+
+$badge-attente: #a0875b;
+
+.badge-attente {
+  background-color: $badge-attente;
+  color: #fff;
+}
+
+// --------------------------------------------------
+// ✅ Validation / approbation
+// --------------------------------------------------
+
+.badge-valide {
+  background-color: #d1e7dd;
+  color: #0f5132;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4em;
+  border-radius: 0.5rem;
+
+  &::before {
+    content: '✔';
+    font-size: 0.9em;
+  }
+}
+
+// --------------------------------------------------
+// 🔢 Compteurs & autres pastels
+// --------------------------------------------------
+
+.badge-compteur {
+  display: inline-block;
+  padding: 0.3rem 0.7rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  border-radius: 999px;
+  vertical-align: middle;
+}
+
+.pastel-blue {
+  background-color: rgba(173, 216, 230, 0.3);
+  color: #0b5394;
+}
+
+.pastel-pink {
+  background-color: rgba(255, 182, 193, 0.3);
+  color: #a11a3f;
+}
+
+
+
+
+
+
+
+

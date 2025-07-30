@@ -4,103 +4,158 @@
 {% block title %}Mon profil{% endblock %}
 
 {% block body %}
-<div class="profile-page">
-    <div class="container">
+<div class="container mt-5 profile-page">
+    <h1 class="mb-4">👤 Mon profil</h1>
 
-        <!-- Bloc informations du compte -->
-        <div class="card mb-4">
-            <div class="card-header">
-                👤 Informations du compte
-            </div>
-            <ul class="list-group list-group-flush">
-                <li class="list-group-item"><strong>Email :</strong> {{ app.user.email }}</li>
-                <li class="list-group-item"><strong>Pseudo :</strong> {{ app.user.pseudo ?? 'Non défini' }}</li>
-                <li class="list-group-item">
-                    <a href="{{ path('app_change_password') }}" class="btn btn-sm btn-bleu-profil">
-                    Modifier le mot de passe</a>
-                </li>
-                <li class="list-group-item">
-                <!-- Bouton qui ouvre la modale -->
-                <button type="button" class="btn btn-sm btn-rouge" data-bs-toggle="modal" data-bs-target="#confirmDeleteModal">
-                    Supprimer mon compte
-                </button>
-                </li>
+    {{ form_start(form) }}
 
-                    
-            </ul>
+    <div class="row mb-4">
+        <div class="col-md-3 text-center">
+            <img id="avatarPreview"
+                src="{{ asset('images/avatars/' ~ (user.avatar ?: 'default-avatar.png')) }}"
+                alt="Avatar de {{ user.pseudo }}"
+                class="rounded-circle img-fluid avatar-preview mb-3 shadow"
+                style="width: 150px; height: 150px; object-fit: cover; cursor: pointer;"
+                data-bs-toggle="modal"
+                data-bs-target="#avatarModal">
+
+                {{ form_widget(form.avatar, {'attr': {'id': 'avatarInput'}}) }}
+            <div class="form-text">Cliquez sur l'avatar pour le modifier</div>
         </div>
-        <!-- Modale Bootstrap : Supprimer mon compte -->
-        <div class="modal fade" id="confirmDeleteModal" tabindex="-1" aria-labelledby="confirmDeleteModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
+
+        <div class="col-md-9">
+            <div class="mb-3">
+                {{ form_label(form.pseudo) }}
+                {{ form_widget(form.pseudo, {'attr': {'class': 'form-control'}}) }}
+            </div>
+            <div class="mb-3">
+                {{ form_label(form.bio) }}
+                {{ form_widget(form.bio, {'attr': {'class': 'form-control', 'rows': 4}}) }}
+            </div>
+        </div>
+    </div>
+
+    <div class="text-end">
+        <button type="submit" class="btn btn-success">💾 Enregistrer les modifications</button>
+    </div>
+
+    {{ form_end(form) }}
+
+    <!-- Modal de sélection d'avatar -->
+    <div class="modal fade" id="avatarModal" tabindex="-1" aria-labelledby="avatarModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
             <div class="modal-content">
-            <div class="modal-header bg-danger text-white">
-                <h5 class="modal-title" id="confirmDeleteModalLabel">⚠️ Confirmation de suppression</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
-            </div>
-            <div class="modal-body">
-                <p>Cette action est <strong>irréversible</strong>.<br>
-                Votre compte et toutes vos données seront définitivement supprimés.<br>
-                Êtes-vous certain de vouloir continuer ? 🧨</p>
-            </div>
-            <div class="modal-footer">
-                <form method="post" action="{{ path('app_delete_account') }}">
-                    <input type="hidden" name="_token" value="{{ csrf_token('delete-user') }}">
-                    <button type="submit" class="btn btn-danger">🗑️ Oui, supprimer</button>
-                </form>
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
-            </div>
-            </div>
-        </div>
-        </div>
-
-
-        <!-- Bloc activité -->
-        <div class="card mb-4">
-            <div class="card-header">
-                ✍️ Activités récentes
-            </div>
-            <ul class="list-group list-group-flush">
-                <li class="list-group-item">Nombre d'articles : {{ articles|length }}</li>
-                <li class="list-group-item">Nombre de commentaires : {{ nbCommentaires }}</li>
-                <li class="list-group-item">Total de likes reçus : {{ totalLikes }}</li>
-            </ul>
-        </div>
-        <!-- Carte Call to Action : Rédiger un article -->
-    <div class="card text-center mb-4 shadow-sm border-success call-to-action-article">
-    <div class="card-body">
-        <h5 class="card-title">📝 Partage ton expertise de l'aquariophilie !</h5>
-        <p class="card-text">Tu as des connaissances à transmettre ? Rédige un article pour enrichir la communauté.</p>
-        <a href="{{ path('article_conditions') }}" class="btn btn-vert">
-        ✍️ Rédiger un article
-        </a>
-
-    </div>
-    </div>
-        <!-- Bloc articles -->
-        <div class="card">
-            <div class="card-header">
-                📚 Mes articles
-            </div>
-            <div class="card-body">
-                {% if articles is not empty %}
-                    <ul class="list-group">
-                        {% for article in articles %}
-                            <li class="list-group-item d-flex justify-content-between align-items-center">
-                                <a href="{{ path('article_show', {'id': article.id}) }}">{{ article.titre }}</a>
-                                {% if article.estApprouve %}
-                                    <span class="badge bg-success">⭐</span>
-                                {% endif %}
-                            </li>
+                <div class="modal-header">
+                    <h5 class="modal-title">Choisir un avatar</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        {% for avatar in avatars %}
+                            <div class="col-3 col-sm-2 text-center mb-3">
+                                <img src="{{ asset('images/avatars/' ~ avatar) }}"
+                                     alt="Avatar {{ loop.index }}"
+                                     class="avatar-choice img-thumbnail"
+                                     style="cursor: pointer; width: 70px; height: 70px; object-fit: cover; border-radius: 50%; transition: transform 0.2s;"
+                                     data-avatar="{{ avatar }}"
+                                     onmouseover="this.style.transform='scale(1.2)'"
+                                     onmouseout="this.style.transform='scale(1)'">
+                            </div>
+                        {% else %}
+                            <p class="text-muted">Aucun avatar disponible pour le moment.</p>
                         {% endfor %}
-                    </ul>
-                {% else %}
-                    <p>Vous n'avez pas encore rédigé d'article.</p>
-                {% endif %}
+                    </div>
+                </div>
             </div>
         </div>
     </div>
+
+    <hr class="my-5">
+
+    <h2>📊 Mes statistiques</h2>
+    <ul>
+        <li><strong>{{ articles|length }}</strong> article(s) publié(s)</li>
+        <li><strong>{{ totalLikes }}</strong> like(s) reçus</li>
+        <li><strong>{{ nbCommentaires }}</strong> commentaire(s) posté(s)</li>
+    </ul>
+
+    <div class="card mt-5 shadow-sm">
+        <div class="card-body text-center">
+            <h5 class="card-title">✍️ Prêt à partager votre savoir ?</h5>
+            <p class="card-text">Rédigez un nouvel article pour enrichir la communauté !</p>
+            <a href="{{ path('app_article_new') }}" class="btn btn-vert mt-3">
+                <i class="bi bi-pencil-square"></i> Rédiger un article
+            </a>
+        </div>
+    </div>
+
+    <hr class="my-5">
+    <h2>📝 Mes articles</h2>
+
+    {% if articles is empty %}
+        <p class="text-muted">Vous n'avez pas encore rédigé d'article.</p>
+    {% else %}
+        <div class="row row-cols-1 row-cols-md-2 g-4">
+            {% for article in articles %}
+                <div class="col">
+                    <div class="card shadow-sm h-100">
+                        <div class="card-body">
+                            <h5 class="card-title">
+                                {{ article.titre }}
+                                {% if article.estApprouve %}
+                                    <span class="badge bg-success ms-2">Validé ✅</span>
+                                {% else %}
+                                    <span class="badge bg-warning text-dark ms-2">En attente ⏳</span>
+                                {% endif %}
+                            </h5>
+                            <p class="card-text small text-muted">
+                                Publié le {{ article.datePublication|date('d/m/Y') }}
+                            </p>
+                            <a href="{{ path('app_article_show', {'id': article.id}) }}" class="btn btn-sm btn-outline-primary">
+                                Voir l'article
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+</div>
 </div>
 {% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+    document.addEventListener('DOMContentLoaded', function () {
+        document.querySelectorAll('.avatar-choice').forEach(function (img) {
+            img.addEventListener('click', function () {
+                const selectedAvatar = this.dataset.avatar;
+                const avatarInput = document.querySelector('input[name$="[avatar]"]'); // <-- ciblage dynamique
+                const avatarPreview = document.getElementById('avatarPreview');
+                const modalEl = document.getElementById('avatarModal');
+
+                if (avatarInput) {
+                    avatarInput.value = selectedAvatar;
+                }
+                if (avatarPreview) {
+                    avatarPreview.src = this.src;
+                }
+                if (modalEl) {
+                    const modal = bootstrap.Modal.getInstance(modalEl);
+                    if (modal) modal.hide();
+                }
+            });
+        });
+    });
+</script>
+
+{% endblock %}
+
+
+
+
 
 
 

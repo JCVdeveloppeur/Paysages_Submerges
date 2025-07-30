@@ -1,0 +1,21 @@
+<div class="card profil-card">
+  <div class="card-header">📚 Mes articles</div>
+  <div class="card-body">
+    {% if articles is not empty %}
+      <ul class="list-group">
+        {% for article in articles %}
+          <li class="list-group-item d-flex justify-content-between align-items-center">
+            <a href="{{ path('article_show', {'id': article.id}) }}">{{ article.titre }}</a>
+            {% if article.estApprouve %}
+              <span class="badge badge-valide ms-2" data-bs-toggle="tooltip" title="Cet article a été approuvé par un modérateur.">
+                Validé par l'équipe
+              </span>
+            {% endif %}
+          </li>
+        {% endfor %}
+      </ul>
+    {% else %}
+      <p>Vous n'avez pas encore rédigé d'article.</p>
+    {% endif %}
+  </div>
+</div>

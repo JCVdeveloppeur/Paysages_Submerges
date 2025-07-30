@@ -60,7 +60,7 @@
                                 </li>
                             {% endif %}
                             <li>
-                                <a class="dropdown-item d-flex align-items-center" href="{{ path('article_create') }}">
+                                <a class="dropdown-item d-flex align-items-center" href="{{ path('app_article_new') }}">
                                     <i class="bi bi-pencil-square me-2"></i> Rédiger un article
                                 </a>
                             </li>
@@ -95,6 +95,12 @@
                     </li>
                 {% endif %}
             </ul>
+            {% if app.user %}
+                <a href="{{ path('app_article_new') }}" class="btn btn-vert ms-2 me-3 d-none d-lg-inline-flex">
+                    <i class="bi bi-pencil-square"></i> Rédiger un article
+                </a>
+            {% endif %}
+
 
             <form class="d-flex ms-3" action="{{ path('app_articles') }}" method="get" role="search">
                 <input class="form-control me-2" type="search" name="q" placeholder="🔍 Rechercher…" value="{{ app.request.get('q') }}">

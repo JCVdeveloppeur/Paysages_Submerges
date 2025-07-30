@@ -1,5 +1,7 @@
 
 @use "variables" as *;
+@use "mixins" as *;
+@use "bouton" as *;
 
 .admin-dashboard {
   .card {
@@ -128,6 +130,12 @@
     font-size: 0.9rem;
   }
 }
+.propose-par {
+  font-size: 0.85rem;
+  color: #6c757d; // gris doux Bootstrap
+  margin-bottom: 0.5rem;
+}
+
 
 
 

@@ -36,18 +36,23 @@
                             <td>{{ article.dateCreation|date('d/m/Y H:i') }}</td>
                             <td>
                                 {% if article.statut == 'publié' %}
-                                    <span class="badge bg-success">Publié</span>
+                                    <span class="badge badge-publie">Publié</span>
+                                {% elseif article.statut == 'brouillon' %}
+                                    <span class="badge badge-brouillon">Brouillon</span>
                                 {% else %}
-                                    <span class="badge bg-warning text-dark">{{ article.statut }}</span>
+                                    <span class="badge badge-attente">{{ article.statut }}</span>
                                 {% endif %}
                             </td>
                             <td>
                                 <form method="post" action="{{ path('admin_article_delete', { id: article.id }) }}"
-                                      onsubmit="return confirm('Supprimer cet article ?');">
+                                    onsubmit="return confirm('Supprimer cet article ?');" class="d-inline">
                                     <input type="hidden" name="_token" value="{{ csrf_token('delete-article-' ~ article.id) }}">
-                                    <button class="btn btn-sm btn-outline-danger" title="Supprimer">🗑️</button>
+                                    <button type="submit" class="btn-admin-supprimer" title="Supprimer">
+                                    <i class="bi bi-trash3"></i> Supprimer
+                                </button>
                                 </form>
                             </td>
+
                         </tr>
                     {% endfor %}
                 </tbody>
@@ -60,7 +65,11 @@
     {% endif %}
 
     <div class="mt-4">
-        <a href="{{ path('admin_dashboard') }}" class="btn btn-outline-secondary">← Retour au tableau de bord</a>
+        <a href="{{ path('admin_dashboard') }}" class="btn-admin-retour">
+            <i class="bi bi-arrow-left-circle"></i> Retour au tableau de bord
+        </a>
+
+
     </div>
 </div>
 {% endblock %}

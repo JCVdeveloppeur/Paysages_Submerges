@@ -6,8 +6,21 @@ $bleu-marine:        #0a2a43;
 $bleu-profond:       #05213b;
 $bleu-accent:        #0d6efd;
 $bleu-accent-hover:  #0b5ed7;
+
+$bleu-ciel:          #4fc3f7; // Pour des éléments plus lumineux
+$gris-moyen:         #6c757d; // Ajouté pour les textes secondaires
 $crème-clair:        #fdfdfd;
 $texte-foncé:        #333333;
+
+// --------------------------------------------------
+// Boutons naturels
+// --------------------------------------------------
+
+$btn-vert:           #588157;
+$btn-vert-hover:     lighten($btn-vert, 8%);
+
+$btn-brun:           #7a5c3b;
+$btn-brun-hover:     darken($btn-brun, 6%);
 
 // --------------------------------------------------
 // Ombres et bordures
@@ -32,26 +45,24 @@ $font-boutons:       'Roboto', sans-serif;
 $transition-douce:   all 0.3s ease;
 
 // --------------------------------------------------
-// Autres variables utiles 
+// Dégradé
 // --------------------------------------------------
- 
+
 $degrade-aquatique: linear-gradient(to bottom, #041f3d, #0a3b59, #0f5e6f, #1b7f83, #29a09a);
 
+// --------------------------------------------------
 // Alertes ou messages flash
+// --------------------------------------------------
 
 $success: #28a745;
 $danger:  #dc3545;
 $warning: #ffc107;
 $info:    #17a2b8;
 
-// $max-width-container: 1200px;
-// $spacing-section: 4rem 2rem;
-// Boutons naturels
+// --------------------------------------------------
+// Badges validation
+// --------------------------------------------------
 
-$btn-vert: #588157;
-$btn-vert-hover: lighten($btn-vert, 8%);
+$badge-vert-clair: #d1e7dd;
+$badge-vert-foncé: #0f5132;
 
-$btn-brun: #7a5c3b;
-$btn-brun-hover: darken($btn-brun, 6%);
-
-$bleu-ciel: #4fc3f7; // ou un bleu clair doux de ton choix

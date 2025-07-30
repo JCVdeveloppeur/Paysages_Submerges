@@ -237,7 +237,7 @@ class Article
         return $this;
     }
 
-    public function isEstApprouve(): ?bool
+    public function getEstApprouve(): ?bool
     {
     return $this->estApprouve;
     }

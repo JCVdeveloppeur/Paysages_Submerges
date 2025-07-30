@@ -53,5 +53,11 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 });
+// Activation des tooltips Bootstrap
+document.addEventListener('DOMContentLoaded', () => {
+  const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]');
+  tooltipTriggerList.forEach(t => new bootstrap.Tooltip(t));
+});
+
 
 

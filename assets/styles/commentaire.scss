@@ -1,4 +1,6 @@
 @use "variables" as *;
+@use "mixins" as *;
+@use "bouton" as *;
 
 .comment-form-section {
   background-color: #f8f9fa;

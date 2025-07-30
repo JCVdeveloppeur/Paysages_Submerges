@@ -1,0 +1,77 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Aperçu de l'article{% endblock %}
+
+{% block body %}
+<div class="container py-5">
+    <h1 class="mb-3">{{ article.titre }}</h1>
+    <p class="text-muted mb-4">
+        Proposé par :
+        {{ article.user ? (article.user.pseudo ?: article.user.email) : 'Auteur inconnu' }}
+    </p>
+
+    {# Image d'en-tête #}
+    {% if article.imageHeader %}
+        <div class="mb-3 text-center">
+            <img src="{{ asset('uploads/articles/' ~ article.imageHeader) }}" class="img-fluid rounded" alt="Image d'en-tête">
+            {% if article.legendeImageHeader %}
+                <p class="text-muted fst-italic small mt-2">{{ article.legendeImageHeader }}</p>
+            {% endif %}
+        </div>
+    {% endif %}
+
+    <div class="article-content">
+        {# Introduction 1 + Image gauche #}
+        {% if article.intro1 %}
+            <div class="mb-5">
+                <h2 class="h5">Introduction 1</h2>
+                <p>{{ article.intro1 }}</p>
+                {% if article.imageGauche %}
+                    <img src="{{ asset('uploads/articles/' ~ article.imageGauche) }}" class="img-fluid rounded my-3" alt="Image gauche">
+                    {% if article.legendeImageGauche %}
+                        <p class="text-muted fst-italic small">{{ article.legendeImageGauche }}</p>
+                    {% endif %}
+                {% endif %}
+            </div>
+        {% endif %}
+
+        {# Introduction 2 + Image droite #}
+        {% if article.intro2 %}
+            <div class="mb-5">
+                <h2 class="h5">Introduction 2</h2>
+                <p>{{ article.intro2 }}</p>
+                {% if article.imageDroite %}
+                    <img src="{{ asset('uploads/articles/' ~ article.imageDroite) }}" class="img-fluid rounded my-3" alt="Image droite">
+                    {% if article.legendeImageDroite %}
+                        <p class="text-muted fst-italic small">{{ article.legendeImageDroite }}</p>
+                    {% endif %}
+                {% endif %}
+            </div>
+        {% endif %}
+
+        {# Contenu principal #}
+        <div class="mb-5">
+            {{ article.contenu|raw }}
+        </div>
+    </div>
+
+    {# Boutons de modération #}
+    <div class="d-flex gap-3 mt-5">
+        <form method="post" action="{{ path('admin_article_approve', {'id': article.id}) }}">
+            <input type="hidden" name="_token" value="{{ csrf_token('approve' ~ article.id) }}">
+            <button class="btn btn-success">✅ Approuver</button>
+        </form>
+
+        <form method="post" action="{{ path('admin_article_delete', {'id': article.id}) }}" onsubmit="return confirm('Supprimer cet article ?')">
+            <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ article.id) }}">
+            <button class="btn btn-outline-danger">🗑️ Supprimer</button>
+        </form>
+
+        <a href="{{ path('admin_articles_moderation') }}" class="btn btn-outline-secondary">
+            ← Retour à la modération
+        </a>
+    </div>
+</div>
+{% endblock %}
+
+

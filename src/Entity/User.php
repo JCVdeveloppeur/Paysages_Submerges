@@ -11,6 +11,7 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 
+
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\UniqueConstraint(name: 'UNIQ_IDENTIFIER_EMAIL', fields: ['email'])]
 #[UniqueEntity(fields: ['email'], message: 'Il existe déjà un compte avec cet email.')]
@@ -55,13 +56,19 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column]
     private ?bool $isActive = null;
 
+    #[ORM\Column(type: 'datetime', nullable: true)]
+    private ?\DateTimeInterface $lastLogin = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $avatar = null;
+
     public function __construct()
     {
         $this->articles = new ArrayCollection();
         $this->commentaires = new ArrayCollection();
         $this->likes = new ArrayCollection();
-         $this->dateInscription = new \DateTime();
-        $this->isActive = true; // 👈 Valeur par défaut
+        $this->dateInscription = new \DateTime();
+        $this->isActive = true;
     }
 
     public function getId(): ?int
@@ -89,7 +96,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         $roles = $this->roles;
         $roles[] = 'ROLE_USER';
-
         return array_unique($roles);
     }
 
@@ -109,10 +115,10 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->password = $password;
         return $this;
     }
-    
+
     public function eraseCredentials(): void
     {
-        // À utiliser si tu stockes un mot de passe temporaire
+        // Utilisé pour nettoyer des données sensibles
     }
 
     public function getUsername(): ?string
@@ -144,7 +150,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function setBio(?string $bio): static
     {
-    $this->bio = $bio;
+        $this->bio = $bio;
         return $this;
     }
 
@@ -155,8 +161,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function setDateInscription(\DateTimeInterface $dateInscription): static
     {
-        
-    $this->dateInscription = $dateInscription;
+        $this->dateInscription = $dateInscription;
         return $this;
     }
 
@@ -178,7 +183,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function removeArticle(Article $article): static
     {
         if ($this->articles->removeElement($article)) {
-        if ($article->getUser() === $this) {
+            if ($article->getUser() === $this) {
                 $article->setUser(null);
             }
         }
@@ -204,7 +209,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function removeCommentaire(Commentaire $commentaire): static
     {
         if ($this->commentaires->removeElement($commentaire)) {
-         if ($commentaire->getAuteur() === $this) {
+            if ($commentaire->getAuteur() === $this) {
                 $commentaire->setAuteur(null);
             }
         }
@@ -230,7 +235,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function removeLike(Like $like): static
     {
         if ($this->likes->removeElement($like)) {
-            
             if ($like->getUser() === $this) {
                 $like->setUser(null);
             }
@@ -247,22 +251,29 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setIsActive(bool $isActive): static
     {
         $this->isActive = $isActive;
-
         return $this;
     }
-    #[ORM\Column(type: 'datetime', nullable: true)]
-    private ?\DateTimeInterface $lastLogin = null;
 
     public function getLastLogin(): ?\DateTimeInterface
-    {  
-    return $this->lastLogin;
+    {
+        return $this->lastLogin;
     }
 
     public function setLastLogin(?\DateTimeInterface $lastLogin): self
     {
-    $this->lastLogin = $lastLogin;
-    return $this;
+        $this->lastLogin = $lastLogin;
+        return $this;
     }
 
+    public function getAvatar(): ?string
+    {
+        return $this->avatar;
     }
+
+    public function setAvatar(?string $avatar): self
+    {
+        $this->avatar = $avatar;
+        return $this;
+    }
+}
 

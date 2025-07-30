@@ -14,10 +14,10 @@
         <div class="row g-4">
             {% for article in articles %}
                 <div class="col-md-6">
-                    <div class="card h-100 border-warning">
+                    <div class="card h-100 border-warning shadow-sm mb-3">
                         <div class="card-body">
                             <h5 class="card-title">{{ article.titre }}</h5>
-                            <p class="card-text text-muted">
+                            <p class="card-text propose-par">
                                 Proposé par :
                                 {% if article.user %}
                                     {{ article.user.pseudo ?: article.user.email }}
@@ -25,21 +25,27 @@
                                     Auteur inconnu
                                 {% endif %}
                             </p>
+
                             <p class="card-text">{{ article.contenu|striptags|slice(0, 100) ~ '...' }}</p>
 
-                            <div class="d-flex justify-content-between mt-3">
-                                {# ✅ Approuver #}
-                                <form method="post" action="{{ path('admin_article_approve', {'id': article.id}) }}">
-                                    <input type="hidden" name="_token" value="{{ csrf_token('approve' ~ article.id) }}">
-                                    <button class="btn btn-success btn-sm">✅ Approuver</button>
-                                </form>
+                            <div class="d-flex justify-content-between align-items-center mt-3 flex-wrap gap-2">
 
-                                {# 🗑️ Supprimer #}
-                                <form method="post" action="{{ path('admin_article_delete', {'id': article.id}) }}" onsubmit="return confirm('Supprimer cet article ?')">
-                                    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ article.id) }}">
-                                    <button class="btn btn-danger btn-sm">🗑️ Supprimer</button>
-                                </form>
-                            </div>
+                            <a href="{{ path('admin_article_show', {'id': article.id}) }}" class="btn btn-admin-modifier btn-sm">
+                                📖 Lire
+                            </a>
+
+                            <form method="post" action="{{ path('admin_article_approve', {'id': article.id}) }}">
+                                <input type="hidden" name="_token" value="{{ csrf_token('approve' ~ article.id) }}">
+                                <button class="btn btn-approve btn-sm">✅ Approuver</button>
+                            </form>
+
+                            <form method="post" action="{{ path('admin_article_delete', {'id': article.id}) }}" onsubmit="return confirm('Supprimer cet article ?')">
+                                <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ article.id) }}">
+                                <button class="btn btn-admin-supprimer btn-sm">🗑️ Supprimer</button>
+                            </form>
+
+                        </div>
+
                         </div>
                     </div>
                 </div>
@@ -48,9 +54,10 @@
     {% endif %}
 
     <div class="mt-5 text-center">
-        <a href="{{ path('admin_dashboard') }}" class="btn btn-outline-secondary">
-            ← Retour au tableau de bord
+        <a href="{{ path('admin_articles_all') }}" class="btn-admin-retour mt-4">
+            <i class="bi bi-arrow-left"></i> Retour au tableau de bord
         </a>
+
     </div>
 </div>
 {% endblock %}

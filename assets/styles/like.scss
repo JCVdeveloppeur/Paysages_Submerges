@@ -1,4 +1,6 @@
 @use "variables" as *;
+@use "mixins" as *;
+@use "bouton" as *;
 
 // Bouton like général
 .like-button {

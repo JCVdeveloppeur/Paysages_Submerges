@@ -10,7 +10,9 @@
             🐠 Fiches Espèces 
             <span class="badge bg-primary">{{ nombreEspeces }}</span>
         </h2>
-        <a href="{{ path('espece_new') }}" class="btn btn-success">+ Ajouter une espèce</a>
+        <a href="{{ path('espece_new') }}" class="btn-admin-ajouter">
+            <i class="bi bi-plus-circle"></i> Ajouter une espèce
+        </a>
     </div>
 
     {% if especes is empty %}
@@ -36,18 +38,28 @@
                         <td>{{ espece.typeEspece|default('—') }}</td>
                         <td>{{ espece.biotope|default('—') }}</td>
                         <td>
-                            <a href="{{ path('espece_edit', {id: espece.id}) }}" class="btn btn-sm btn-outline-primary">✏️ Modifier</a>
-                            {{ include('espece/_delete_form.html.twig', { id: espece.id }) }}
+                            <a href="{{ path('espece_edit', { id: espece.id }) }}" class="btn-admin-modifier">
+                                <i class="bi bi-pencil-square"></i> Modifier
+                            </a>
+                            <form method="post" action="{{ path('espece_delete', { id: espece.id }) }}"
+                                onsubmit="return confirm('Supprimer cette espèce ?');"
+                                class="d-inline">
+                                <input type="hidden" name="_token" value="{{ csrf_token('delete-espece-' ~ espece.id) }}">
+                                <button class="btn-admin-supprimer" title="Supprimer">
+                                    <i class="bi bi-trash3"></i> Supprimer
+                                </button>
+                            </form>
                         </td>
+
+
                     </tr>
                 {% endfor %}
             </tbody>
         </table>
     {% endif %}
 
-    <a href="{{ path('admin_dashboard') }}" class="btn btn-outline-primary mb-4">
-        ⬅️ Retour au tableau de bord
-    </a>
+    <a href="{{ path('admin_dashboard') }}" class="btn-admin-retour mt-4">
+    <i class="bi bi-arrow-left"></i> Retour au tableau de bord</a>
 
 </div>
 {% endblock %}

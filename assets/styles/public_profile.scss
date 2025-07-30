@@ -1,5 +1,6 @@
 @use "variables" as *;
-@use 'bouton' as *;
+@use "mixins" as *;
+@use "bouton" as *;
 
 
 .public-profile-page {
@@ -37,4 +38,12 @@
     font-size: 1.2rem;
   }
 }
+.avatar-public {
+  width: 120px;
+  height: 120px;
+  object-fit: cover;
+  border-radius: 50%;
+  border: 2px solid #cce5ff;
+}
+
 

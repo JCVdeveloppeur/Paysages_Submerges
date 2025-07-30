@@ -1,6 +1,5 @@
 @use "variables" as *;
-@use 'mixins' as *;
-
+@use "mixins" as *;
 
 .btn {
   display: inline-flex;
@@ -16,42 +15,50 @@
 
   i {
     margin-right: 0.4rem;
+    color: $bleu-accent;
+    font-size: 1rem;
   }
-  
 }
 
-// Bouton vert (comme sur la home)
+// -------------------------
+// Boutons classiques
+// -------------------------
+
 .btn-vert {
   background-color: $btn-vert;
   color: #fff;
 
   &:hover {
     background-color: $btn-vert-hover;
-    color: #fff;
   }
 }
 
-// Bouton brun
 .btn-brun {
-  background-color: #7a5c3b;
+  background-color: $btn-brun;
   color: #fff;
 
   &:hover {
-    background-color: darken(#7a5c3b, 8%);
-    color: #fff;
+    background-color: $btn-brun-hover;
   }
 }
+
 .btn-gris {
-    background-color: #4c6a74;
-    color: #fff;
-    transition: background-color 0.3s ease;
+  background-color: #4c6a74;
+  color: #fff;
 
   &:hover {
     background-color: lighten(#4c6a74, 8%);
-    color: #fff;
-    }
   }
-  // Bouton gris (style accueil)
+}
+
+.btn-rouge {
+  background-color: #b23c3c;
+  color: #fff;
+
+  &:hover {
+    background-color: darken(#b23c3c, 10%);
+  }
+}
 
 .btn-bleu-profil {
   background-color: #4a6fa5;
@@ -61,31 +68,221 @@
 
   &:hover {
     background-color: lighten(#4a6fa5, 8%);
-    color: #fff;
   }
 }
 
+// -------------------------
+// Boutons pastel
+// -------------------------
 
-// Bouton rouge personnalisé
-.btn-rouge {
-  background-color: #b23c3c; // rouge terre cuite
-  color: #fff;
+.btn-pastel-bleu {
+  background-color: #d0e6ff;
+  color: #0a2a43;
+  transition: $transition-douce;
 
   &:hover {
-    background-color: darken(#b23c3c, 10%);
-    color: #fff;
+    background-color: #bddaf7;
+    color: #05213b;
   }
 }
+
+.btn-pastel-rouge {
+  background-color: #ffd6d6;
+  color: #842029;
+  transition: $transition-douce;
+
+  &:hover {
+    background-color: #fcbcbc;
+    color: #6a1b1b;
+  }
+}
+
+.btn-pastel {
+  background-color: #e8f0fe;
+  color: #0a2a43;
+  border: none;
+
+  &:hover {
+    background-color: #d0e6ff;
+    color: $bleu-profond;
+  }
+}
+
+// -------------------------
+// Boutons spéciaux
+// -------------------------
+
+.btn-rediger {
+  @extend .btn-vert;
+  font-weight: 600;
+  padding: 0.6rem 1.2rem;
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.15);
+
+  &:hover {
+    background-color: darken($btn-vert, 7%);
+    transform: scale(1.02);
+  }
+}
+
 .btn-dashboard {
   height: 40px;
   padding: 0.375rem 0.75rem;
   font-size: 0.9rem;
+  min-width: 130px;
+}
+
+.btn-admin-action,
+.btn-admin-modifier,
+.btn-admin-supprimer,
+.btn-admin-ajouter,
+.btn-admin-retour {
   display: inline-flex;
   align-items: center;
-  justify-content: center;
-  min-width: 130px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  gap: 0.4rem;
+  border-radius: 0.4rem;
+  text-decoration: none;
+  transition: all 0.2s ease-in-out;
 
+  i {
+    font-size: 1rem;
+  }
 }
+
+.btn-admin-modifier {
+  color: #0d6efd;
+  background-color: rgba(13, 110, 253, 0.1);
+  border: 1px solid rgba(13, 110, 253, 0.4);
+
+  &:hover {
+    background-color: #0d6efd;
+    color: #fff;
+    border-color: #0a58ca;
+    transform: scale(1.05);
+  }
+}
+
+.btn-admin-supprimer {
+  color: #dc3545;
+  background-color: rgba(220, 53, 69, 0.1);
+  border: 1px solid rgba(220, 53, 69, 0.4);
+
+  &:hover {
+    background-color: #dc3545;
+    color: #fff;
+    border-color: #b02a37;
+    transform: scale(1.03);
+    box-shadow: 0 0 0.3rem rgba(220, 53, 69, 0.2);
+
+  }
+}
+
+.btn-admin-ajouter {
+  background-color: $btn-vert;
+  color: #fff;
+  padding: 0.5rem 1rem;
+  border-radius: 0.7rem;
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.15);
+
+  &:hover {
+    background-color: darken($btn-vert, 7%);
+    transform: scale(1.05);
+  }
+}
+
+.btn-admin-retour {
+  background-color: $btn-vert;
+  color: #fff;
+  padding: 0.4rem 0.9rem;
+  border-radius: 0.7rem;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+
+  &:hover {
+    background-color: darken($btn-vert, 10%);
+    transform: scale(1.05);
+  }
+}
+
+// -------------------------
+// Filtres et actions
+// -------------------------
+
+.btn-filtrer {
+  background-color: rgba(74, 111, 165, 0.15);
+  color: #4a6fa5;
+  border: 1px solid #4a6fa5;
+  border-radius: 0.6rem;
+  padding: 0.45rem 1rem;
+
+  &:hover {
+    background-color: #4a6fa5;
+    color: #fff;
+  }
+}
+
+.btn-reinitialiser {
+  background-color: rgba(178, 60, 60, 0.1);
+  color: #b23c3c;
+  border: 1px solid #b23c3c;
+  border-radius: 0.6rem;
+  padding: 0.45rem 1rem;
+
+  &:hover {
+    background-color: #b23c3c;
+    color: #fff;
+  }
+}
+
+.btn-icon-supprimer {
+  background-color: rgba(255, 182, 193, 0.2);
+  border: 1px solid #f5c6cb;
+  color: #a11a3f;
+  padding: 0.4rem 0.6rem;
+  font-size: 0.9rem;
+  border-radius: 0.4rem;
+
+  &:hover {
+    background-color: rgba(220, 53, 69, 0.2);
+    color: #721c24;
+  }
+}
+
+.btn-approve {
+  background-color: rgba(144, 238, 144, 0.3);
+  border: 1px solid #b2d8b2;
+  color: #2c6e49;
+  padding: 0.4rem 0.6rem;
+  border-radius: 0.4rem;
+
+  &:hover {
+    background-color: rgba(72, 201, 176, 0.2);
+    color: #1f4f3b;
+    transform: scale(1.03);
+    box-shadow: 0 0 0.3rem rgba(220, 53, 69, 0.2);
+
+  }
+}
+
+.btn-confirm-suppression {
+  background-color: #e67c7c;
+  color: white;
+
+  &:hover {
+    background-color: darken(#e67c7c, 10%);
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
 
 
 

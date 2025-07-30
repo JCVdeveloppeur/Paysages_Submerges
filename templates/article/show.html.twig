@@ -3,31 +3,30 @@
 {% block title %}{{ article.titre }}{% endblock %}
 
 {% block body %}
-<div class="article-show-page"> {# Toute la page article, sans container ici #}
+<div class="article-show-page">
 
     {% if article.imageHeader %}
-    {% set badgeClass = {
-        'Biotope Amérique du sud': 'badge-amerique-sud',
-        'Biotope asiatique': 'badge-asiatique',
-        'Biotope africain': 'badge-africain',
-        'Biotope australien': 'badge-australien',
-        'Autre': 'badge-autre'
-    }[article.categorie] ?? 'badge-autre' %}
+        {% set badgeClass = {
+            'Biotope Amérique du sud': 'badge-amerique-sud',
+            'Biotope asiatique': 'badge-asiatique',
+            'Biotope africain': 'badge-africain',
+            'Biotope australien': 'badge-australien',
+            'Autre': 'badge-autre'
+        }[article.categorie] ?? 'badge-autre' %}
 
-                                        
         <section class="hero-header hero-zoom mb-4" data-bg="{{ asset('uploads/articles/' ~ article.imageHeader) }}">
             <div class="hero-overlay d-flex justify-content-center align-items-center text-center">
                 <div>
                     <h1 class="hero-title">{{ article.titre }}</h1>
                     <span class="badge {{ badgeClass }}">
-                                            {% if article.categorie == 'Biotope Amérique du sud' %}🌱
-                                            {% elseif article.categorie == 'Biotope asiatique' %}🌊
-                                            {% elseif article.categorie == 'Biotope africain' %}🏜️
-                                            {% elseif article.categorie == 'Biotope australien' %}🪸
-                                            {% else %}🌍
-                                            {% endif %}
-                                            {{ article.categorie }}
-                                        </span>
+                        {% if article.categorie == 'Biotope Amérique du sud' %}🌱
+                        {% elseif article.categorie == 'Biotope asiatique' %}🌊
+                        {% elseif article.categorie == 'Biotope africain' %}🏜️
+                        {% elseif article.categorie == 'Biotope australien' %}🪸
+                        {% else %}🌍
+                        {% endif %}
+                        {{ article.categorie }}
+                    </span>
                 </div>
             </div>
         </section>
@@ -39,7 +38,7 @@
         {% endif %}
     {% endif %}
 
-    <div class="container py-5"> {# On commence le container ici seulement #}
+    <div class="container py-5">
 
         <div class="article-card mb-5">
             <div class="article-content">
@@ -88,7 +87,7 @@
                 </div>
             </div>
 
-            <!-- Zone Like + Commentaires alignées -->
+            <!-- Likes & commentaires -->
             <div class="d-flex align-items-center gap-4 mt-4 mb-3">
                 <div class="position-relative">
                     <button class="like-button border-0 bg-transparent"
@@ -100,35 +99,52 @@
                     <div class="merci-message">Merci!</div>
                 </div>
                 <div class="text-muted">
-                    <i class="bi bi-chat-left-text me-1"></i>{{ article.commentaires|length }} commentaire{{ article.commentaires|length > 1 ? 's' }}
+                    <i class="bi bi-chat-left-text me-1"></i>{{ commentaires|length }} commentaire{{ commentaires|length > 1 ? 's' }}
                 </div>
+
             </div>
 
-            <!-- Auteur -->
+            <!-- Auteur avec avatar -->
             <div class="article-footer d-flex justify-content-between align-items-center text-muted flex-wrap">
-                <div class="d-flex align-items-center flex-wrap">
+                <div class="d-flex align-items-center gap-3 flex-wrap">
                     {% if article.user %}
-                        <span class="me-2">
-                            Rédigé par
-                            {% if article.user.pseudo is not empty %}
-                                <a href="{{ path('app_public_profile', {'pseudo': article.user.pseudo}) }}" class="fw-bold text-decoration-none">
-                                    <i class="bi bi-person-circle me-1"></i>{{ article.user.pseudo }}
-                                </a>
-                            {% else %}
-                                <strong>{{ article.user.email }}</strong>
-                            {% endif %}
-                        </span>
+                <span>Rédigé par</span>
+                <a href="{{ path('app_public_profile', {'pseudo': article.user.pseudo}) }}" class="d-flex align-items-center text-decoration-none">
 
-                        {% if article.user.articles|length >= 10 %}
-                            <span class="badge bg-warning text-dark ms-2" title="Auteur régulier">🌟</span>
-                        {% elseif article.user.articles|length >= 1 %}
-                            <span class="badge bg-info text-white ms-2" title="Auteur occasionnel">✍️</span>
-                        {% endif %}
+                    {% set roleClass = 'user' %}
+                    {% if 'ROLE_ADMIN' in article.user.roles %}
+                        {% set roleClass = 'admin' %}
+                    {% endif %}
+
+                    {% if article.user.avatar %}
+                        <img
+                            src="{{ asset('images/avatars/' ~ article.user.avatar) }}"
+                            alt="Avatar de {{ article.user.pseudo }}"
+                            class="avatar-signature {{ roleClass }}"
+                        >
+                    {% else %}
+                        <img
+                            src="{{ asset('images/avatars/default-avatar.png') }}"
+                            alt="Avatar par défaut"
+                            class="avatar-signature user"
+                        >
+                    {% endif %}
+
+                    <strong>{{ article.user.pseudo }}</strong>
+                </a>
+
+                    {% if article.user.articles|length >= 10 %}
+                        <span class="badge badge-valide ms-2" title="Auteur régulier">Auteur régulier</span>
+                    {% elseif article.user.articles|length >= 1 %}
+                        <span class="badge badge-valide ms-2" title="Auteur occasionnel">Auteur occasionnel</span>
+                    {% endif %}
                     {% else %}
                         <span class="me-2">Rédigé par un auteur disparu</span>
                     {% endif %}
+
                 </div>
             </div>
+
         </div>
 
         <hr>
@@ -136,32 +152,33 @@
         <!-- Commentaires -->
         <div class="comments-section mt-5">
             <h3>💬 Commentaires</h3>
-            {% if commentaires is not empty %}
-                <div class="list-group mt-4">
-                    {% for commentaire in commentaires %}
-                        <div class="list-group-item">
-                            <p class="mb-1">
-                                <strong>
-                                    {% if commentaire.auteur %}
-                                        {{ commentaire.auteur.email }}
-                                    {% else %}
-                                        Auteur supprimé
-                                    {% endif %}
-                                </strong>
-                                <span class="text-muted small">le {{ commentaire.dateCommentaire|date('d/m/Y H:i') }}</span>
-                            </p>
-                            <p class="mb-0">{{ commentaire.contenu }}</p>
-                        </div>
-                    {% endfor %}
+            {% if commentaires is defined and commentaires is not empty %}
+        <div class="list-group mt-4">
+            {% for commentaire in commentaires %}
+                <div class="list-group-item">
+                    <p class="mb-1">
+                        <strong>
+                            {% if commentaire.auteur %}
+                                {{ commentaire.auteur.email }}
+                            {% else %}
+                               Visiteur
+                            {% endif %}
+                        </strong>
+                        <span class="text-muted small">le {{ commentaire.dateCommentaire|date('d/m/Y H:i') }}</span>
+                    </p>
+                    <p class="mb-0">{{ commentaire.contenu }}</p>
                 </div>
-            {% else %}
-                <p class="text-muted mt-3">Aucun commentaire pour cet article pour le moment.</p>
-            {% endif %}
+            {% endfor %}
+        </div>
+    {% else %}
+    <p class="text-muted mt-3">Aucun commentaire pour cet article pour le moment.</p>
+{% endif %}
+
         </div>
 
         <hr class="my-5">
 
-        <!-- Formulaire de commentaire -->
+        <!-- Formulaire commentaire -->
         <div class="card p-4 mt-4 shadow-sm">
             <h4>📝 Laisser un commentaire</h4>
             {{ form_start(commentaireForm) }}
@@ -193,7 +210,6 @@
                 </div>
             {% endif %}
             <button type="submit" class="btn btn-publier">Publier</button>
-
             {{ form_end(commentaireForm) }}
         </div>
 
@@ -203,15 +219,14 @@
 
         {% if is_granted('IS_AUTHENTICATED_FULLY') %}
             <div class="text-center mt-2">
-                <a href="{{ path('app_profile') }}" class="btn btn-outline-primary">
-                    👤 Retour à mon profil
-                </a>
+                <a href="{{ path('app_profile') }}" class="btn btn-outline-primary">👤 Retour à mon profil</a>
             </div>
         {% endif %}
 
-    </div> {# Fin du container #}
-</div> {# Fin de .article-show-page #}
+    </div>
+</div>
 {% endblock %}
+
 
 
 

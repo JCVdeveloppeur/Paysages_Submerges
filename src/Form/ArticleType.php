@@ -94,14 +94,21 @@ class ArticleType extends AbstractType
                 'widget' => 'single_text',
                 'required' => false,
             ])
-            ->add('statut');
+            ->add('statut', ChoiceType::class, [
+                'choices' => [
+                'Brouillon' => 'brouillon',
+                'Publié' => 'publie',
+            ],
+            'label' => 'Statut de publication',
+            ]);
+
 
         // Afficher le champ user uniquement pour l’administrateur
         if ($this->security->isGranted('ROLE_ADMIN')) {
             $builder->add('user', EntityType::class, [
                 'class' => User::class,
                 'choice_label' => 'email', // ou 'pseudo'
-                'label' => 'Auteur de l’article',
+                'label' => 'Auteur de l\'article',
                 'required' => false,
                 'placeholder' => 'Sélectionnez un auteur',
             ]);

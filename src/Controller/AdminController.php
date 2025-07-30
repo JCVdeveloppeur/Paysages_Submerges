@@ -124,6 +124,15 @@ class AdminController extends AbstractController
             'articles' => $articles,
         ]);
     }
+    #[Route('/admin/article/{id}', name: 'admin_article_show')]
+    #[IsGranted('ROLE_ADMIN')]
+    public function showUnpublishedArticle(Article $article): Response
+    {
+        return $this->render('admin/articles/show_unpublished.html.twig', [
+            'article' => $article,
+        ]);
+    }
+
 
     #[Route('/admin/utilisateurs', name: 'admin_users')]
     #[IsGranted('ROLE_ADMIN')]

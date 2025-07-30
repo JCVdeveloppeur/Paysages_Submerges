@@ -3,40 +3,51 @@
 {% block title %}Profil de {{ user.pseudo }}{% endblock %}
 
 {% block body %}
-        <div class="container my-5 public-profile-page">
-        <div class="card shadow-sm">
-        <div class="profile-banner">
-        <i class="bi bi-person-circle"></i> Profil public de <span>{{ user.pseudo }}</span>
-        </div>
+<div class="container mt-5 public-profile-page">
+    <div class="text-center mb-4">
+        {% if user.avatar %}
+            <img src="{{ asset('images/avatars/' ~ user.avatar) }}"
+                 alt="Avatar de {{ user.pseudo }}"
+                 class="rounded-circle avatar-public mb-3">
+        {% else %}
+            <img src="{{ asset('images/avatars/default-avatar.png') }}"
+                 alt="Avatar par défaut"
+                 class="rounded-circle avatar-public mb-3">
+        {% endif %}
 
-        <div class="card-body">
-            <p><strong>Inscrit depuis :</strong> {{ user.dateInscription|date('d/m/Y') }}</p>
+        <h1>{{ user.pseudo }}</h1>
+        {% if user.bio %}
+            <p class="text-muted">{{ user.bio }}</p>
+        {% endif %}
 
-            {% if user.bio %}
-                <p><strong>À propos :</strong> {{ user.bio }}</p>
-            {% endif %}
-
-            <hr>
-
-            <h5>📚 Articles rédigés ({{ user.articles|length }})</h5>
-            {% if user.articles is not empty %}
-                <ul class="list-group list-group-flush">
-                    {% for article in user.articles %}
-                        <li class="list-group-item">
-                            <a href="{{ path('article_show', {'id': article.id}) }}">{{ article.titre }}</a>
-                            {% if article.estApprouve %}
-                                <span class="badge bg-success ms-2">⭐ Approuvé</span>
-                            {% endif %}
-                        </li>
-                    {% endfor %}
-                </ul>
-            {% else %}
-                <p class="text-muted">Cet utilisateur n'a pas encore publié d'article.</p>
-            {% endif %}
-        </div>
+        {% if user.articles|length >= 10 %}
+            <span class="badge badge-valide">🌟 Auteur régulier</span>
+        {% elseif user.articles|length >= 1 %}
+            <span class="badge badge-valide">✍️ Auteur occasionnel</span>
+        {% else %}
+            <span class="badge bg-secondary">🚧 Nouveau venu</span>
+        {% endif %}
     </div>
-    <div class="text-center mt-4">
-        <a href="{{ path('app_articles') }}" class="btn btn-vert">← Retour aux articles</a>
+
+    <hr>
+
+    <div class="mb-4">
+        <h2>📝 Articles de {{ user.pseudo }}</h2>
+
+        {% if user.articles is not empty %}
+            <div class="list-group">
+                {% for article in user.articles %}
+                    <a href="{{ path('app_article_show', {'id': article.id}) }}" class="list-group-item list-group-item-action">
+                        <h5 class="mb-1">{{ article.titre }}</h5>
+                        <small class="text-muted">Publié le {{ article.datePublication|date('d/m/Y') }}</small>
+                    </a>
+                {% endfor %}
+            </div>
+        {% else %}
+            <p class="text-muted">Cet utilisateur n'a pas encore publié d'articles.</p>
+        {% endif %}
     </div>
 </div>
 {% endblock %}
+
+
