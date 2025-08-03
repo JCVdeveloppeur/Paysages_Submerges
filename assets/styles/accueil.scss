@@ -20,6 +20,22 @@
     z-index: 2;
   }
 
+  .light-rays {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: url("../images/textures/rays.png");
+    background-repeat: repeat;
+    background-size: cover;
+    opacity: 0.2;
+    mix-blend-mode: screen;
+    animation: rays-move 18s linear infinite;
+    z-index: 1;
+    pointer-events: none;
+  }
+
   &::after {
     content: "";
     position: absolute;
@@ -361,6 +377,55 @@ input[type="search"] {
   transform: scale(1.1);
   transition: transform 0.3s ease;
 }
+
+// --- ANIMATIONS TEXTE ---
+
+.title-floating {
+  animation: swim-title 8s ease-in-out infinite;
+  display: inline-block;
+  will-change: transform;
+}
+.subtitle-floating {
+  animation: swim-subtitle 10s ease-in-out infinite;
+  display: inline-block;
+  will-change: transform;
+  font-size: 1.2rem;
+  color: #e0f7fa;
+  font-family: 'Merriweather', serif;
+  text-shadow: 1px 1px 5px rgba(0, 0, 0, 0.6);
+  margin-top: 0.5rem;
+}
+@keyframes swim-title {
+  0%, 100% { transform: translate(0, 0) rotate(0deg); }
+  25% { transform: translate(2px, -2px) rotate(-0.5deg); }
+  50% { transform: translate(-2px, 2px) rotate(0.5deg); }
+  75% { transform: translate(2px, 2px) rotate(-0.5deg); }
+}
+@keyframes swim-subtitle {
+  0%, 100% { transform: translate(0, 0) rotate(0deg); }
+  20% { transform: translate(-1px, 1px) rotate(0.3deg); }
+  40% { transform: translate(1px, -1px) rotate(-0.3deg); }
+  60% { transform: translate(-1px, -1px) rotate(0.3deg); }
+  80% { transform: translate(1px, 1px) rotate(-0.3deg); }
+}
+
+@keyframes rays-move {
+  0% { background-position: 0 0; }
+  100% { background-position: 100px 100px; }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

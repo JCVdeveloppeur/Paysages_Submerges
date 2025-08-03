@@ -3,14 +3,54 @@
 {% block title %}Accueil - Paysages Submergés{% endblock %}
 
 {% block body %}
-<div class="banner accueil-page">
+  <div class="banner accueil-page">
+
+    <div class="bubbles-container"></div>
+
     <div class="banner-content">
-        <h1>PAYSAGES SUBMERGÉS</h1>
-        <p class="subtitle">Votre guide pour un aquarium naturel, vivant et inspiré de la nature</p>
+      <h1 class="title-floating">PAYSAGES SUBMERGÉS</h1>
+      <p class="subtitle-floating">
+        Un coin pour échanger, s'inspirer et recréer des paysages aquatiques,
+        entre passionnés qui aiment autant écrire que planter.
+      </p>
     </div>
+
+    <div class="fish-group orange">
+  {% for i in 0..4 %}
+    {% set base = 80 %}
+    {% set offsetX = random([-40, 0, 40]) %}
+    {% set duration = random([52, 56, 60, 64]) %}
+    {% set base_top = i * 30 %}
+    {% set random_top = random([-5, 0, 5]) %}
+    {% set top_offset = base_top + random_top %}
+    {% set depth = i % 5 %}
+    {% set size_class = 'size-' ~ random(['sm', 'md', 'lg']) %}
+    {% set blur_class = random(['', 'blur']) %}
+    {% set fish_color = random(['#f90', '#fca311', '#ffb347']) %}
+    {% set current_class = random(['', 'current']) %}
+
+
+    <div class="fish-wrapper delay-{{ i }} depth-{{ depth }}"
+         style="left: {{ i * base + offsetX }}px;
+                top: {{ top_offset }}px;
+                animation-duration: {{ duration }}s;">
+    {% set delay_tail = random(0..5) %}
+      <svg class="fish-icon orange wiggle-current {{ size_class }} {{ blur_class }} wiggle {{ current_class }} tail-delay-{{ delay_tail }}" viewBox="0 0 64 64">
+        <ellipse cx="32" cy="32" rx="20" ry="10" fill="#f90" />
+        <polygon class="fish-tail" points="12,32 4,24 4,40" fill="#f90" />
+        <path d="M26 24 Q30 18 34 24" fill="#f90" />
+        <circle cx="42" cy="30" r="3" fill="#fff"/>
+        <circle cx="43" cy="30" r="1.5" fill="#000"/>
+      </svg>
+
+    </div>
+  {% endfor %}
 </div>
 
-<div class="bottom-section">
+
+  </div> {# Fermeture de .banner #}
+
+    <div class="bottom-section">
     <div class="horizontal-layout">
 
         {# --- Carte : Voir les articles --- #}

@@ -21,11 +21,11 @@
         {% endif %}
 
         {% if user.articles|length >= 10 %}
-            <span class="badge badge-valide">🌟 Auteur régulier</span>
+            <span class="badge badge-valide"> Auteur régulier</span>
         {% elseif user.articles|length >= 1 %}
-            <span class="badge badge-valide">✍️ Auteur occasionnel</span>
+            <span class="badge badge-valide"> Auteur occasionnel</span>
         {% else %}
-            <span class="badge bg-secondary">🚧 Nouveau venu</span>
+            <span class="badge bg-secondary"> Nouveau venu</span>
         {% endif %}
     </div>
 
