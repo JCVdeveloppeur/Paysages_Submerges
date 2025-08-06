@@ -3,52 +3,206 @@
 {% block title %}Accueil - Paysages Submergés{% endblock %}
 
 {% block body %}
-  <div class="banner accueil-page">
+<div class="banner accueil-page">
 
-    <div class="bubbles-container"></div>
+  <div class="bubbles-container"></div>
 
-    <div class="banner-content">
-      <h1 class="title-floating">PAYSAGES SUBMERGÉS</h1>
-      <p class="subtitle-floating">
-        Un coin pour échanger, s'inspirer et recréer des paysages aquatiques,
-        entre passionnés qui aiment autant écrire que planter.
-      </p>
-    </div>
+  <div class="banner-content">
+    <h1 class="title-floating">
+    <span class="float-paysages">PAYSAGES</span>
+    <span class="float-submerges">SUBMERGÉS</span>
+    </h1>
 
-    <div class="fish-group orange">
-  {% for i in 0..4 %}
+
+    <p class="subtitle-floating">
+      Un coin pour échanger, s'inspirer et recréer des paysages aquatiques,
+      entre passionnés qui aiment autant écrire que planter.
+    </p>
+  </div>
+
+<div class="fish-group orange">
+    {% for i in 0..11 %}
     {% set base = 80 %}
     {% set offsetX = random([-40, 0, 40]) %}
-    {% set duration = random([52, 56, 60, 64]) %}
-    {% set base_top = i * 30 %}
+    {% set vertical_offset = -180 %}
+    {% set base_top = i * 32 + vertical_offset %}
     {% set random_top = random([-5, 0, 5]) %}
     {% set top_offset = base_top + random_top %}
-    {% set depth = i % 5 %}
     {% set size_class = 'size-' ~ random(['sm', 'md', 'lg']) %}
-    {% set blur_class = random(['', 'blur']) %}
-    {% set fish_color = random(['#f90', '#fca311', '#ffb347']) %}
-    {% set current_class = random(['', 'current']) %}
+    {% set delay_tail = random(0..5) %}
+    {% set fish_type = random([1, 2, 3, 4, 5, 6, 7]) %}
+    
+    {# 1 poisson sur 3 sera flou (plus loin et lent) #}
+    {% set is_blurred = i % 3 == 0 %}
+    {% set duration = is_blurred ? random([70, 75, 80]) : random([55, 59, 63, 67]) %}
 
-
-    <div class="fish-wrapper delay-{{ i }} depth-{{ depth }}"
+    <div class="fish-wrapper delay-{{ i }} {% if is_blurred %}blur{% endif %}"
          style="left: {{ i * base + offsetX }}px;
                 top: {{ top_offset }}px;
                 animation-duration: {{ duration }}s;">
-    {% set delay_tail = random(0..5) %}
-      <svg class="fish-icon orange wiggle-current {{ size_class }} {{ blur_class }} wiggle {{ current_class }} tail-delay-{{ delay_tail }}" viewBox="0 0 64 64">
-        <ellipse cx="32" cy="32" rx="20" ry="10" fill="#f90" />
-        <polygon class="fish-tail" points="12,32 4,24 4,40" fill="#f90" />
-        <path d="M26 24 Q30 18 34 24" fill="#f90" />
-        <circle cx="42" cy="30" r="3" fill="#fff"/>
-        <circle cx="43" cy="30" r="1.5" fill="#000"/>
-      </svg>
+
+      {% if fish_type == 1 %}
+        {# Poisson bleu allongé #}
+        <svg class="fish-icon {{ size_class }} tail-delay-{{ delay_tail }}"
+            viewBox="0 0 100 50" xmlns="http://www.w3.org/2000/svg">
+          <ellipse cx="50" cy="25" rx="30" ry="12" fill="#03498fff" />
+          <g class="tail-wiggle">
+            <polygon points="20,25 5,15 5,35" fill="#03498fff" />
+          </g>
+          <circle cx="70" cy="20" r="2" fill="#fff"/>
+          <circle cx="70" cy="20" r="1" fill="#000"/>
+        </svg>
+
+      {% elseif fish_type == 2 %}
+        <svg class="fish-icon {{ size_class }} tail-delay-{{ delay_tail }}"
+            viewBox="0 0 100 50" xmlns="http://www.w3.org/2000/svg">
+          
+          <defs>
+            <linearGradient id="rainbow-gradient-{{ loop.index }}" ...>
+              <stop offset="0%" stop-color="#ff8a80" />    {# Rouge adouci #}
+              <stop offset="20%" stop-color="#ffd180" />   {# Orange doux #}
+              <stop offset="40%" stop-color="#ffff8d" />   {# Jaune pastel #}
+              <stop offset="60%" stop-color="#80d8ff" />   {# Bleu ciel #}
+              <stop offset="80%" stop-color="#b388ff" />   {# Violet clair #}
+              <stop offset="100%" stop-color="#f8bbd0" />  {# Rose léger #}
+            </linearGradient>
+          </defs>
+
+          <!-- Corps avec dégradé -->
+          <ellipse cx="50" cy="25" rx="22" ry="14" fill="url(#rainbow-gradient-{{ loop.index }})" />
+
+          <!-- Queue avec le même dégradé -->
+          <g class="tail-wiggle">
+            <polygon points="28,25 15,18 15,32" fill="url(#rainbow-gradient-{{ loop.index }})" />
+          </g>
+
+          <!-- Yeux -->
+          <circle cx="65" cy="22" r="2" fill="#fff"/>
+          <circle cx="65" cy="22" r="1" fill="#000"/>
+        </svg>
+
+      {% elseif fish_type == 3 %}
+        {# Poisson brun fin #}
+        <svg class="fish-icon {{ size_class }} tail-delay-{{ delay_tail }}"
+            viewBox="0 0 100 50" xmlns="http://www.w3.org/2000/svg">
+          <ellipse cx="50" cy="25" rx="26" ry="8" fill="#8b5e3c" />
+          <g class="tail-wiggle">
+            <polygon points="24,25 12,18 12,32" fill="#8b5e3c" />
+          </g>
+          <circle cx="68" cy="24" r="2" fill="#fff"/>
+          <circle cx="68" cy="24" r="1" fill="#000"/>
+        </svg>
+
+      {% elseif fish_type == 4 %}
+        {# Poisson vert d’eau arrondi #}
+        <svg class="fish-icon {{ size_class }} tail-delay-{{ delay_tail }}"
+            viewBox="0 0 100 50" xmlns="http://www.w3.org/2000/svg">
+          <ellipse cx="50" cy="25" rx="25" ry="15" fill="#2a7b60" />
+          <g class="tail-wiggle">
+            <polygon points="27,25 12,17 12,33" fill="#2a7b60" />
+          </g>
+          <circle cx="66" cy="22" r="2" fill="#fff"/>
+          <circle cx="66" cy="22" r="1" fill="#000"/>
+        </svg>
+
+      {% elseif fish_type == 5 %}
+        {# Poisson rouge foncé ovale #}
+        <svg class="fish-icon {{ size_class }} tail-delay-{{ delay_tail }}"
+            viewBox="0 0 100 50" xmlns="http://www.w3.org/2000/svg">
+          <ellipse cx="50" cy="25" rx="20" ry="17" fill="#4b1111" />
+          <g class="tail-wiggle">
+            <polygon points="30,25 15,18 15,32" fill="#4b1111" />
+          </g>
+          <circle cx="68" cy="23" r="2" fill="#fff"/>
+          <circle cx="68" cy="23" r="1" fill="#000"/>
+        </svg>
+
+      {% elseif fish_type == 6 %}
+        <svg class="fish-icon anguille {{ size_class }} tail-delay-{{ delay_tail }} delay-undulation-{{ i }}"
+            viewBox="0 0 120 20" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <pattern id="kuhliStripes" patternUnits="userSpaceOnUse" width="20" height="20">
+              <rect width="20" height="20" fill="#f5e7c4" /> {# beige clair #}
+              <rect x="0" width="5" height="20" fill="#3b2f2f" /> {# bande sombre #}
+              <rect x="10" width="5" height="20" fill="#3b2f2f" />
+            </pattern>
+          </defs>
+          
+          <path d="M5 10 
+                  C 20 5, 40 15, 60 10 
+                  C 80 5, 100 15, 115 10" 
+                fill="none" stroke="url(#kuhliStripes)" stroke-width="8" stroke-linecap="round"/>
+          
+          <circle cx="10" cy="9" r="2" fill="#fff"/>
+          <circle cx="10" cy="9" r="1" fill="#000"/>
+        </svg>
+
+      {% elseif fish_type == 7 %}
+        {# Poisson arrondi jaune doux rayé avec couleurs aléatoires #}
+        <svg class="fish-icon {{ size_class }} tail-delay-{{ delay_tail }} striped-swim"
+            viewBox="0 0 100 50" xmlns="http://www.w3.org/2000/svg">
+
+          {% set body_color = '#f5e29d' %}
+          {% set stripe_colors = ['#d87c2d', '#7a4e24'] %}
+
+          <!-- Corps -->
+          <ellipse cx="50" cy="25" rx="28" ry="18" fill="{{ body_color }}" />
+
+          <!-- Rayures aléatoires -->
+          <rect x="38" y="10" width="2" height="30" fill="{{ random(stripe_colors) }}" />
+          <rect x="44" y="8"  width="2" height="34" fill="{{ random(stripe_colors) }}" />
+          <rect x="50" y="10" width="2" height="30" fill="{{ random(stripe_colors) }}" />
+          <rect x="56" y="8"  width="2" height="34" fill="{{ random(stripe_colors) }}" />
+          <rect x="62" y="10" width="2" height="30" fill="{{ random(stripe_colors) }}" />
+
+          <!-- Queue -->
+          <g class="tail-wiggle">
+            <polygon points="28,25 12,17 12,33" fill="{{ body_color }}" />
+          </g>
+
+          <!-- Yeux -->
+          <circle cx="68" cy="23" r="2" fill="#fff"/>
+          <circle cx="68" cy="23" r="1" fill="#000"/>
+        </svg>
+          
+      {% endif %}
 
     </div>
+
   {% endfor %}
 </div>
 
+  <!-- CONTAINER CREVETTES TRANSLUCIDES -->
+    <div class="shrimp-group">
+      {% for i in 0..5 %}
+      {% set startX = random(0..100) %}
+      {% set startY = random(80..95) %}
+      {% set duration = random([20, 22, 24, 26]) %}
+      {% set delay = random(0..10) %}
+      {% set scale = random([0.6, 0.8, 1.0]) %}
 
-  </div> {# Fermeture de .banner #}
+      <svg class="shrimp shrimp-{{ i }}" 
+          style="left: {{ startX }}%; top: {{ startY }}%; animation-delay: {{ delay }}s; animation-duration: {{ duration }}s; transform: scale({{ scale }});"
+          viewBox="0 0 100 50" xmlns="http://www.w3.org/2000/svg">
+
+        <!-- Corps translucide -->
+        <path d="M10 25 Q 30 15 50 25 Q 70 35 90 25" fill="red" stroke="black" stroke-width="1.2" />
+
+        <!-- Petites pattes -->
+        <line x1="20" y1="26" x2="20" y2="30" stroke="rgba(255,255,255,0.3)" stroke-width="1" />
+        <line x1="30" y1="26" x2="30" y2="30" stroke="rgba(255,255,255,0.3)" stroke-width="1" />
+        <line x1="40" y1="26" x2="40" y2="30" stroke="rgba(255,255,255,0.3)" stroke-width="1" />
+
+        <!-- Antennes -->
+        <path d="M10 25 Q 5 15 0 10" stroke="rgba(255,255,255,0.3)" fill="none" stroke-width="1" class="shrimp-antenna" />
+      </svg>
+      
+    {% endfor %}
+
+    </div>
+
+      
+</div> {# Fermeture de .banner #}
 
     <div class="bottom-section">
     <div class="horizontal-layout">

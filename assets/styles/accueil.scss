@@ -380,11 +380,11 @@ input[type="search"] {
 
 // --- ANIMATIONS TEXTE ---
 
-.title-floating {
-  animation: swim-title 8s ease-in-out infinite;
-  display: inline-block;
-  will-change: transform;
-}
+// .title-floating {
+//   animation: swim-title 8s ease-in-out infinite;
+//   display: inline-block;
+//   will-change: transform;
+// }
 .subtitle-floating {
   animation: swim-subtitle 10s ease-in-out infinite;
   display: inline-block;
@@ -395,12 +395,12 @@ input[type="search"] {
   text-shadow: 1px 1px 5px rgba(0, 0, 0, 0.6);
   margin-top: 0.5rem;
 }
-@keyframes swim-title {
-  0%, 100% { transform: translate(0, 0) rotate(0deg); }
-  25% { transform: translate(2px, -2px) rotate(-0.5deg); }
-  50% { transform: translate(-2px, 2px) rotate(0.5deg); }
-  75% { transform: translate(2px, 2px) rotate(-0.5deg); }
-}
+// @keyframes swim-title {
+//   0%, 100% { transform: translate(0, 0) rotate(0deg); }
+//   25% { transform: translate(2px, -2px) rotate(-0.5deg); }
+//   50% { transform: translate(-2px, 2px) rotate(0.5deg); }
+//   75% { transform: translate(2px, 2px) rotate(-0.5deg); }
+// }
 @keyframes swim-subtitle {
   0%, 100% { transform: translate(0, 0) rotate(0deg); }
   20% { transform: translate(-1px, 1px) rotate(0.3deg); }
@@ -408,6 +408,28 @@ input[type="search"] {
   60% { transform: translate(-1px, -1px) rotate(0.3deg); }
   80% { transform: translate(1px, 1px) rotate(-0.3deg); }
 }
+// --- ANIMATIONS INDÉPENDANTES POUR LE TITRE SPLITTÉ ---
+
+.float-paysages {
+  display: inline-block;
+  animation: floatUpDown1 5.5s ease-in-out infinite;
+}
+
+.float-submerges {
+  display: inline-block;
+  animation: floatUpDown2 6.8s ease-in-out infinite;
+}
+
+@keyframes floatUpDown1 {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-2px); }
+}
+
+@keyframes floatUpDown2 {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-5px); }
+}
+
 
 @keyframes rays-move {
   0% { background-position: 0 0; }
