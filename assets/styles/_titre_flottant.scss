@@ -1,0 +1,69 @@
+@use "variables" as *;
+@use "mixins" as *;
+
+
+// --- ANIMATIONS TITRE ---
+
+.float-paysages {
+  display: inline-block;
+  animation: floatUpDown1 5.5s ease-in-out infinite;
+  animation: swayTitre1 5.5s ease-in-out infinite;
+  will-change: transform;
+}
+
+.float-submerges {
+  display: inline-block;
+  animation: floatUpDown2 6.8s ease-in-out infinite;
+  animation: swayTitre2 6.8s ease-in-out infinite;
+  will-change: transform;
+}
+
+// --- ANIMATIONS SLOGAN ---
+
+.float-slogan-1 {
+  display: inline-block;
+  animation: sway1 5.5s ease-in-out infinite;
+  will-change: transform;
+}
+
+.float-slogan-2 {
+  display: inline-block;
+  animation: sway2 6.8s ease-in-out infinite;
+  will-change: transform;
+}
+
+.float-slogan-3 {
+  display: inline-block;
+  animation: sway3 6.1s ease-in-out infinite;
+  will-change: transform;
+}
+
+// --- KEYFRAMES ---
+
+@keyframes swayTitre1 {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  50%     { transform: translateY(-2px) rotate(-0.4deg); }
+}
+
+@keyframes swayTitre2 {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  50%     { transform: translateY(-5px) rotate(0.3deg); }
+}
+
+@keyframes sway1 {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  50%      { transform: translateY(-2px) rotate(-0.4deg); }
+}
+
+@keyframes sway2 {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  50%      { transform: translateY(-5px) rotate(0.3deg); }
+}
+
+@keyframes sway3 {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  50%      { transform: translateY(-3px) rotate(-0.5deg); }
+}
+
+
+
