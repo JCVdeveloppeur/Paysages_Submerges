@@ -1,0 +1,54 @@
+{% extends 'admin/layout.html.twig' %}
+
+{% block page_title %}Blocs de page{% endblock %}
+{% block page_heading %}Blocs de page{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-end mb-3">
+  <a href="{{ path('admin_page_block_new') }}" class="btn btn-admin-ajouter">
+    <i class="bi bi-plus-circle"></i> Nouveau bloc
+  </a>
+</div>
+
+<table class="table table-striped align-middle">
+  <thead>
+    <tr>
+      <th>#</th>
+      <th>Slug</th>
+      <th>Titre</th>
+      <th>Mis à jour</th>
+      <th class="text-end">Actions</th>
+    </tr>
+  </thead>
+  <tbody>
+  {% for b in blocks %}
+    <tr>
+      <td>{{ b.id }}</td>
+      <td><code>{{ b.slug }}</code></td>
+      <td>{{ b.title ?: '—' }}</td>
+      <td>{{ b.updatedAt ? b.updatedAt|date('d/m/Y H:i') : '—' }}</td>
+      <td class="text-end">
+        <a href="{{ path('admin_page_block_edit', {id: b.id}) }}" class="btn btn-admin-modifier me-2">
+          <i class="bi bi-pencil-square"></i> Modifier
+        </a>
+        {% include 'admin/page_block/_delete_form.html.twig' with {block: b} %}
+      </td>
+    </tr>
+  {% else %}
+    <tr><td colspan="5" class="text-muted">Aucun bloc pour le moment.</td></tr>
+  {% endfor %}
+  </tbody>
+</table>
+
+<div class="mt-4">
+  <a href="{{ path('admin_dashboard') }}" class="btn btn-admin-retour">
+    <i class="bi bi-arrow-left"></i> Retour au tableau de bord
+  </a>
+</div>
+{% endblock %}
+
+
+
+
+
+

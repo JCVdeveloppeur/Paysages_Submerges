@@ -8,6 +8,8 @@ import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 // Import du fichier like.js (gestion des likes)
 import './like.js';
 
+import './vague_boutons.js';
+
 // (Optionnel) Import de CSS pur 
 // import './styles/app.css';
 

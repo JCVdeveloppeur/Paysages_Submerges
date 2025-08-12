@@ -1,6 +1,9 @@
 @use "variables" as *;
 @use "mixins" as *;
 
+/* --------------------------------
+               BASE
+-----------------------------------*/
 .btn {
   display: inline-flex;
   align-items: center;
@@ -20,44 +23,31 @@
   }
 }
 
-// -------------------------
-// Boutons classiques
-// -------------------------
-
+/* --------------------------------
+         BOUTONS CLASSIQUES
+-----------------------------------*/
 .btn-vert {
   background-color: $btn-vert;
   color: #fff;
-
-  &:hover {
-    background-color: $btn-vert-hover;
-  }
+  &:hover { background-color: $btn-vert-hover; }
 }
 
 .btn-brun {
   background-color: $btn-brun;
   color: #fff;
-
-  &:hover {
-    background-color: $btn-brun-hover;
-  }
+  &:hover { background-color: $btn-brun-hover; }
 }
 
 .btn-gris {
   background-color: #4c6a74;
   color: #fff;
-
-  &:hover {
-    background-color: lighten(#4c6a74, 8%);
-  }
+  &:hover { background-color: lighten(#4c6a74, 8%); }
 }
 
 .btn-rouge {
   background-color: #b23c3c;
   color: #fff;
-
-  &:hover {
-    background-color: darken(#b23c3c, 10%);
-  }
+  &:hover { background-color: darken(#b23c3c, 10%); }
 }
 
 .btn-bleu-profil {
@@ -65,59 +55,41 @@
   color: #fff;
   font-weight: 500;
   letter-spacing: 0.3px;
-
-  &:hover {
-    background-color: lighten(#4a6fa5, 8%);
-  }
+  &:hover { background-color: lighten(#4a6fa5, 8%); }
 }
 
-// -------------------------
-// Boutons pastel
-// -------------------------
-
+/* --------------------------------
+          BOUTONS PASTEL
+-----------------------------------*/
 .btn-pastel-bleu {
   background-color: #d0e6ff;
   color: #0a2a43;
   transition: $transition-douce;
-
-  &:hover {
-    background-color: #bddaf7;
-    color: #05213b;
-  }
+  &:hover { background-color: #bddaf7; color: #05213b; }
 }
 
 .btn-pastel-rouge {
   background-color: #ffd6d6;
   color: #842029;
   transition: $transition-douce;
-
-  &:hover {
-    background-color: #fcbcbc;
-    color: #6a1b1b;
-  }
+  &:hover { background-color: #fcbcbc; color: #6a1b1b; }
 }
 
 .btn-pastel {
   background-color: #e8f0fe;
   color: #0a2a43;
   border: none;
-
-  &:hover {
-    background-color: #d0e6ff;
-    color: $bleu-profond;
-  }
+  &:hover { background-color: #d0e6ff; color: $bleu-profond; }
 }
 
-// -------------------------
-// Boutons spéciaux
-// -------------------------
-
+/* --------------------------------
+          BOUTONS SPÉCIAUX
+-----------------------------------*/
 .btn-rediger {
   @extend .btn-vert;
   font-weight: 600;
   padding: 0.6rem 1.2rem;
   box-shadow: 0 3px 6px rgba(0, 0, 0, 0.15);
-
   &:hover {
     background-color: darken($btn-vert, 7%);
     transform: scale(1.02);
@@ -145,16 +117,13 @@
   text-decoration: none;
   transition: all 0.2s ease-in-out;
 
-  i {
-    font-size: 1rem;
-  }
+  i { font-size: 1rem; }
 }
 
 .btn-admin-modifier {
   color: #0d6efd;
   background-color: rgba(13, 110, 253, 0.1);
   border: 1px solid rgba(13, 110, 253, 0.4);
-
   &:hover {
     background-color: #0d6efd;
     color: #fff;
@@ -167,14 +136,12 @@
   color: #dc3545;
   background-color: rgba(220, 53, 69, 0.1);
   border: 1px solid rgba(220, 53, 69, 0.4);
-
   &:hover {
     background-color: #dc3545;
     color: #fff;
     border-color: #b02a37;
     transform: scale(1.03);
     box-shadow: 0 0 0.3rem rgba(220, 53, 69, 0.2);
-
   }
 }
 
@@ -184,11 +151,7 @@
   padding: 0.5rem 1rem;
   border-radius: 0.7rem;
   box-shadow: 0 3px 6px rgba(0, 0, 0, 0.15);
-
-  &:hover {
-    background-color: darken($btn-vert, 7%);
-    transform: scale(1.05);
-  }
+  &:hover { background-color: darken($btn-vert, 7%); transform: scale(1.05); }
 }
 
 .btn-admin-retour {
@@ -197,28 +160,19 @@
   padding: 0.4rem 0.9rem;
   border-radius: 0.7rem;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-
-  &:hover {
-    background-color: darken($btn-vert, 10%);
-    transform: scale(1.05);
-  }
+  &:hover { background-color: darken($btn-vert, 10%); transform: scale(1.05); }
 }
 
-// -------------------------
-// Filtres et actions
-// -------------------------
-
+/* --------------------------------
+         FILTRES & ACTIONS
+-----------------------------------*/
 .btn-filtrer {
   background-color: rgba(74, 111, 165, 0.15);
   color: #4a6fa5;
   border: 1px solid #4a6fa5;
   border-radius: 0.6rem;
   padding: 0.45rem 1rem;
-
-  &:hover {
-    background-color: #4a6fa5;
-    color: #fff;
-  }
+  &:hover { background-color: #4a6fa5; color: #fff; }
 }
 
 .btn-reinitialiser {
@@ -227,11 +181,7 @@
   border: 1px solid #b23c3c;
   border-radius: 0.6rem;
   padding: 0.45rem 1rem;
-
-  &:hover {
-    background-color: #b23c3c;
-    color: #fff;
-  }
+  &:hover { background-color: #b23c3c; color: #fff; }
 }
 
 .btn-icon-supprimer {
@@ -241,11 +191,7 @@
   padding: 0.4rem 0.6rem;
   font-size: 0.9rem;
   border-radius: 0.4rem;
-
-  &:hover {
-    background-color: rgba(220, 53, 69, 0.2);
-    color: #721c24;
-  }
+  &:hover { background-color: rgba(220, 53, 69, 0.2); color: #721c24; }
 }
 
 .btn-approve {
@@ -254,24 +200,111 @@
   color: #2c6e49;
   padding: 0.4rem 0.6rem;
   border-radius: 0.4rem;
-
   &:hover {
     background-color: rgba(72, 201, 176, 0.2);
     color: #1f4f3b;
     transform: scale(1.03);
     box-shadow: 0 0 0.3rem rgba(220, 53, 69, 0.2);
-
   }
 }
 
 .btn-confirm-suppression {
   background-color: #e67c7c;
   color: white;
-
-  &:hover {
-    background-color: darken(#e67c7c, 10%);
-  }
+  &:hover { background-color: darken(#e67c7c, 10%); }
 }
+
+/* --- Bouton Aqua (effet vague) --- */
+$btn-turquoise:      $bleu-ciel;
+$btn-turquoise-dark: darken($btn-turquoise, 10%);
+$btn-sable:          #f3efe2;
+$btn-sable-alt:      #f9f5e6;
+$btn-text:           #083047;
+
+.btn-aqua {
+  position: relative;
+  overflow: hidden;
+  padding: .85rem 1.2rem;
+  border-radius: 999px;
+  border: 1.5px solid rgba(79,195,247,.55);
+  background: linear-gradient(180deg, $btn-sable 0%, $btn-sable-alt 100%);
+  color: $btn-text;
+  font-family: $font-boutons;
+  font-weight: 600;
+  letter-spacing: .2px;
+  box-shadow: 0 4px 10px rgba(0,0,0,.08);
+  background-size: 100% 100%;
+  transition: transform .25s ease, box-shadow .35s ease, border-color .35s ease;
+
+  /* contenu au-dessus des ondes */
+  > * { position: relative; z-index: 1; }
+  i { color: inherit; }
+}
+
+.btn-aqua:hover {
+  transform: translateY(-2px);
+  border-color: rgba(79,195,247,.8);
+  box-shadow: 0 8px 18px rgba(0,0,0,.14), inset 0 0 22px rgba(79,195,247,.15);
+  background-position: 50% 12%;
+}
+
+/* position par défaut si pas de JS */
+.btn-aqua { --rx: 50%; --ry: 50%; }
+
+.btn-aqua::after,
+.btn-aqua::before {
+  content: "";
+  position: absolute;
+  left: var(--rx);
+  top: var(--ry);
+  transform: translate(-50%, -50%) scale(0);
+  width: 220%;
+  height: 220%;
+  border-radius: 50%;
+  opacity: 0;
+  pointer-events: none;
+  z-index: 0; /* sous le contenu */
+}
+
+.btn-aqua::after {
+  background: radial-gradient(circle,
+    rgba(79,195,247,.35) 0%,
+    rgba(79,195,247,.20) 24%,
+    rgba(79,195,247,0) 60%);
+}
+
+.btn-aqua::before {
+  background: radial-gradient(circle,
+    rgba(79,195,247,.22) 0%,
+    rgba(79,195,247,.12) 22%,
+    rgba(79,195,247,0) 58%);
+}
+
+.btn-aqua:hover::after { animation: ripple-1 800ms ease-out forwards; }
+.btn-aqua:hover::before { animation: ripple-2 1100ms ease-out .08s forwards; }
+
+@keyframes ripple-1 { to { transform: translate(-50%,-50%) scale(1); opacity: 0; } }
+@keyframes ripple-2 { 40% { opacity: .55; } to { transform: translate(-50%,-50%) scale(1.2); opacity: 0; } }
+
+/* --- Harmonisation des boutons dans les cartes d'accueil --- */
+.home-card .btn {
+  position: relative;         /* pour z-index local si besoin */
+  z-index: 2;                 /* au-dessus du glow de .home-card::after */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 90%;                 /* largeur uniforme */
+  max-width: 240px;
+  margin: 1.25rem auto 0;     /* centrage + marge */
+  gap: 0.5rem;
+  padding: 0.8rem 1.2rem;
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+
+
+
 
 
 

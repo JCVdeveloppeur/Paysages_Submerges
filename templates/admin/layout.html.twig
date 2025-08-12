@@ -1,0 +1,35 @@
+{# Ce layout admin s’appuie sur ton layout global #}
+{% extends 'base.html.twig' %}
+
+{# <title> de l’onglet #}
+{% block title %}{% block page_title %}Administration{% endblock %}{% endblock %}
+
+{# Contenu principal #}
+{% block body %}
+  <div class="container py-5">
+
+    {# Titre H1 de la page #}
+    <h1 class="mb-4">
+      {% block page_heading %}{% endblock %}
+    </h1>
+
+    {# Flash messages (success, danger, etc.) #}
+    {% for label, messages in app.flashes %}
+      {% for message in messages %}
+        <div class="alert alert-{{ label }} alert-dismissible fade show" role="alert">
+          {{ message }}
+          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+      {% endfor %}
+    {% endfor %}
+
+    {# Zone de contenu des pages enfants #}
+    {% block content %}{% endblock %}
+  </div>
+{% endblock %}
+
+{# JS additionnel des pages enfants (graphiques, etc.) #}
+{% block javascripts %}
+  {{ parent() }}
+  {% block extra_js %}{% endblock %}
+{% endblock %}

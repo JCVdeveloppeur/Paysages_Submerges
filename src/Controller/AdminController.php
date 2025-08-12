@@ -18,6 +18,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use App\Repository\PageBlockRepository;
 
 class AdminController extends AbstractController
 {
@@ -36,7 +37,8 @@ class AdminController extends AbstractController
     UserRepository $userRepository,
     CommentaireRepository $commentaireRepository,
     LikeRepository $likeRepository,
-    EspeceRepository $especeRepository // 👈 ajoute cette ligne
+    EspeceRepository $especeRepository,
+    PageBlockRepository $pageBlockRepository
     ): Response {
     $aujourdHui = new \DateTimeImmutable('today');
     $labels = [];
@@ -66,6 +68,7 @@ class AdminController extends AbstractController
         'jours' => $labels,
         'commentairesParJour' => $commentairesParJour,
         'likesParJour' => $likesParJour,
+         'nombreBlocs' => $pageBlockRepository->count([]),
     ]);
 
     }

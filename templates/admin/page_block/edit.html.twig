@@ -1,0 +1,22 @@
+{% extends 'admin/layout.html.twig' %}
+
+{% block page_title %}Éditer un bloc{% endblock %}
+{% block page_heading %}Éditer le bloc <code>{{ block.slug }}</code>{% endblock %}
+
+{% block content %}
+  {% include 'admin/page_block/_form.html.twig' with { form: form, button_label: 'Mettre à jour' } %}
+
+  <hr class="my-4">
+
+  <div>
+    {% include 'admin/page_block/_delete_form.html.twig' with { block: block } %}
+  </div>
+{% endblock %}
+
+
+
+
+
+
+
+

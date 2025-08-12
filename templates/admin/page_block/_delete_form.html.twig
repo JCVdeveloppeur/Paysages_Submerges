@@ -1,0 +1,15 @@
+<form
+  method="post"
+  action="{{ path('admin_page_block_delete', {id: block.id}) }}"
+  onsubmit="return confirm('Supprimer définitivement ce bloc ?');"
+  class="d-inline-block"
+>
+  <input type="hidden" name="_token" value="{{ csrf_token('delete_page_block_' ~ block.id) }}">
+  <button class="btn btn-admin-supprimer">
+    <i class="bi bi-trash"></i> Supprimer
+  </button>
+</form>
+
+
+
+

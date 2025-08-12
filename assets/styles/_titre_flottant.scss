@@ -37,6 +37,35 @@
   animation: sway3 6.1s ease-in-out infinite;
   will-change: transform;
 }
+/* Style commun du slogan (une seule fois) */
+.subtitle-floating {
+  display: block;                /* force un bloc unique */
+  font-family: 'Merriweather', serif;
+  font-size: 1.2rem;
+  color: #e0f7fa;
+  text-shadow: 1px 1px 5px rgba(0,0,0,.6);
+  line-height: 1.35;             /* cohérent entre segments */
+  letter-spacing: .01em;         /* homogénéise la lecture */
+
+  > span {
+    display: inline-block;       /* nécessaire pour l’animation */
+    will-change: transform;
+    vertical-align: baseline;
+  }
+
+  /* espace fin entre segments (si jamais tu n’as pas d’espace en HTML) */
+  > span:not(:last-child)::after {
+    content: " ";
+  }
+}
+
+/* Animations seulement (pas de taille/couleur ici) */
+.float-slogan-1 { animation: sway1 5.5s ease-in-out infinite; }
+.float-slogan-2 { animation: sway2 6.8s ease-in-out infinite; }
+.float-slogan-3 { animation: sway3 6.1s ease-in-out infinite; }
+
+/* (tu gardes tes @keyframes sway1/2/3 tels quels) */
+
 
 // --- KEYFRAMES ---
 
