@@ -26,18 +26,24 @@ class ArticleController extends AbstractController
         $auteurId = $request->query->get('auteur');
 
         $articles = match (true) {
-            $auteurId => $articleRepository->findBy(['user' => $auteurId], ['createdAt' => 'DESC']),
-            $searchTerm => $articleRepository->createQueryBuilder('a')
-                ->where('a.titre LIKE :term OR a.contenu LIKE :term')
-                ->setParameter('term', '%' . $searchTerm . '%')
-                ->orderBy('a.createdAt', 'DESC')
-                ->getQuery()->getResult(),
-            default => $articleRepository->findBy(['estApprouve' => true], ['createdAt' => 'DESC']),
-        };
+        $auteurId => $articleRepository->createQueryBuilder('a')
+            ->andWhere('a.user = :u')->setParameter('u', $auteurId)
+            ->andWhere('a.estApprouve = true')
+            ->orderBy('a.createdAt', 'DESC')->getQuery()->getResult(),
+        $searchTerm => $articleRepository->createQueryBuilder('a')
+            ->andWhere('(a.titre LIKE :term OR a.contenu LIKE :term)')
+            ->andWhere('a.estApprouve = true')
+            ->setParameter('term', '%'.$searchTerm.'%')
+            ->orderBy('a.createdAt', 'DESC')->getQuery()->getResult(),
+        default => $articleRepository->findBy(['estApprouve' => true], ['createdAt' => 'DESC']),
+    };
+
+        $lastArticles = $articleRepository->findLatestPublished(3);
 
         return $this->render('article/index.html.twig', [
             'articles' => $articles,
             'searchTerm' => $searchTerm,
+             'lastArticles' => $lastArticles,
         ]);
     }
 
@@ -46,12 +52,24 @@ class ArticleController extends AbstractController
         Article $article,
         Request $request,
         EntityManagerInterface $em,
-        CommentaireRepository $commentaireRepository
+        CommentaireRepository $commentaireRepository,
+        ArticleRepository $articleRepository
     ): Response {
-        $commentaires = $commentaireRepository->findBy([
-            'article' => $article,
-            'approuve' => true
-        ], ['dateCommentaire' => 'DESC']);
+
+        // 🔒 Protection : article non publié
+    if (
+        !$article->getEstApprouve() // si ton getter s'appelle getEstApprouve(), remplace ici
+        && !$this->isGranted('ROLE_ADMIN')
+        && $article->getUser() !== $this->getUser()
+    ) {
+        throw $this->createNotFoundException();
+        // ou : throw $this->createAccessDeniedException('Cet article n’est pas publié.');
+    }
+
+        $commentaires = $commentaireRepository->findBy(
+            ['article' => $article, 'approuve' => true],
+            ['dateCommentaire' => 'DESC']
+        );
 
         $commentaire = new Commentaire();
         $commentaire->setArticle($article)
@@ -70,7 +88,6 @@ class ArticleController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $em->persist($commentaire);
             $em->flush();
-
             $this->addFlash('success', '💬 Merci pour votre commentaire ! Il sera visible après validation.');
             return $this->redirectToRoute('app_article_show', ['id' => $article->getId()]);
         }
@@ -79,11 +96,18 @@ class ArticleController extends AbstractController
             fn($key, $like) => $like->getUser() === $this->getUser()
         );
 
+        $related = $articleRepository->findRelatedByCategory($article->getCategorie(), $article->getId(), 3);
+        $prev    = $articleRepository->findPrevPublished($article->getCreatedAt());
+        $next    = $articleRepository->findNextPublished($article->getCreatedAt());
+
         return $this->render('article/show.html.twig', [
-            'article' => $article,
-            'commentaires' => $commentaires,
+            'article'         => $article,
+            'commentaires'    => $commentaires,
             'commentaireForm' => $form->createView(),
-            'isLiked' => $isLiked,
+            'isLiked'         => $isLiked,
+            'related'         => $related,
+            'prev'            => $prev,
+            'next'            => $next,
         ]);
     }
 

@@ -111,7 +111,7 @@ $badge-attente: #a0875b;
 }
 
 // --------------------------------------------------
-// ✅ Validation / approbation
+// Validation / approbation
 // --------------------------------------------------
 
 .badge-valide {
@@ -150,6 +150,19 @@ $badge-attente: #a0875b;
   background-color: rgba(255, 182, 193, 0.3);
   color: #a11a3f;
 }
+
+// BADGES STATUT AUTEUR
+
+.badge-nouveau-venu {
+  background: linear-gradient(45deg, #ffa07a );
+}
+.badge-auteur-occasionnel {
+  background: linear-gradient(45deg, #a0522d);
+}
+.badge-auteur-regulier {
+  background: linear-gradient(45deg, #008b8b);
+}
+
 
 
 

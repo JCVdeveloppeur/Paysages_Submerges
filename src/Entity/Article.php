@@ -7,6 +7,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: ArticleRepository::class)]
 #[ORM\HasLifecycleCallbacks]
@@ -20,6 +21,12 @@ class Article
     #[ORM\Column(length: 255)]
     private ?string $titre = null;
 
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    private ?string $chapeau = null;
+
+    public function getChapeau(): ?string { return $this->chapeau; }
+    public function setChapeau(?string $chapeau): self { $this->chapeau = $chapeau; return $this; }
+
     #[ORM\Column(type: Types::TEXT)]
     private ?string $contenu = null;
 
@@ -32,10 +39,10 @@ class Article
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $image = null;
 
-    #[ORM\Column]
+    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     private ?\DateTime $dateCreation = null;
 
-    #[ORM\Column(nullable: true)]
+    #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
     private ?\DateTime $datePublication = null;
 
     #[ORM\Column(length: 50)]
@@ -237,10 +244,7 @@ class Article
         return $this;
     }
 
-    public function getEstApprouve(): ?bool
-    {
-    return $this->estApprouve;
-    }
+    public function getEstApprouve(): bool { return $this->estApprouve; }
 
     public function setEstApprouve(bool $estApprouve): static
     {
@@ -341,6 +345,94 @@ private ?string $imageGauche = null;
         $this->legendeImageHeader = $legendeImageHeader;
         return $this;
     }
+    // Pull-quote
 
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    #[Assert\Length(max: 1000)]
+    private ?string $pullQuoteTexte = null;
+
+    public function getPullQuoteTexte(): ?string
+    {
+        return $this->pullQuoteTexte;
+    }
+    public function setPullQuoteTexte(?string $pullQuoteTexte): static
+    {
+        $this->pullQuoteTexte = $pullQuoteTexte;
+        return $this;
+    }
+
+    #[ORM\Column(length: 255, nullable: true)]
+    #[Assert\Length(max: 255)]
+    private ?string $pullQuoteSource = null;
+
+    public function getPullQuoteSource(): ?string
+    {
+        return $this->pullQuoteSource;
+    }
+    public function setPullQuoteSource(?string $pullQuoteSource): static
+    {
+        $this->pullQuoteSource = $pullQuoteSource;
+        return $this;
+    }
+
+    #[ORM\Column(length: 12, options: ['default' => 'right'])]
+    #[Assert\Choice(choices: ['left','right','center'])]
+    private string $pullQuotePosition = 'right'; // left|right|center
+
+    public function getPullQuotePosition(): string { return $this->pullQuotePosition; }
+
+    public function setPullQuotePosition(string $pullQuotePosition = 'right'): self
+    {
+    $allowed = ['left','right','center'];
+    $this->pullQuotePosition = \in_array($pullQuotePosition, $allowed, true) ? $pullQuotePosition : 'right';
+    return $this;
+    }
+
+    #[ORM\Column(length: 12, options: ['default' => 'default'])]
+    #[Assert\Choice(choices: ['default','green','orange','purple'])]
+    private string $pullQuoteTheme = 'default';  // default|green|orange|purple
+
+    public function getPullQuoteTheme(): string { return $this->pullQuoteTheme; }
+
+    public function setPullQuoteTheme(string $pullQuoteTheme = 'default'): self
+    {
+    $allowed = ['default','green','orange','purple'];
+    $this->pullQuoteTheme = \in_array($pullQuoteTheme, $allowed, true) ? $pullQuoteTheme : 'default';
+    return $this;
+    }
+
+    #[ORM\Column(type: 'integer', options: ['default' => 2])]
+    #[Assert\Range(min: 1, max: 50)]
+    private int $pullQuoteIndex = 2; // insertion après ce paragraphe
+
+    public function getPullQuoteIndex(): int { return $this->pullQuoteIndex; }
+    
+    public function setPullQuoteIndex(?int $pullQuoteIndex): self
+    {
+    $this->pullQuoteIndex = \max(1, $pullQuoteIndex ?? 2);
+    return $this;
+    }
+
+    #[ORM\PrePersist]
+    #[ORM\PreUpdate]
+    public function normalizePullQuote(): void
+    {
+    $this->pullQuoteTexte  = $this->pullQuoteTexte  !== null ? trim($this->pullQuoteTexte)  : null;
+    $this->pullQuoteSource = $this->pullQuoteSource !== null ? trim($this->pullQuoteSource) : null;
+
+    $pos = ['left','right','center'];
+    if (!in_array($this->pullQuotePosition, $pos, true)) {
+        $this->pullQuotePosition = 'right';
+    }
+
+    $themes = ['default','green','orange','purple'];
+    if (!in_array($this->pullQuoteTheme, $themes, true)) {
+        $this->pullQuoteTheme = 'default';
+    }
+
+    if ($this->pullQuoteIndex < 1) {
+        $this->pullQuoteIndex = 2;
+    }
+    }
     }
 

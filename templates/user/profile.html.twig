@@ -42,6 +42,7 @@
     {{ form_end(form) }}
 
     <!-- Modal de sélection d'avatar -->
+
     <div class="modal fade" id="avatarModal" tabindex="-1" aria-labelledby="avatarModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered modal-lg">
             <div class="modal-content">
@@ -103,15 +104,15 @@
                             <h5 class="card-title">
                                 {{ article.titre }}
                                 {% if article.estApprouve %}
-                                    <span class="badge bg-success ms-2">Validé ✅</span>
+                                    <span class="badge bg-success ms-2">Validé</span>
                                 {% else %}
-                                    <span class="badge bg-warning text-dark ms-2">En attente ⏳</span>
+                                    <span class="badge bg-warning text-dark ms-2">En attente</span>
                                 {% endif %}
                             </h5>
                             <p class="card-text small text-muted">
                                 Publié le {{ article.datePublication|date('d/m/Y') }}
                             </p>
-                            <a href="{{ path('app_article_show', {'id': article.id}) }}" class="btn btn-sm btn-outline-primary">
+                            <a href="{{ path('app_article_show', {'id': article.id}) }}" class="btn-brun btn-sm">
                                 Voir l'article
                             </a>
                         </div>
@@ -132,7 +133,7 @@
         document.querySelectorAll('.avatar-choice').forEach(function (img) {
             img.addEventListener('click', function () {
                 const selectedAvatar = this.dataset.avatar;
-                const avatarInput = document.querySelector('input[name$="[avatar]"]'); // <-- ciblage dynamique
+                const avatarInput = document.querySelector('input[name$="[avatar]"]');
                 const avatarPreview = document.getElementById('avatarPreview');
                 const modalEl = document.getElementById('avatarModal');
 

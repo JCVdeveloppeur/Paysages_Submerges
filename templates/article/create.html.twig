@@ -21,10 +21,19 @@
                     {{ form_widget(form.categorie, {'attr': {'class': 'form-select'}}) }}
                     {{ form_errors(form.categorie) }}
                 </div>
+                <div class="mb-3">
+                    {{ form_label(form.chapeau) }}
+                    {{ form_widget(form.chapeau, {
+                    attr: { class: 'form-control autogrow', rows: 4, maxlength: 300, placeholder: 'Un court résumé accrocheur…' }
+                    }) }}
+                    {{ form_errors(form.chapeau) }}
+                </div>
 
                 <div class="mb-3">
                     {{ form_label(form.contenu) }}
-                    {{ form_widget(form.contenu, {'attr': {'class': 'form-control'}}) }}
+                    {{ form_widget(form.contenu, {
+                    attr: { class: 'form-control autogrow', rows: 15 }
+                    }) }}
                     {{ form_errors(form.contenu) }}
                 </div>
 
@@ -63,6 +72,12 @@
     </div>
 </div>
 {% endblock %}
+
+{% block javascripts %}
+  {{ parent() }}
+  {{ encore_entry_script_tags('article_edit') }}
+{% endblock %}
+
 
 
 

@@ -1,0 +1,82 @@
+
+@use "variables" as *;
+@use "mixins" as *;
+@use "bouton" as *;
+
+.article-edit {
+  /* Nav d’ancrage */
+  .form-nav {
+    position: sticky; top: .75rem; z-index: 10;
+    background: linear-gradient(180deg, #fff, rgba(255,255,255,.9));
+    padding: .25rem; border-radius: .75rem; box-shadow: 0 2px 8px rgba(0,0,0,.06);
+    .nav-link { padding: .4rem .75rem; }
+    .nav-link.active { background: #0d6efd; }
+  }
+
+  /* Sections */
+  .form-section {
+    background:#fff; border:1px solid #e6eaef; border-radius:.75rem;
+    padding: 1rem 1.25rem; margin-bottom: 1rem;
+    box-shadow: 0 1px 6px rgba(16,24,40,.05);
+  }
+  .form-section__title { font-size: 1.05rem; font-weight: 700; margin: 0 0 .75rem; }
+  .form-section .mb-3, .form-section .form-group { margin-bottom: .85rem !important; }
+  label { font-weight: 600; }
+
+  /* Vignettes d’images */
+  .form-media-previews { display:flex; flex-wrap:wrap; gap:.75rem; margin-top:.5rem; }
+
+  .form-thumb{
+    width:180px; aspect-ratio:4/3; border:1px solid #e6eaef; border-radius:.5rem;
+    background:#f8f9fa; overflow:hidden; display:flex; align-items:center; justify-content:center;
+    cursor:pointer; transition: box-shadow .15s ease;
+
+    img { width:100%; height:100%; object-fit:cover; }
+
+    &--contain img { object-fit: contain; }
+    &--wide { width:260px; aspect-ratio:16/9; }
+    &__caption { font-size:.8rem; color:#6c757d; text-align:center; max-width:260px; }
+
+    &:hover { box-shadow: 0 0 0 3px #86b7fe55; }
+  }
+
+  .js-img-zoom img { cursor: zoom-in; }
+
+  /* Barre d’actions collante */
+  .form-actions {
+    display:flex; justify-content:space-between; gap:.75rem;
+    position: sticky; bottom: 0;
+    background: linear-gradient(180deg, transparent, #fff 30%);
+    padding-top:.75rem; border-top:1px solid #e6eaef;
+  }
+
+  @media (max-width: 576px) {
+    .form-actions { flex-direction: column-reverse; position: static; }
+  }
+}
+.article-edit textarea.form-control{
+  height: auto !important;   /* neutralise un éventuel override */
+  min-height: 14rem;         /* ~224px */
+  resize: vertical;          /* poignée de redimensionnement */
+  line-height: 1.5;
+}
+
+.article-edit textarea.form-control { width: 100%; }
+
+
+@media (min-width: 992px){
+  .article-edit textarea.form-control{ min-height: 18rem; }
+}
+
+.article-edit textarea.autogrow{
+  min-height: 220px;
+
+  /* change facilement la limite sans toucher au JS */
+  --autogrow-max: 70vh;
+}
+.nav-link {
+  color: $texte-foncé;
+}
+
+
+

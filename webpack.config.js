@@ -11,6 +11,8 @@ Encore
 
     .addEntry('app', './assets/app.js')
 
+    .addEntry('article_edit', './assets/article_edit.js')
+
     .splitEntryChunks()
     .enableSingleRuntimeChunk()
 
@@ -18,11 +20,13 @@ Encore
     .enableSourceMaps(!Encore.isProduction())
     .enableSassLoader()
     .enableVersioning(Encore.isProduction())
+    .enableStimulusBridge('./assets/controllers.json')
 
     .configureBabelPresetEnv((config) => {
         config.useBuiltIns = 'usage';
         config.corejs = '3.38';
     })
+    
 
     // Copie les fichiers images de assets/images vers public/build/images
     .copyFiles({
@@ -37,3 +41,5 @@ Encore
 ;
 
 module.exports = Encore.getWebpackConfig();
+
+

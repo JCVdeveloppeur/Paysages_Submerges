@@ -1,43 +1,383 @@
 @use "variables" as *;
 @use "mixins" as *;
+@use "bouton" as *;
 
 .site-footer {
-  background-color: rgba(5, 33, 59, 0.9);
-  color: #ffffff;
-  padding: 2rem 1rem;
-  font-size: 0.95rem;
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
-  text-align: center;
+  position: relative;
+  background: linear-gradient(180deg, rgba(5,33,59,.95), rgba(5,33,59,.98));
+  color: #fff;
+  padding: 2.5rem 1rem 2rem;
+  font-size: .95rem;
+  border-top: 1px solid rgba(255,255,255,.08);
+  overflow: hidden; // on garde, la vague reste DANS le footer
 
+  /* vague décorative en haut */
+  &::before {
+    content: "";
+    position: absolute;
+    inset: 0 auto auto 0;
+    height: 22px;
+    width: 100%;
+    background:
+      radial-gradient(22px 12px at 11px 12px, rgba(255,255,255,.14) 35%, rgba(255,255,255,0) 36%)
+      0 100% / 44px 24px repeat-x;
+    opacity: .35;
+    transform: none; // collée en haut à l’intérieur du footer
+  }
+
+  /* Liens du footer : couleur, soulignement animé et text-shadow au hover */
   a {
-    color: lighten($bleu-accent, 10%);
+    position: relative; // nécessaire pour le ::after animé
+    color: #cce7f5; // teinte claire par défaut
     text-decoration: none;
+    transition: color .3s ease, text-shadow .3s ease;
 
-    &:hover {
-      color: #ffffff;
-      text-shadow: 0 0 6px rgba(255, 255, 255, 0.6);
+    &::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      bottom: -2px;
+      width: 0%;
+      height: 2px;
+      background: #4fc3f7;
+      transition: width .3s ease;
+    }
+
+    &:hover,
+    &:focus-visible {
+      color: #4fc3f7; // teinte accent
+      text-shadow: 0 0 6px rgba(255,255,255,.5);
+      outline: none;
+
+      &::after {
+        width: 100%;
+      }
     }
   }
 
-  .footer-links {
-    margin-top: 1rem;
+  /* grille */
+  .footer-grid {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1.2fr 1fr 1fr;
+    gap: 1.5rem;
+    align-items: start;
+  }
 
-    a {
-      margin: 0 0.8rem;
-      font-weight: bold;
+  .footer-brand {
+    display: flex;
+    flex-direction: column;
+    gap: .6rem;
+
+    .footer-logo {
+      font-family: $font-titres;
+      font-size: 1.25rem;
+      letter-spacing: .3px;
+      color: lighten($bleu-ciel, 12%);
+    }
+    .footer-baseline {
+      color: rgba(255,255,255,.75);
+      line-height: 1.5;
     }
   }
 
-  .footer-logo {
-    font-family: $font-titres;
-    font-size: 1.2rem;
-    margin-bottom: 1rem;
-    display: inline-block;
+  .footer-group {
+    .group-title {
+      font-family: $font-titres;
+      font-size: 1.05rem;
+      margin: 0 0 .6rem;
+      color: lighten($bleu-ciel, 15%);
+    }
+    ul {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+
+      li + li { margin-top: .35rem; }
+
+      a {
+        display: inline-flex;
+        align-items: center;
+        gap: .45rem;
+      }
+
+      a i {
+        font-size: 1rem;
+        opacity: .85;
+      }
+    }
+  }
+
+  .footer-sep {
+    max-width: 1200px;
+    margin: 1.5rem auto 1rem;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,.16), transparent);
+    border-radius: 999px;
   }
 
   .footer-credits {
-    margin-top: 1rem;
-    font-size: 0.85rem;
-    color: rgba(255, 255, 255, 0.6);
+    max-width: 1200px;
+    margin: 0 auto;
+    font-size: .85rem;
+    color: rgba(255,255,255,.65);
+    display: flex;
+    flex-wrap: wrap;
+    gap: .75rem 1rem;
+    justify-content: space-between;
+
+    .legal-links {
+      a { color: rgba(255,255,255,.8); }
+      a + a { margin-left: .8rem; }
+    }
+  }
+
+  .back-to-top {
+    position: absolute;
+    right: 1rem;
+    bottom: 1.25rem;
+    @include button-reset;
+    border-radius: 999px;
+    padding: .55rem .8rem;
+    background: rgba(255,255,255,.08);
+    border: 1px solid rgba(255,255,255,.2);
+    backdrop-filter: blur(4px);
+    display: inline-flex;
+    align-items: center;
+    gap: .4rem;
+    color: #fff;
+    transition: transform .15s ease, background .2s ease, border-color .2s ease;
+
+    i { font-size: 1.05rem; }
+
+    &:hover,
+    &:focus-visible {
+      transform: translateY(-2px);
+      background: rgba(255,255,255,.12);
+      border-color: rgba(255,255,255,.35);
+      outline: none;
+    }
+  }
+
+  /* responsive */
+  @media (max-width: 900px) {
+    .footer-grid { grid-template-columns: 1fr 1fr; }
+  }
+
+  @media (max-width: 640px) {
+    padding: 2rem 1rem 3.25rem;
+
+    .footer-grid {
+      grid-template-columns: 1fr;
+      gap: 1.25rem;
+    }
+
+    .footer-credits {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: .5rem;
+    }
+
+    .back-to-top {
+      right: 50%;
+      transform: translateX(50%); // position de base centrée
+
+      &:hover,
+      &:focus-visible {
+        transform: translateX(50%) translateY(-2px); // compose le déplacement au hover/focus
+      }
+    }
   }
 }
+/* Variante crème pour les pages blanches (liste + article) */
+.site-footer {
+  &.site-footer--creme {
+    /* Fond crème en léger dégradé pour rester chic */
+    background: linear-gradient(180deg, #fbf8f3, #f5efe7);
+    color: #2b2b2b; /* texte par défaut plus sombre */
+    border-top: 1px solid rgba(0,0,0,.08);
+
+    /* vague décorative atténuée et dans des tons neutres */
+    &::before {
+      background:
+        radial-gradient(22px 12px at 11px 12px, rgba(0,0,0,.10) 35%, rgba(0,0,0,0) 36%)
+        0 100% / 44px 24px repeat-x;
+      opacity: .25;
+    }
+
+    /* Liens + hover : on garde la signature bleutée du site si $bleu-ciel existe,
+       sinon on utilise des valeurs sûres côté couleurs. */
+    a {
+      color: if(global-variable-exists(bleu-ciel), darken($bleu-ciel, 10%), #2f5b6b);
+
+      &::after { background: if(global-variable-exists(bleu-ciel), $bleu-ciel, #4aa3c0); }
+
+      &:hover,
+      &:focus-visible {
+        color: if(global-variable-exists(bleu-ciel), darken($bleu-ciel, 20%), #1f4856);
+        text-shadow: none; /* ombre claire pas utile sur fond clair */
+      }
+    }
+
+    .footer-brand {
+      .footer-logo {
+        color: if(global-variable-exists(bleu-ciel), desaturate(darken($bleu-ciel, 12%), 5%), #2c5564);
+      }
+      .footer-baseline {
+        color: rgba(0,0,0,.70);
+      }
+    }
+
+    .footer-group {
+      .group-title {
+        color: if(global-variable-exists(bleu-ciel), desaturate(darken($bleu-ciel, 5%), 5%), #334f5a);
+      }
+      ul a i { opacity: .75; }
+    }
+
+    .footer-sep {
+      background: linear-gradient(90deg, transparent, rgba(0,0,0,.10), transparent);
+    }
+
+    .footer-credits {
+      color: rgba(0,0,0,.65);
+
+      .legal-links a { color: rgba(0,0,0,.75); }
+    }
+
+    .back-to-top {
+      background: rgba(0,0,0,.06);
+      border: 1px solid rgba(0,0,0,.15);
+      color: #2b2b2b;
+
+      &:hover,
+      &:focus-visible {
+        background: rgba(0,0,0,.08);
+        border-color: rgba(0,0,0,.22);
+      }
+    }
+  }
+}
+/* Variante crème douce pour les pages blanches (liste + article) */
+.site-footer {
+  &.site-footer--creme {
+    /* Fond crème clair et chaleureux */
+    background: linear-gradient(180deg, #fbf8f3, #f5efe7);
+    color: #2b2b2b; /* texte plus sombre pour contraste */
+    border-top: 1px solid rgba(0,0,0,.08);
+
+    /* vague décorative adoucie */
+    &::before {
+      background:
+        radial-gradient(22px 12px at 11px 12px, rgba(0,0,0,.08) 35%, rgba(0,0,0,0) 36%)
+        0 100% / 44px 24px repeat-x;
+      opacity: .2;
+    }
+
+    /* Liens : on conserve la touche bleutée */
+    a {
+      color: if(global-variable-exists(bleu-ciel), darken($bleu-ciel, 10%), #2f5b6b);
+
+      &::after {
+        background: if(global-variable-exists(bleu-ciel), $bleu-ciel, #4aa3c0);
+      }
+
+      &:hover,
+      &:focus-visible {
+        color: if(global-variable-exists(bleu-ciel), darken($bleu-ciel, 20%), #1f4856);
+        text-shadow: none; /* inutile sur fond clair */
+      }
+    }
+
+    .footer-brand {
+      .footer-logo {
+        color: if(global-variable-exists(bleu-ciel), desaturate(darken($bleu-ciel, 12%), 5%), #2c5564);
+      }
+      .footer-baseline {
+        color: rgba(0,0,0,.70);
+      }
+    }
+
+    .footer-group {
+      .group-title {
+        color: if(global-variable-exists(bleu-ciel), desaturate(darken($bleu-ciel, 5%), 5%), #334f5a);
+      }
+      ul a i { opacity: .75; }
+    }
+
+    .footer-sep {
+      background: linear-gradient(90deg, transparent, rgba(0,0,0,.10), transparent);
+    }
+
+    .footer-credits {
+      color: rgba(0,0,0,.65);
+
+      .legal-links a { color: rgba(0,0,0,.75); }
+    }
+
+    .back-to-top {
+      background: rgba(0,0,0,.06);
+      border: 1px solid rgba(0,0,0,.15);
+      color: #2b2b2b;
+
+      &:hover,
+      &:focus-visible {
+        background: rgba(0,0,0,.08);
+        border-color: rgba(0,0,0,.22);
+      }
+    }
+  }
+}
+/* --- Fix bouton "Haut de page" sur mobile --- */
+.site-footer {
+  @media (max-width: 640px) {
+    /* On réserve de la place pour le bouton en bas à droite */
+    padding-bottom: 4.25rem; /* ↑ un peu plus que 3.25rem pour être tranquille */
+
+    .footer-credits {
+      /* Espace à droite pour éviter tout chevauchement avec le bouton */
+      padding-right: 5.5rem;
+    }
+
+    .back-to-top {
+      /* On quitte la position centrée */
+      right: max(1rem, env(safe-area-inset-right));
+      bottom: max(1rem, env(safe-area-inset-bottom));
+      transform: none;
+
+      /* Légèrement plus compact sur petit écran */
+      padding: .5rem .7rem;
+      font-size: .95rem;
+
+      /* Un peu plus de lisibilité au-dessus du fond crème */
+      box-shadow: 0 4px 12px rgba(0,0,0,.08);
+    }
+  }
+}
+/* --- Bouton "Haut de page" immobile sur mobile --- */
+.site-footer {
+  @media (max-width: 640px) {
+    .back-to-top {
+      /* position déjà à droite + en bas dans ton dernier patch */
+      right: max(1rem, env(safe-area-inset-right));
+      bottom: max(1rem, env(safe-area-inset-bottom));
+      transform: none;
+
+      /* on retire l’animation de déplacement */
+      transition: background .2s ease, border-color .2s ease, box-shadow .2s ease;
+
+      &:hover,
+      &:focus-visible {
+        /* ne bouge plus du tout */
+        transform: none;
+      }
+    }
+  }
+}
+
+
+
+
+
+

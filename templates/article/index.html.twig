@@ -5,7 +5,7 @@
 {% block body %}
 <section class="section-articles py-6 bg-light">
     <div class="container">
-        <h1 class="mb-2 text-center">Tous nos articles</h1>
+        <h1 class="mb-2 text-center">Tous les articles</h1>
         <p class="lead text-center mb-5">Laissez-vous émerveiller par la diversité sous-marine.</p>
 
         {% if searchTerm is defined and searchTerm %}
@@ -118,75 +118,113 @@
             </div>
 
             <!-- Colonne droite -->
-            <div class="col-lg-3">
+            <div class="col-lg-3 sidebar">
                 <div class="sticky-top" style="top: 100px;">
                     <div class="mb-4 p-3 bg-white rounded shadow-sm">
                         <h5 class="mb-3">🔔 Espace publicitaire</h5>
                         <p>Votre publicité ici ? Contactez-nous.</p>
                     </div>
 
-                    <div class="mb-4 p-3 bg-white rounded shadow-sm">
-                        <h5 class="mb-3">🌿 Concours Francçais d'Aquascaping</h5>
-                        <p>Découvrez le concours d'aquascaping et de paysages aquatiques, des œuvres d'art vivantes !</p>
-                        <a href="https://capa-aquascaping.fr/" class="btn btn-concours" target="_blank" rel="noopener noreferrer">Voir les concours 🌍</a>
-                    </div>
-                    <div class="mb-4 p-3 bg-white rounded shadow-sm">
-                        <h5 class="mb-3">🌿 Concours internationaux d'Aquascaping</h5>
-                        <p>Découvrez le concours international d'aquascaping, des œuvres d'art vivantes !</p>
-                        <a href="https://showcase.aquatic-gardeners.org/" class="btn btn-concours" target="_blank" rel="noopener noreferrer">Voir les concours 🌍</a>
-                    </div>
+                    <div class="mb-4 p-3 bg-white rounded shadow-sm concours-card">
+                        <h5 class="mb-3 d-flex align-items-center gap-2">
+                            🌿 Concours d'Aquascaping
+                        </h5>
 
-                    {% if lastArticles is defined and lastArticles|length > 0 %}
-                        <div class="mb-4 p-3 bg-white rounded shadow-sm">
-                            <h5 class="mb-3">📰 Derniers articles publiés</h5>
-                            {% set defaultImages = {
-                                'Biotope Amérique du sud': ['sud1.jpg', 'sud2.jpg', 'sud3.jpg'],
-                                'Biotope asiatique': ['asie1.jpg', 'asie2.jpg', 'asie3.jpg'],
-                                'Biotope africain': ['afrique1.jpg', 'afrique2.jpg'],
-                                'Biotope australien': ['australie1.jpg', 'australie2.jpg'],
-                                'Autre': ['autre1.jpg', 'autre2.jpg']
-                            } %}
-
-                            {% for last in lastArticles|slice(0, 3) %}
-                                {% set badgeClass = {
-                                    'Biotope Amérique du sud': 'badge-amerique-sud',
-                                    'Biotope asiatique': 'badge-asiatique',
-                                    'Biotope africain': 'badge-africain',
-                                    'Biotope australien': 'badge-australien',
-                                    'Autre': 'badge-autre'
-                                }[last.categorie] ?? 'badge-autre' %}
-
-                                {% set icon = {
-                                    'Biotope Amérique du sud': '🌱',
-                                    'Biotope asiatique': '🌊',
-                                    'Biotope africain': '🏜️',
-                                    'Biotope australien': '🪸',
-                                    'Autre': '🌍'
-                                }[last.categorie] ?? '🌍' %}
-
-                                {% set defaultImage = defaultImages[last.categorie]|default(['default.jpg'])|random_element %}
-
-                                <a href="{{ path('app_article_show', {'id': last.id}) }}" class="text-decoration-none text-dark">
-                                    <div class="card mb-3">
-                                        {% if last.image %}
-                                            <img src="{{ asset('uploads/articles/' ~ last.image) }}" class="card-img-top" alt="{{ last.titre }}">
-                                        {% else %}
-                                            <img src="{{ asset('build/images/defaults/' ~ defaultImage) }}" class="card-img-top" alt="Image par défaut">
-                                        {% endif %}
-                                        <div class="card-body p-2">
-                                            <h6 class="card-title mb-1" style="font-size: 0.95rem;">
-                                                {{ last.titre|length > 40 ? last.titre|slice(0, 40) ~ '…' : last.titre }}
-                                            </h6>
-                                            <span class="badge {{ badgeClass }} mb-1 d-inline-block">
-                                                {{ icon }} {{ last.categorie }}
-                                            </span>
-                                            <small class="text-muted d-block">{{ last.createdAt|human_date }}</small>
-                                        </div>
-                                    </div>
+                        <ul class="contest-list list-unstyled m-0">
+                            <li class="contest-item">
+                            <div class="contest-icon" aria-hidden="true">🇫🇷</div>
+                            <div class="contest-content">
+                                <h6 class="contest-title m-0">Concours Français d'Aquascaping</h6>
+                                <p class="contest-desc mb-2">Découvrez le concours d'aquascaping et de paysages aquatiques et trouvez l'inspiration.</p>
+                                <a href="https://capa-aquascaping.fr/"
+                                class="btn btn-concours btn-sm"
+                                target="_blank" rel="noopener noreferrer"
+                                aria-label="Ouvrir le Concours Français d'Aquascaping (nouvel onglet)">
+                                Voir les concours 🌍
                                 </a>
-                            {% endfor %}
+                            </div>
+                            </li>
+
+                            <li class="contest-item">
+                            <div class="contest-icon" aria-hidden="true">🌐</div>
+                            <div class="contest-content">
+                                <h6 class="contest-title m-0">Concours international d'Aquascaping</h6>
+                                <p class="contest-desc mb-2">Parcourez les concours internationaux d'aquascaping, des œuvres d'art vivantes !</p>
+                                <a href="https://showcase.aquatic-gardeners.org/"
+                                class="btn btn-concours btn-sm"
+                                target="_blank" rel="noopener noreferrer"
+                                aria-label="Ouvrir les concours internationaux d'Aquascaping (nouvel onglet)">
+                                Voir les concours 🌍
+                                </a>
+                            </div>
+                            </li>
+                        </ul>
                         </div>
+
+                    {# Derniers articles publiés #}
+                    {% if lastArticles is defined and lastArticles|length > 0 %}
+                    <div class="mb-4 p-3 bg-white rounded shadow-sm">
+                        <h5 class="mb-3">📰 Derniers articles publiés</h5>
+
+                        {# mapping pour images par défaut #}
+                        {% set dossierCategorie = {
+                        'Biotope Amérique du sud': 'amerique-sud',
+                        'Biotope asiatique': 'asiatique',
+                        'Biotope africain': 'africain',
+                        'Biotope australien': 'australien',
+                        'Autre': 'autre'
+                        } %}
+
+                        <ul class="mini-posts list-unstyled m-0">
+                        {% for last in lastArticles %}
+                            {% set badgeClass = {
+                            'Biotope Amérique du sud': 'badge-amerique-sud',
+                            'Biotope asiatique': 'badge-asiatique',
+                            'Biotope africain': 'badge-africain',
+                            'Biotope australien': 'badge-australien',
+                            'Autre': 'badge-autre'
+                            }[last.categorie] ?? 'badge-autre' %}
+
+                            {% set icon = {
+                            'Biotope Amérique du sud': '🌱',
+                            'Biotope asiatique': '🌊',
+                            'Biotope africain': '🏜️',
+                            'Biotope australien': '🪸',
+                            'Autre': '🌍'
+                            }[last.categorie] ?? '🌍' %}
+
+                            {% set catFolder = dossierCategorie[last.categorie]|default('autre') %}
+                            {% set randomImage = random([1,2,3]) %}
+
+                            <li class="mini-post">
+                            <a href="{{ path('app_article_show', {'id': last.id}) }}" class="mini-link">
+                                <div class="thumb-wrap">
+                                {% if last.image %}
+                                    <img src="{{ asset('uploads/articles/' ~ last.image) }}"
+                                        alt="{{ last.titre }}" loading="lazy">
+                                {% else %}
+                                    <img src="{{ asset('build/images/defaults/articles/' ~ catFolder ~ '/' ~ randomImage ~ '.jpg') }}"
+                                        alt="Image par défaut – {{ last.categorie }}" loading="lazy">
+                                {% endif %}
+                                </div>
+
+                                <div class="meta">
+                                <h6 class="title">
+                                    {{ last.titre|length > 80 ? last.titre|slice(0, 80) ~ '…' : last.titre }}
+                                </h6>
+
+                                <div class="row-aux">
+                                    <span class="badge {{ badgeClass }}">{{ icon }} {{ last.categorie }}</span>
+                                    <small class="date text-muted">{{ last.createdAt|human_date }}</small>
+                                </div>
+                                </div>
+                            </a>
+                            </li>
+                        {% endfor %}
+                        </ul>
+                    </div>
                     {% endif %}
+
                 </div>
             </div>
         </div>

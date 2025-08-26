@@ -10,6 +10,7 @@
   background-color: #ffffff;
 }
 
+html[lang="fr"] { hyphens: auto; -webkit-hyphens: auto; }
 
 /* --------- HERO HEADER --------- */
 .hero-header {
@@ -265,6 +266,187 @@
 #avatarInput {
     display: none;
 }
+/* --- Chapeau --- */
+.article-chapeau {
+  max-width: 800px;
+  text-align: justify;
+  font-style: italic;
+  margin: 0 auto 1rem;
+  color: #6c757d;
+}
+
+/* --- Figures intégrées (gauche/droite) --- */
+
+/* Le conteneur du texte contient bien les floats */
+.full-text { display: flow-root; }
+
+/* Séparateur pour empêcher un float:right de remonter au-dessus d’un float:left existant */
+.float-sep { clear: left; }   /* on passe SOUS l’image gauche */
+
+.inline-figure {
+  width: clamp(240px, 32%, 360px);
+  min-width: 240px;
+  background:#fff; border:1px solid #eee; border-radius:.6rem; padding:.5rem;
+  box-shadow:0 2px 6px rgba(0,0,0,.05);
+  img { width:100%; height:auto; display:block; border-radius:.4rem; }
+  figcaption { text-align:center; color:#6c757d; }
+}
+
+.inline-figure.left  { float:left;  margin:.2rem 1rem 1rem 0; }
+.inline-figure.right { float:right; margin:.2rem 0 1rem 1rem; }
+.inline-figure.right.clear-left { clear:left; } /* démarre sous l’image gauche */
+
+/* --- Typo --- */
+.prose { line-height: 1.75; font-size: 1.02rem; }
+.prose p { margin-bottom: 1rem; }
+
+/* --- Barre de partage --- */
+.share-bar {
+  display: flex; align-items: center; gap: .5rem; flex-wrap: wrap;
+}
+.share-btn {
+  display:inline-flex; align-items:center; justify-content:center;
+  width: 36px; height: 36px; border-radius: 999px;
+  background: #f5f7f9; border: 1px solid #e6eaef;
+  transition: transform .15s ease, background .2s ease, border-color .2s ease;
+}
+.share-btn:hover { transform: translateY(-1px); background:#fff; border-color:#d7dde5; }
+.copy-url.copied { outline: 2px solid #79c08a; }
+
+/* --- Navigation précédent/suivant --- */
+.article-nav {
+  display:flex; justify-content:space-between; gap:1rem; margin-top:1rem;
+}
+.article-nav .nav-link {
+  display:inline-flex; align-items:center; gap:.25rem;
+  padding:.4rem .6rem; border-radius:.5rem;
+  background:#f8fafc; border:1px solid #e6eaef; text-decoration:none;
+}
+.article-nav .nav-link:hover { background:#fff; }
+
+/* --- À lire aussi --- */
+.related-grid {
+  display:grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: .75rem;
+}
+.related-card {
+  display:block; background:#fff; border:1px solid #e6eaef; border-radius:.6rem;
+  overflow:hidden; text-decoration:none; color:inherit;
+  box-shadow: 0 1px 4px rgba(0,0,0,.04);
+  transition: transform .15s ease, box-shadow .2s ease;
+}
+.related-card:hover { transform: translateY(-2px); box-shadow: 0 6px 16px rgba(0,0,0,.08); }
+.related-card img { width:100%; height: 90px; object-fit: cover; display:block; }
+.related-card .rc-body { padding:.5rem .6rem; }
+.related-card .rc-title { font-size:.92rem; margin:0 0 .25rem; line-height:1.25; }
+.related-card .no-img { height:90px; background: linear-gradient(180deg,#f4f6f8,#eef2f6); }
+
+
+/* 1) Justifier au niveau du conteneur pour qu'il fonctionneavec <p> ou juste <br> */
+.article-card .article-content .prose,
+.article-card .article-content .full-text {
+  text-align: justify;
+  text-justify: inter-word;
+  hyphens: auto;
+  -webkit-hyphens: auto;
+  overflow-wrap: break-word;
+}
+
+/* 2) Ne pas justifier les figures et les citations */
+.article-card .article-content .prose figure,
+.article-card .article-content .full-text figure,
+.article-card .article-content .prose .pull-quote,
+.article-card .article-content .full-text .pull-quote,
+.article-card .article-content .prose figcaption,
+.article-card .article-content .full-text figcaption,
+.article-card .article-content .prose .pull-quote .source,
+.article-card .article-content .full-text .pull-quote .source {
+  text-align: initial; /* (left/start depending on dir) */
+}
+
+/* 3) Ajoute une petite précision au cas ou un thème définirait text-align ailleurs */
+.article-card .article-content .prose p,
+.article-card .article-content .full-text p {
+  text-align: justify;
+}
+
+
+/* ===== Pull-quote (fusion) ===== */
+.pull-quote{
+  --accent:#7c8795;
+  position:relative;
+  background:#fff;
+  border:1px solid #e6eaef;
+  border-left:.35rem solid var(--accent);
+  border-radius:.65rem;
+  padding:.9rem 1rem .8rem;
+  box-shadow:0 1px 6px rgba(0,0,0,.04);
+  break-inside: avoid;
+
+  blockquote{ margin:0; quotes:"« " " »"; font: italic 600 1.05rem/1.5 $font-corps; }
+  blockquote p{ margin:0; }
+  blockquote p::before{ content: open-quote; }
+  blockquote p::after { content: close-quote; }
+
+  .source{ display:block; margin-top:.35rem; text-align:center; font-size:.85rem; color:#6b7280; }
+
+  &::before{
+    content:"“";
+    position:absolute; left:.5rem; top:.35rem;
+    font-size:2.2rem; line-height:1; color:var(--accent); opacity:.35;
+  }
+}
+.pull-quote { margin-block: .85rem; }
+.pull-quote + p { margin-top: .6rem; }    /* resserre le retour au texte */
+
+/* Positions */
+.pull-quote.left  { float:left;  width:clamp(220px,34%,360px); margin:.25rem 1rem 1rem 0;  shape-outside: inset(0 round .6rem); }
+.pull-quote.right { float:right; width:clamp(220px,34%,360px); margin:.25rem 0 1rem 1rem;  shape-outside: inset(0 round .6rem); }
+.pull-quote.right.clear-left { clear:left; }
+.pull-quote.center{
+  float:none; display:flow-root; max-width:min(60ch,92%); margin:1rem auto;
+}
+
+/* Thèmes */
+.pull-quote--green  { --accent:#5fb67b; }
+.pull-quote--orange { --accent:#f59e0b; }
+.pull-quote--purple { --accent:#7c3aed; }
+
+/* ===== Responsive : une seule media-query ===== */
+@media (max-width:768px){
+  .inline-figure.left,
+  .inline-figure.right{
+    float:none !important;
+    max-width:100%;
+    margin:0 0 1rem 0;
+    shape-outside:auto;
+  }
+
+  .pull-quote.left,
+  .pull-quote.right{
+    float:none; width:100%; max-width:100%; margin:.75rem 0; shape-outside:auto;
+  }
+  .pull-quote.center{ max-width:100%; }
+  .pull-quote .source{ text-align:center; }
+}
+
+/* Optionnel desktop */
+@media (min-width:992px){
+  .article-card .article-content .full-text p { letter-spacing:.01em; }
+}
+
+/* Très petit écran (optionnel) */
+@media (max-width:420px){
+  .article-card .article-content .full-text,
+  .article-card .article-content .full-text p { text-align:start; }
+}
+
+// Impression propre
+@media print{
+  .inline-figure, .pull-quote { float:none !important; width:100%; shape-outside:auto; }
+}
+
+
+
 
 
 

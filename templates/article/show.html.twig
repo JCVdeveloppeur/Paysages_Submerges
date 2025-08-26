@@ -5,227 +5,343 @@
 {% block body %}
 <div class="article-show-page">
 
-    {% if article.imageHeader %}
-        {% set badgeClass = {
-            'Biotope Amérique du sud': 'badge-amerique-sud',
-            'Biotope asiatique': 'badge-asiatique',
-            'Biotope africain': 'badge-africain',
-            'Biotope australien': 'badge-australien',
-            'Autre': 'badge-autre'
-        }[article.categorie] ?? 'badge-autre' %}
+  {# --- HERO + badge catégorie --- #}
 
-        <section class="hero-header hero-zoom mb-4" data-bg="{{ asset('uploads/articles/' ~ article.imageHeader) }}">
-            <div class="hero-overlay d-flex justify-content-center align-items-center text-center">
-                <div>
-                    <h1 class="hero-title">{{ article.titre }}</h1>
-                    <span class="badge {{ badgeClass }}">
-                        {% if article.categorie == 'Biotope Amérique du sud' %}🌱
-                        {% elseif article.categorie == 'Biotope asiatique' %}🌊
-                        {% elseif article.categorie == 'Biotope africain' %}🏜️
-                        {% elseif article.categorie == 'Biotope australien' %}🪸
-                        {% else %}🌍
-                        {% endif %}
-                        {{ article.categorie }}
-                    </span>
-                </div>
-            </div>
-        </section>
+  {% if article.imageHeader %}
+    {% set badgeClass = {
+      'Biotope Amérique du sud': 'badge-amerique-sud',
+      'Biotope asiatique': 'badge-asiatique',
+      'Biotope africain': 'badge-africain',
+      'Biotope australien': 'badge-australien',
+      'Autre': 'badge-autre'
+    }[article.categorie] ?? 'badge-autre' %}
 
-        {% if article.legendeImageHeader %}
-            <div class="image-caption text-center mt-2">
-                <p class="text-muted small fst-italic">{{ article.legendeImageHeader }}</p>
-            </div>
-        {% endif %}
+    <section class="hero-header hero-zoom mb-4" data-bg="{{ asset('uploads/articles/' ~ article.imageHeader) }}">
+      <div class="hero-overlay d-flex justify-content-center align-items-center text-center">
+        <div>
+          <h1 class="hero-title">{{ article.titre }}</h1>
+          <span class="badge {{ badgeClass }}">
+            {% if article.categorie == 'Biotope Amérique du sud' %}🌱
+            {% elseif article.categorie == 'Biotope asiatique' %}🌊
+            {% elseif article.categorie == 'Biotope africain' %}🏜️
+            {% elseif article.categorie == 'Biotope australien' %}🪸
+            {% else %}🌍{% endif %}
+            {{ article.categorie }}
+          </span>
+        </div>
+      </div>
+    </section>
+
+    {% if article.legendeImageHeader %}
+      <div class="image-caption text-center mt-2">
+        <p class="text-muted small fst-italic">{{ article.legendeImageHeader }}</p>
+      </div>
+    {% endif %}
+  {% endif %}
+
+  <div class="container py-5" id="article-top">
+
+    {# --- CHAPEAU --- #}
+
+    {% if article.chapeau %}
+      <p class="article-chapeau lead text-muted mx-auto">{{ article.chapeau }}</p>
     {% endif %}
 
-    <div class="container py-5">
+    <div class="article-card mb-5">
+      <div class="article-content">
 
-        <div class="article-card mb-5">
-            <div class="article-content">
-                {% if article.imageGauche %}
-                    <div class="section-with-image my-5">
-                        <div class="image-container">
-                            <figure>
-                                <img src="{{ asset('uploads/articles/' ~ article.imageGauche) }}"
-                                     alt="Image gauche de {{ article.titre }}"
-                                     class="img-fluid rounded shadow">
-                                {% if article.legendeImageGauche %}
-                                    <figcaption class="text-muted small text-center mt-2">{{ article.legendeImageGauche }}</figcaption>
-                                {% endif %}
-                            </figure>
-                        </div>
-                        <div class="text-container">
-                            <p>{{ article.intro1|raw }}</p>
-                        </div>
-                    </div>
+        {# --- TEXTE + INSERTIONS D'IMAGES (après P1 et P2) + PULL-QUOTE CONFIGURABLE P3--- #}
+    <div class="full-text prose mt-2">
+
+    {# 1) Normalisation #}
+
+    {% set html = article.contenu %}
+    {% set hasP = ('</p>' in html) or ('</P>' in html) %}
+    {% set withBr = hasP ? html : html|nl2br %}
+    {% set norm = withBr|replace({
+      '</P>':'</p>', '<BR />':'<br>', '<BR/>':'<br>', '<BR>':'<br>',
+      '<br />':'<br>', '<br/>':'<br>'
+    }) %}
+    {% set parts = hasP ? norm|split('</p>') : norm|split('<br>') %}
+    {% set delim = hasP ? '</p>' : '<br>' %}
+
+    {# 2) Index images #}
+
+    {% set leftIndex  = 1 %}
+    {% set rightIndex = 2 %}
+
+    {# 3) Pull-quote configurable #}
+
+    {% set pqText  = article.pullQuoteTexte %}
+    {% set pqSrc   = article.pullQuoteSource %}
+    {% set pqPos   = article.pullQuotePosition ?? 'right' %}
+    {% set pqTheme = article.pullQuoteTheme ?? 'default' %}
+    {% set pqIndex = article.pullQuoteIndex ?? 2 %}
+
+    {# Classes pull-quote #}
+
+    {% set pqClasses = 'pull-quote ' ~ pqPos ~ (pqTheme != 'default' ? ' pull-quote--' ~ pqTheme : '') %}
+
+    {# Anti-collision : si une image gauche (après P1) existe et qu'on place un PQ à droite plus bas #}
+
+    {% if pqPos == 'right' and article.imageGauche and pqIndex > leftIndex %}
+      {% set pqClasses = pqClasses ~ ' clear-left' %}
+    {% endif %}
+
+    {# 4) Boucle d'affichage + insertions #}
+
+    {% for i, chunk in parts %}
+      {% if chunk is not empty %}
+        {{ (chunk ~ delim)|raw }}
+      {% endif %}
+
+      {# — Pull-quote au bon index — #}
+
+      {% if pqText and (i + 1) == pqIndex %}
+        <figure class="{{ pqClasses }}">
+          <blockquote><p>{{ pqText|e|nl2br }}</p></blockquote>
+          {% if pqSrc %}<figcaption class="source">{{ pqSrc }}</figcaption>{% endif %}
+        </figure>
+      {% endif %}
+
+      {# — Image gauche après P1 — #}
+
+      {% if article.imageGauche and (i + 1) == leftIndex %}
+        <figure class="inline-figure left mb-3">
+          <img src="{{ asset('uploads/articles/' ~ article.imageGauche) }}"
+              alt="Illustration - {{ article.titre }}" loading="lazy" decoding="async"
+              class="img-fluid rounded shadow-sm">
+          {% if article.legendeImageGauche %}
+            <figcaption class="text-muted small mt-2">{{ article.legendeImageGauche }}</figcaption>
+          {% endif %}
+        </figure>
+      {% endif %}
+
+      {# — Image droite après P2 (clear-left si image gauche présente) — #}
+      
+      {% if article.imageDroite and (i + 1) == rightIndex %}
+        {% set rightClasses = 'inline-figure right mb-3' ~ (article.imageGauche ? ' clear-left' : '') %}
+        <figure class="{{ rightClasses }}">
+          <img src="{{ asset('uploads/articles/' ~ article.imageDroite) }}"
+              alt="Illustration - {{ article.titre }}" loading="lazy" decoding="async"
+              class="img-fluid rounded shadow-sm">
+          {% if article.legendeImageDroite %}
+            <figcaption class="text-muted small mt-2">{{ article.legendeImageDroite }}</figcaption>
+          {% endif %}
+        </figure>
+      {% endif %}
+    {% endfor %}
+  </div>
+
+        {# --- Espace pub --- #}
+
+        <div class="advertisement-placeholder my-5 p-4 text-center bg-light border rounded">
+          <p class="text-muted fst-italic">[Espace publicitaire réservé]</p>
+        </div>
+
+        {# --- Likes + compteur commentaires --- #}
+
+        <div class="d-flex align-items-center gap-4 mt-4 mb-3">
+          <div class="position-relative">
+            <button class="like-button border-0 bg-transparent"
+                    data-article-id="{{ article.id }}"
+                    data-url="{{ path('app_like_toggle', {'id': article.id}) }}">
+              <i class="bi bi-heart me-1"></i>
+              <span class="like-count">{{ article.likes|length }}</span>
+            </button>
+            <div class="merci-message">Merci!</div>
+          </div>
+          <div class="text-muted">
+            <i class="bi bi-chat-left-text me-1"></i>{{ commentaires|length }} commentaire{{ commentaires|length > 1 ? 's' }}
+          </div>
+        </div>
+
+        {# --- Signature auteur --- #}
+
+        <div class="article-footer d-flex justify-content-between align-items-center text-muted flex-wrap">
+          <div class="d-flex align-items-center gap-3 flex-wrap">
+            {% if article.user %}
+              <span>Rédigé par</span>
+              <a href="{{ path('app_public_profile', {'pseudo': article.user.pseudo}) }}" class="d-flex align-items-center text-decoration-none">
+                {% set roleClass = 'user' %}
+                {% if 'ROLE_ADMIN' in article.user.roles %}{% set roleClass = 'admin' %}{% endif %}
+                {% if article.user.avatar %}
+                  <img src="{{ asset('images/avatars/' ~ article.user.avatar) }}" alt="Avatar de {{ article.user.pseudo }}" class="avatar-signature {{ roleClass }}">
+                {% else %}
+                  <img src="{{ asset('images/avatars/default-avatar.png') }}" alt="Avatar par défaut" class="avatar-signature user">
                 {% endif %}
-
-                {% if article.imageDroite %}
-                    <div class="section-with-image reverse my-5">
-                        <div class="image-container">
-                            <figure>
-                                <img src="{{ asset('uploads/articles/' ~ article.imageDroite) }}"
-                                     alt="Image droite de {{ article.titre }}"
-                                     class="img-fluid rounded shadow">
-                                {% if article.legendeImageDroite %}
-                                    <figcaption class="text-muted small text-center mt-2">{{ article.legendeImageDroite }}</figcaption>
-                                {% endif %}
-                            </figure>
-                        </div>
-                        <div class="text-container">
-                            <p>{{ article.intro2|raw }}</p>
-                        </div>
-                    </div>
-                {% endif %}
-
-                <div class="advertisement-placeholder my-5 p-4 text-center bg-light border rounded">
-                    <p class="text-muted fst-italic">[Espace publicitaire réservé]</p>
-                </div>
-
-                <div class="full-text mt-5">
-                    <p>{{ article.contenu|raw }}</p>
-                </div>
-            </div>
-
-            <!-- Likes & commentaires -->
-            <div class="d-flex align-items-center gap-4 mt-4 mb-3">
-                <div class="position-relative">
-                    <button class="like-button border-0 bg-transparent"
-                            data-article-id="{{ article.id }}"
-                            data-url="{{ path('app_like_toggle', {'id': article.id}) }}">
-                        <i class="bi bi-heart me-1"></i>
-                        <span class="like-count">{{ article.likes|length }}</span>
-                    </button>
-                    <div class="merci-message">Merci!</div>
-                </div>
-                <div class="text-muted">
-                    <i class="bi bi-chat-left-text me-1"></i>{{ commentaires|length }} commentaire{{ commentaires|length > 1 ? 's' }}
-                </div>
-
-            </div>
-
-            <!-- Auteur avec avatar -->
-            <div class="article-footer d-flex justify-content-between align-items-center text-muted flex-wrap">
-                <div class="d-flex align-items-center gap-3 flex-wrap">
-                    {% if article.user %}
-                <span>Rédigé par</span>
-                <a href="{{ path('app_public_profile', {'pseudo': article.user.pseudo}) }}" class="d-flex align-items-center text-decoration-none">
-
-                    {% set roleClass = 'user' %}
-                    {% if 'ROLE_ADMIN' in article.user.roles %}
-                        {% set roleClass = 'admin' %}
-                    {% endif %}
-
-                    {% if article.user.avatar %}
-                        <img
-                            src="{{ asset('images/avatars/' ~ article.user.avatar) }}"
-                            alt="Avatar de {{ article.user.pseudo }}"
-                            class="avatar-signature {{ roleClass }}"
-                        >
-                    {% else %}
-                        <img
-                            src="{{ asset('images/avatars/default-avatar.png') }}"
-                            alt="Avatar par défaut"
-                            class="avatar-signature user"
-                        >
-                    {% endif %}
-
-                    <strong>{{ article.user.pseudo }}</strong>
-                </a>
-
-                    {% if article.user.articles|length >= 10 %}
-                        <span class="badge badge-valide ms-2" title="Auteur régulier">Auteur régulier</span>
-                    {% elseif article.user.articles|length >= 1 %}
-                        <span class="badge badge-valide ms-2" title="Auteur occasionnel">Auteur occasionnel</span>
-                    {% endif %}
-                    {% else %}
-                        <span class="me-2">Rédigé par un auteur disparu</span>
-                    {% endif %}
-
-                </div>
-            </div>
-
-        </div>
-
-        <hr>
-
-        <!-- Commentaires -->
-        <div class="comments-section mt-5">
-            <h3>💬 Commentaires</h3>
-            {% if commentaires is defined and commentaires is not empty %}
-        <div class="list-group mt-4">
-            {% for commentaire in commentaires %}
-                <div class="list-group-item">
-                    <p class="mb-1">
-                        <strong>
-                            {% if commentaire.auteur %}
-                                {{ commentaire.auteur.email }}
-                            {% else %}
-                               Visiteur
-                            {% endif %}
-                        </strong>
-                        <span class="text-muted small">le {{ commentaire.dateCommentaire|date('d/m/Y H:i') }}</span>
-                    </p>
-                    <p class="mb-0">{{ commentaire.contenu }}</p>
-                </div>
-            {% endfor %}
-        </div>
-    {% else %}
-    <p class="text-muted mt-3">Aucun commentaire pour cet article pour le moment.</p>
-{% endif %}
-
-        </div>
-
-        <hr class="my-5">
-
-        <!-- Formulaire commentaire -->
-        <div class="card p-4 mt-4 shadow-sm">
-            <h4>📝 Laisser un commentaire</h4>
-            {{ form_start(commentaireForm) }}
-            <div class="mb-3">
-                {{ form_label(commentaireForm.contenu) }}
-                {{ form_widget(commentaireForm.contenu, {'attr': {'class': 'form-control'}}) }}
-                {{ form_errors(commentaireForm.contenu) }}
-            </div>
-            {% if is_granted('IS_AUTHENTICATED_FULLY') %}
-                <div class="mb-3">
-                    {{ form_label(commentaireForm.dateCommentaire) }}
-                    {{ form_widget(commentaireForm.dateCommentaire, {'attr': {'class': 'form-control'}}) }}
-                    {{ form_errors(commentaireForm.dateCommentaire) }}
-                </div>
-                <div class="form-check mb-3">
-                    {{ form_widget(commentaireForm.approuve, {'attr': {'class': 'form-check-input'}}) }}
-                    {{ form_label(commentaireForm.approuve, null, {'label_attr': {'class': 'form-check-label'}}) }}
-                    {{ form_errors(commentaireForm.approuve) }}
-                </div>
-                <div class="mb-3">
-                    {{ form_label(commentaireForm.auteur) }}
-                    {{ form_widget(commentaireForm.auteur, {'attr': {'class': 'form-select'}}) }}
-                    {{ form_errors(commentaireForm.auteur) }}
-                </div>
-                <div class="mb-3">
-                    {{ form_label(commentaireForm.article) }}
-                    {{ form_widget(commentaireForm.article, {'attr': {'class': 'form-select'}}) }}
-                    {{ form_errors(commentaireForm.article) }}
-                </div>
+                <strong>{{ article.user.pseudo }}</strong>
+              </a>
+              {% if article.user.articles|length >= 10 %}
+                <span class="badge badge-valide ms-2" title="Auteur régulier">Auteur régulier</span>
+              {% elseif article.user.articles|length >= 1 %}
+                <span class="badge badge-valide ms-2" title="Auteur occasionnel">Auteur occasionnel</span>
+              {% endif %}
+            {% else %}
+              <span class="me-2">Rédigé par un auteur disparu</span>
             {% endif %}
-            <button type="submit" class="btn btn-publier">Publier</button>
-            {{ form_end(commentaireForm) }}
+          </div>
         </div>
 
-        <div class="text-center mt-4">
-            <a href="{{ path('app_articles') }}" class="btn btn-retour-articles">← Retour aux articles</a>
+        {# --- Partage --- #}
+
+        {% set shareUrl = app.request.uri %}
+        {% set shareTitle = article.titre %}
+        <div class="share-bar mt-4">
+          <span class="me-2 text-muted">Partager :</span>
+          <a class="share-btn" href="https://twitter.com/intent/tweet?url={{ shareUrl|url_encode }}&text={{ shareTitle|url_encode }}" target="_blank" rel="noopener" aria-label="Partager sur X/Twitter"><i class="bi bi-twitter-x"></i></a>
+          <a class="share-btn" href="https://www.facebook.com/sharer/sharer.php?u={{ shareUrl|url_encode }}" target="_blank" rel="noopener" aria-label="Partager sur Facebook"><i class="bi bi-facebook"></i></a>
+          <a class="share-btn" href="https://www.linkedin.com/sharing/share-offsite/?url={{ shareUrl|url_encode }}" target="_blank" rel="noopener" aria-label="Partager sur LinkedIn"><i class="bi bi-linkedin"></i></a>
+          <button class="share-btn copy-url" type="button" aria-label="Copier le lien"><i class="bi bi-link-45deg"></i></button>
         </div>
 
-        {% if is_granted('IS_AUTHENTICATED_FULLY') %}
-            <div class="text-center mt-2">
-                <a href="{{ path('app_profile') }}" class="btn btn-outline-primary">👤 Retour à mon profil</a>
+        {# --- Navigation précédent / suivant --- #}
+
+        <nav class="article-nav mt-4">
+          <div class="nav-prev">
+            {% if prev %}
+              <a href="{{ path('app_article_show', {'id': prev.id}) }}" class="nav-link">
+                <i class="bi bi-arrow-left-short"></i> {{ prev.titre }}
+              </a>
+            {% endif %}
+          </div>
+          <div class="nav-next">
+            {% if next %}
+              <a href="{{ path('app_article_show', {'id': next.id}) }}" class="nav-link">
+                {{ next.titre }} <i class="bi bi-arrow-right-short"></i>
+              </a>
+            {% endif %}
+          </div>
+        </nav>
+
+        {# --- À lire aussi (même catégorie) --- #}
+
+        {% if related is not empty %}
+          <section class="related mt-5">
+            <h3 class="h5 mb-3">À lire aussi</h3>
+            <div class="related-grid">
+              {% for r in related %}
+                <a href="{{ path('app_article_show', {'id': r.id}) }}" class="related-card">
+                  {% if r.image %}
+                    <img src="{{ asset('uploads/articles/' ~ r.image) }}" alt="{{ r.titre }}">
+                  {% else %}
+                    <div class="no-img"></div>
+                  {% endif %}
+                  <div class="rc-body">
+                    <h4 class="rc-title">{{ r.titre|length > 70 ? r.titre|slice(0,70) ~ '…' : r.titre }}</h4>
+                    <small class="text-muted">{{ r.createdAt|human_date }}</small>
+                  </div>
+                </a>
+              {% endfor %}
             </div>
+          </section>
         {% endif %}
 
+        <div class="text-end mt-4">
+          <a href="#article-top" class="btn btn-outline-secondary btn-sm">↑ Retour en haut</a>
+        </div>
+
+      </div>
     </div>
-</div>
+
+    <hr>
+
+    {# --- Commentaires --- #}
+
+    <div class="comments-section mt-5">
+      <h3>💬 Commentaires</h3>
+      {% if commentaires is defined and commentaires is not empty %}
+        <div class="list-group mt-4">
+          {% for commentaire in commentaires %}
+            <div class="list-group-item">
+              <p class="mb-1">
+                <strong>
+                  {% if commentaire.auteur %}
+                    {{ commentaire.auteur.email }}
+                  {% else %}
+                    Visiteur
+                  {% endif %}
+                </strong>
+                <span class="text-muted small">le {{ commentaire.dateCommentaire|date('d/m/Y H:i') }}</span>
+              </p>
+              <p class="mb-0">{{ commentaire.contenu }}</p>
+            </div>
+          {% endfor %}
+        </div>
+      {% else %}
+        <p class="text-muted mt-3">Aucun commentaire pour cet article pour le moment.</p>
+      {% endif %}
+    </div>
+
+    <hr class="my-5">
+
+    {# --- Formulaire commentaire --- #}
+    
+    <div class="card p-4 mt-4 shadow-sm">
+      <h4>📝 Laisser un commentaire</h4>
+      {{ form_start(commentaireForm) }}
+      <div class="mb-3">
+        {{ form_label(commentaireForm.contenu) }}
+        {{ form_widget(commentaireForm.contenu, {'attr': {'class': 'form-control'}}) }}
+        {{ form_errors(commentaireForm.contenu) }}
+      </div>
+
+      {% if is_granted('IS_AUTHENTICATED_FULLY') %}
+        <div class="mb-3">
+          {{ form_label(commentaireForm.dateCommentaire) }}
+          {{ form_widget(commentaireForm.dateCommentaire, {'attr': {'class': 'form-control'}}) }}
+          {{ form_errors(commentaireForm.dateCommentaire) }}
+        </div>
+        <div class="form-check mb-3">
+          {{ form_widget(commentaireForm.approuve, {'attr': {'class': 'form-check-input'}}) }}
+          {{ form_label(commentaireForm.approuve, null, {'label_attr': {'class': 'form-check-label'}}) }}
+          {{ form_errors(commentaireForm.approuve) }}
+        </div>
+        <div class="mb-3">
+          {{ form_label(commentaireForm.auteur) }}
+          {{ form_widget(commentaireForm.auteur, {'attr': {'class': 'form-select'}}) }}
+          {{ form_errors(commentaireForm.auteur) }}
+        </div>
+        <div class="mb-3">
+          {{ form_label(commentaireForm.article) }}
+          {{ form_widget(commentaireForm.article, {'attr': {'class': 'form-select'}}) }}
+          {{ form_errors(commentaireForm.article) }}
+        </div>
+      {% endif %}
+
+      <button type="submit" class="btn btn-publier">Publier</button>
+      {{ form_end(commentaireForm) }}
+    </div>
+
+    <div class="text-center mt-4">
+      <a href="{{ path('app_articles') }}" class="btn btn-retour-articles">← Retour aux articles</a>
+    </div>
+
+    {% if is_granted('IS_AUTHENTICATED_FULLY') %}
+      <div class="text-center mt-2">
+        <a href="{{ path('app_profile') }}" class="btn btn-outline-primary">👤 Retour à mon profil</a>
+      </div>
+    {% endif %}
+
+  </div> {# /container #}
+</div> {# /article-show-page #}
 {% endblock %}
+
+{% block javascripts %}
+  {{ parent() }}
+  <script>
+    document.addEventListener('click', (e) => {
+      const btn = e.target.closest('.copy-url');
+      if (!btn) return;
+      navigator.clipboard?.writeText(window.location.href).then(() => {
+        btn.classList.add('copied');
+        setTimeout(() => btn.classList.remove('copied'), 1200);
+      });
+    });
+  </script>
+{% endblock %}
+
+
 
 
 

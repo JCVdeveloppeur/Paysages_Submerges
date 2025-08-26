@@ -1,0 +1,20 @@
+@use "variables" as *;
+@use "mixins" as *;
+
+
+/* _legal.scss */
+.legal-page {
+  max-width: 900px;
+  margin: 2rem auto;
+  padding: 1.5rem;
+  background: rgba(255,255,255,.06);
+  border: 1px solid rgba(79,195,247,.35);
+  border-radius: 12px;
+  box-shadow: inset 0 0 16px rgba(79,195,247,.12);
+  color: #eef5fb;
+
+  h1 { font-family: $font-titres; margin-bottom: 1rem; }
+  h2 { margin-top: 1.25rem; font-size: 1.15rem; }
+  p, li { line-height: 1.7; }
+}
+

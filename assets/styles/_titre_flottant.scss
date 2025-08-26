@@ -2,97 +2,75 @@
 @use "mixins" as *;
 
 
-// --- ANIMATIONS TITRE ---
-
+/* --- TITRE --- */
 .float-paysages {
   display: inline-block;
-  animation: floatUpDown1 5.5s ease-in-out infinite;
-  animation: swayTitre1 5.5s ease-in-out infinite;
+  animation: swayTitre1 5.5s ease-in-out infinite; // une seule anim suffit
   will-change: transform;
 }
 
 .float-submerges {
   display: inline-block;
-  animation: floatUpDown2 6.8s ease-in-out infinite;
   animation: swayTitre2 6.8s ease-in-out infinite;
   will-change: transform;
 }
 
-// --- ANIMATIONS SLOGAN ---
-
-.float-slogan-1 {
-  display: inline-block;
-  animation: sway1 5.5s ease-in-out infinite;
-  will-change: transform;
-}
-
-.float-slogan-2 {
-  display: inline-block;
-  animation: sway2 6.8s ease-in-out infinite;
-  will-change: transform;
-}
-
-.float-slogan-3 {
-  display: inline-block;
-  animation: sway3 6.1s ease-in-out infinite;
-  will-change: transform;
-}
-/* Style commun du slogan (une seule fois) */
+/* --- SLOGAN --- */
 .subtitle-floating {
-  display: block;                /* force un bloc unique */
+  display: block;
   font-family: 'Merriweather', serif;
   font-size: 1.2rem;
   color: #e0f7fa;
   text-shadow: 1px 1px 5px rgba(0,0,0,.6);
-  line-height: 1.35;             /* cohérent entre segments */
-  letter-spacing: .01em;         /* homogénéise la lecture */
+  line-height: 1.35;
+  letter-spacing: .01em;
 
   > span {
-    display: inline-block;       /* nécessaire pour l’animation */
+    display: inline-block;
     will-change: transform;
     vertical-align: baseline;
   }
-
-  /* espace fin entre segments (si jamais tu n’as pas d’espace en HTML) */
-  > span:not(:last-child)::after {
-    content: " ";
-  }
+  > span:not(:last-child)::after { content: " "; }
 }
 
-/* Animations seulement (pas de taille/couleur ici) */
 .float-slogan-1 { animation: sway1 5.5s ease-in-out infinite; }
 .float-slogan-2 { animation: sway2 6.8s ease-in-out infinite; }
 .float-slogan-3 { animation: sway3 6.1s ease-in-out infinite; }
 
-/* (tu gardes tes @keyframes sway1/2/3 tels quels) */
+/* --- KEYFRAMES --- */
+@keyframes swayTitre1 { 0%,100%{transform:translateY(0) rotate(0)} 50%{transform:translateY(-2px) rotate(-.4deg)} }
+@keyframes swayTitre2 { 0%,100%{transform:translateY(0) rotate(0)} 50%{transform:translateY(-5px) rotate(.3deg)} }
+@keyframes sway1      { 0%,100%{transform:translateY(0) rotate(0)} 50%{transform:translateY(-2px) rotate(-.4deg)} }
+@keyframes sway2      { 0%,100%{transform:translateY(0) rotate(0)} 50%{transform:translateY(-5px) rotate(.3deg)} }
+@keyframes sway3      { 0%,100%{transform:translateY(0) rotate(0)} 50%{transform:translateY(-3px) rotate(-.5deg)} }
 
+/* --- Titre bannière : pas de césure + responsive --- */
+.title-floating {
+  hyphens: none;
+  overflow-wrap: normal;
+  word-break: keep-all;
+  font-size: clamp(1.8rem, 6vw + .2rem, 3rem);
+  line-height: 1.1;
 
-// --- KEYFRAMES ---
-
-@keyframes swayTitre1 {
-  0%, 100% { transform: translateY(0) rotate(0deg); }
-  50%     { transform: translateY(-2px) rotate(-0.4deg); }
+  span {
+    display: inline-block;  /* wrap entre les spans */
+    white-space: nowrap;    /* jamais au milieu d’un mot */
+  }
 }
 
-@keyframes swayTitre2 {
-  0%, 100% { transform: translateY(0) rotate(0deg); }
-  50%     { transform: translateY(-5px) rotate(0.3deg); }
+/* Ultra-petit écran */
+@media (max-width: 360px) {
+  .title-floating { font-size: clamp(1.6rem, 7vw + .1rem, 2.2rem); }
 }
 
-@keyframes sway1 {
-  0%, 100% { transform: translateY(0) rotate(0deg); }
-  50%      { transform: translateY(-2px) rotate(-0.4deg); }
+/* Accessibilité */
+@media (prefers-reduced-motion: reduce) {
+  .float-paysages, .float-submerges,
+  .float-slogan-1, .float-slogan-2, .float-slogan-3 {
+    animation: none !important;
+  }
 }
 
-@keyframes sway2 {
-  0%, 100% { transform: translateY(0) rotate(0deg); }
-  50%      { transform: translateY(-5px) rotate(0.3deg); }
-}
-
-@keyframes sway3 {
-  0%, 100% { transform: translateY(0) rotate(0deg); }
-  50%      { transform: translateY(-3px) rotate(-0.5deg); }
-}
 
 
 

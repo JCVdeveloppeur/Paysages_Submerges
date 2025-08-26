@@ -1,57 +1,55 @@
 
-# Symfony config
+# --- Envs / secrets
 .env.local
 .env.*.local
 /.env.local.php
+/config/secrets/*/*decrypt.private.php
 
-# Clés secrètes de prod
-/config/secrets/prod/prod.decrypt.private.php
-
-# Dossiers générés
+# --- Dossiers générés
 /var/
 /vendor/
-
-# PHPUnit
-.phpunit.result.cache
-/phpunit.xml
-/phpunit.xml.dist
-
-# Webpack Encore / Asset Mapper
-/node_modules/
 /public/build/
-/public/assets/
-/assets/vendor/
+/public/bundles/
+/public/assets/         
+# /assets/vendor/       
+                        
+
+# --- Node / Encore
+/node_modules/
 npm-debug.log*
 yarn-error.log*
 yarn-debug.log*
-
-# Encore cache
 /.cache/
 
-# Base de données SQLite locale (si utilisée)
+# --- Tests
+.phpunit.result.cache
+/phpunit.xml            
+# phpunit.xml.dist      
+
+# --- Bases SQLite éventuelles
 /*.sqlite
 /*.sqlite3
 
-# Uploads utilisateur (images etc.)
-/public/uploads/
+# --- Uploads utilisateurs
+/public/uploads/*
+!public/uploads/.gitkeep
 
-# Coverage (si utilisation de PHPUnit ou Code Coverage)
+# --- Coverage
 coverage/
 
-# IDE / OS spécifiques
+# --- IDE / OS
 .idea/
 .vscode/
 .DS_Store
 Thumbs.db
 
-# Logs
-/log/
-*.log
+# --- Outils
+.php-cs-fixer.cache
 
-# Fichiers de travail temporaires
+# --- Temp
 *.swp
 *.swo
 *~
-!/public/uploads/.gitkeep
+
 
 

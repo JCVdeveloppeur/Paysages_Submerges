@@ -50,20 +50,104 @@
   font-weight: bold;
   font-size: 1.3rem;
 
-  background: linear-gradient(90deg, #18c6c1, #1abc9c, #0ff, #18c6c1);
+  // Dégradé aquatique animé
+  background: linear-gradient(
+    90deg,
+    #18c6c1,   // turquoise
+    #00e1ff,   // bleu lagon
+    #0077b6,   // bleu profond
+    #18c6c1    // retour turquoise
+  );
   background-size: 300% auto;
-  background-position: 0% 50%;
   background-clip: text;
   -webkit-background-clip: text;
   color: transparent;
   -webkit-text-fill-color: transparent;
 
+  position: relative;
   text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.4);
-  transition: background-position 0.8s ease-in-out, text-shadow 0.3s ease;
+
+  // vague colorée en continu
+  animation: wave-gradient 6s ease infinite;
+
+  // effet scintillement discret
+  &::before {
+    content: "";
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: linear-gradient(
+      120deg,
+      transparent 0%,
+      rgba(255, 255, 255, 0.6) 50%,
+      transparent 100%
+    );
+    background-size: 200% 100%;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+
+    // le rayon passe lentement et rarement
+    animation: shimmer 10s linear infinite;
+    opacity: 0.7;
+    pointer-events: none;
+  }
 
   &:hover {
-    background-position: 100% 50%;
-    text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);
+    text-shadow: 2px 2px 6px rgba(0, 200, 255, 0.65);
   }
 }
+
+// vague en continu
+@keyframes wave-gradient {
+  0%   { background-position: 0% 50%; }
+  50%  { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+// scintillement subtil
+@keyframes shimmer {
+  0%   { background-position: -200% 0; opacity: 0; }
+  40%  { opacity: 0; } 
+  45%  { opacity: 0.7; }   // apparition du rayon
+  55%  { opacity: 0.7; }   // rayon visible un court instant
+  60%  { opacity: 0; }     // disparaît
+  100% { background-position: 200% 0; opacity: 0; }
+}
+
+.navbar {
+  .nav-link {
+    position: relative;
+    display: inline-block; 
+    color: #f8f9fa;
+    text-decoration: none;
+    transition: color .3s ease, text-shadow .3s ease;
+
+    &::after {
+      content: "";
+      position: absolute;
+      bottom: -4px;
+      left: 50%;    
+      transform: translateX(-50%);
+      width: 0;
+      height: 2px;
+      background: #fff;  
+      transition: width .35s ease;
+    }
+
+    &:hover,
+    &:focus-visible {
+      color: #fff;
+      text-shadow: 0 0 6px rgba(255,255,255,.6);
+
+      &::after {
+        width: 100%; 
+      }
+    }
+  }
+
+  .navbar-brand {
+    &::after { display: none; }
+  }
+}
+
 

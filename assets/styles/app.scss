@@ -17,13 +17,15 @@
 @use "like";
 @use "commentaire";
 @use "admin_dashboard";
-@use "pages/conditions";
 @use "sidebar";
 @use "bouton";
-@use "accueil"; 
-@use "footer";
+@use "accueil";
 @use "animations_accueil";
-@use "titre_flottant";
+@use "titre_flottant"; 
+@use "footer";
+@use "legal";
+@use "article-edit" as *;
+
 
 
 

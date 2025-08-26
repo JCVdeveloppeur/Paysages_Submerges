@@ -74,3 +74,152 @@
     margin-top: 2rem;
   }
 }
+/* ===== Mini liste "Derniers articles" ===== */
+.sidebar {
+  .mini-posts {
+    display: flex;
+    flex-direction: column;
+    gap: .6rem;
+  }
+
+  .mini-post {
+    border: 1px solid #e7e7e7;
+    border-radius: .55rem;
+    background: #fff;
+    transition: transform .12s ease, border-color .12s ease, box-shadow .12s ease;
+
+    .mini-link {
+      display: grid;
+      grid-template-columns: 72px 1fr;
+      gap: .75rem;
+      padding: .55rem;
+      color: inherit;
+      text-decoration: none;
+      align-items: center;
+    }
+
+    .thumb-wrap {
+      width: 72px;
+      height: 72px;
+      border-radius: .45rem;
+      overflow: hidden;
+      flex: 0 0 72px;
+
+      img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+      }
+    }
+
+    .meta {
+      .title {
+        margin: 0 0 .35rem 0;
+        font-size: .95rem;
+        line-height: 1.25;
+        display: -webkit-box;
+        -webkit-line-clamp: 2; /* 2 lignes max */
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+      }
+
+      .row-aux {
+        display: flex;
+        align-items: center;
+        gap: .5rem;
+        flex-wrap: wrap;
+      }
+
+      .badge {
+        font-size: .65rem;
+        padding: .25rem .5rem;
+        border-radius: 999px;
+      }
+
+      .date {
+        font-size: .75rem;
+      }
+    }
+
+    &:hover,
+    &:focus-within {
+      border-color: rgba(0,0,0,.12);
+      box-shadow: 0 4px 10px rgba(0,0,0,.05);
+      transform: translateY(-1px);
+    }
+  }
+
+  /* un poil plus compact sous 400px de large */
+  @media (max-width: 400px) {
+    .mini-post .mini-link {
+      grid-template-columns: 60px 1fr;
+      padding: .5rem;
+    }
+    .mini-post .thumb-wrap {
+      width: 60px; height: 60px;
+      border-radius: .4rem;
+    }
+    .mini-post .meta .title { font-size: .9rem; }
+  }
+}
+/* ===== Carte groupée "Concours d’Aquascaping" ===== */
+.sidebar {
+  .concours-card {
+    .contest-list {
+      display: flex;
+      flex-direction: column;
+      gap: .75rem;
+    }
+
+    .contest-item {
+      display: grid;
+      grid-template-columns: 40px 1fr;
+      gap: .75rem;
+      padding: .75rem;
+      border: 1px solid #e7e7e7;
+      border-radius: .6rem;
+      background: #fff;
+      transition: transform .12s ease, border-color .12s ease, box-shadow .12s ease;
+
+      &:hover {
+        border-color: rgba(0,0,0,.12);
+        box-shadow: 0 4px 10px rgba(0,0,0,.05);
+        transform: translateY(-1px);
+      }
+    }
+
+    .contest-icon {
+      width: 40px; height: 40px;
+      border-radius: 999px;
+      display: flex; align-items: center; justify-content: center;
+      background: rgba(79,195,247,.12); /* écho à ton bleu */
+      font-size: 1.1rem;
+      user-select: none;
+    }
+
+    .contest-title {
+      font-size: .98rem;
+      font-weight: 600;
+      margin-bottom: .25rem;
+    }
+
+    .contest-desc {
+      font-size: .9rem;
+      color: #555;
+      margin: .25rem 0 .5rem;
+    }
+
+    /* compact sous 400px */
+    @media (max-width: 400px) {
+      .contest-item {
+        grid-template-columns: 36px 1fr;
+        padding: .65rem;
+      }
+      .contest-icon { width: 36px; height: 36px; font-size: 1rem; }
+      .contest-title { font-size: .95rem; }
+      .contest-desc { font-size: .88rem; }
+    }
+  }
+}
+

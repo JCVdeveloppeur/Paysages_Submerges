@@ -1,11 +1,15 @@
 
-// Importation des styles principaux (SCSS)
+
+// Stimulus bridge
+import './bootstrap.js';
+
+// Importation des styles principaux
 import './styles/app.scss';
 
 // Import Bootstrap JS avec Popper inclus (obligatoire pour dropdowns, modals, etc.)
 import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 
-// Import du fichier like.js (gestion des likes)
+// Import du fichier like.js
 import './like.js';
 
 import './vague_boutons.js';
@@ -55,11 +59,36 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 });
+
 // Activation des tooltips Bootstrap
 document.addEventListener('DOMContentLoaded', () => {
   const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]');
   tooltipTriggerList.forEach(t => new bootstrap.Tooltip(t));
 });
+
+// Zoom image (modal)
+document.addEventListener('click', (e) => {
+  const btn = e.target.closest('.js-img-zoom');
+  if (!btn) return;
+
+  const full = btn.getAttribute('data-full');
+  const alt = btn.querySelector('img')?.getAttribute('alt') || 'Aperçu';
+
+  const modalImg   = document.getElementById('imagePreviewTag');
+  const modalTitle = document.getElementById('imagePreviewTitle');
+  const modalOpen  = document.getElementById('imagePreviewOpen');
+
+  if (modalImg) { modalImg.src = full; modalImg.alt = alt; }
+  if (modalTitle) modalTitle.textContent = alt;
+  if (modalOpen) modalOpen.href = full;
+});
+
+// Optionnel : vider l’image quand on ferme la modale
+document.getElementById('imagePreviewModal')?.addEventListener('hidden.bs.modal', () => {
+  const modalImg = document.getElementById('imagePreviewTag');
+  if (modalImg) modalImg.src = '';
+});
+
 
 
 

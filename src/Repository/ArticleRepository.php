@@ -16,28 +16,64 @@ class ArticleRepository extends ServiceEntityRepository
         parent::__construct($registry, Article::class);
     }
 
-//    /**
-//     * @return Article[] Returns an array of Article objects
-//     */
-//    public function findByExampleField($value): array
-//    {
-//        return $this->createQueryBuilder('a')
-//            ->andWhere('a.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->orderBy('a.id', 'ASC')
-//            ->setMaxResults(10)
-//            ->getQuery()
-//            ->getResult()
-//        ;
-//    }
+    /**
+     * Sidebar : derniers articles validés
+     */
+    public function findLatestPublished(int $limit = 3): array
+    {
+        return $this->createQueryBuilder('a')
+            ->andWhere('a.estApprouve = :approved')
+            ->setParameter('approved', true)
+            ->orderBy('a.createdAt', 'DESC')
+            ->setMaxResults($limit)
+            ->getQuery()
+            ->getResult();
+    }
 
-//    public function findOneBySomeField($value): ?Article
-//    {
-//        return $this->createQueryBuilder('a')
-//            ->andWhere('a.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->getQuery()
-//            ->getOneOrNullResult()
-//        ;
-//    }
+    /**
+     * À lire aussi : mêmes catégorie, exclus l’article courant
+     */
+    public function findRelatedByCategory(string $category, int $excludeId, int $limit = 3): array
+    {
+        return $this->createQueryBuilder('a')
+            ->andWhere('a.estApprouve = true')
+            ->andWhere('a.categorie = :cat')
+            ->andWhere('a.id != :id')
+            ->setParameter('cat', $category)
+            ->setParameter('id', $excludeId)
+            ->orderBy('a.createdAt', 'DESC')
+            ->setMaxResults($limit)
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
+     * Navigation : article précédent (publié avant celui-ci)
+     */
+    public function findPrevPublished(\DateTimeInterface $createdAt): ?Article
+    {
+        return $this->createQueryBuilder('a')
+            ->andWhere('a.estApprouve = true')
+            ->andWhere('a.createdAt < :d')
+            ->setParameter('d', $createdAt)
+            ->orderBy('a.createdAt', 'DESC')
+            ->setMaxResults(1)
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
+
+    /**
+     * Navigation : article suivant (publié après celui-ci)
+     */
+    public function findNextPublished(\DateTimeInterface $createdAt): ?Article
+    {
+        return $this->createQueryBuilder('a')
+            ->andWhere('a.estApprouve = true')
+            ->andWhere('a.createdAt > :d')
+            ->setParameter('d', $createdAt)
+            ->orderBy('a.createdAt', 'ASC')
+            ->setMaxResults(1)
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
 }

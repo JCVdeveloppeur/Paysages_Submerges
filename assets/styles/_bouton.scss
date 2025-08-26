@@ -29,18 +29,24 @@
 .btn-vert {
   background-color: $btn-vert;
   color: #fff;
+  font-family: $font-boutons;
+  text-decoration: none;
   &:hover { background-color: $btn-vert-hover; }
 }
 
 .btn-brun {
   background-color: $btn-brun;
   color: #fff;
+  font-family: $font-boutons;
+  text-decoration: none;
   &:hover { background-color: $btn-brun-hover; }
 }
 
 .btn-gris {
   background-color: #4c6a74;
   color: #fff;
+  font-family: $font-boutons;
+  text-decoration: none;
   &:hover { background-color: lighten(#4c6a74, 8%); }
 }
 
@@ -300,6 +306,9 @@ $btn-text:           #083047;
   padding: 0.8rem 1.2rem;
   font-size: 1rem;
   font-weight: 600;
+}
+@mixin button-reset {
+  // ton style reset pour un bouton
 }
 
 
