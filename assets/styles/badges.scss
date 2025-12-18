@@ -162,6 +162,35 @@ $badge-attente: #a0875b;
 .badge-auteur-regulier {
   background: linear-gradient(45deg, #008b8b);
 }
+.espece-carnet__badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+.badge-espece-type {
+  background-color: #6a994e;
+  color: #fff;
+  padding: 0.25rem 0.8rem;
+  border-radius: 999px;
+  font-size: 0.8rem;
+}
+.badge-gravite{
+  display:inline-flex;
+  align-items:center;
+  padding:.2rem .55rem;
+  border-radius:999px;
+  font-size:.75rem;
+  font-weight:600;
+  border:1px solid rgba(0,0,0,.08);
+}
+
+.badge-gravite.gravite--faible  { background: rgba(46,125,50,.10); color:#2e7d32; border-color: rgba(46,125,50,.25); }
+.badge-gravite.gravite--moyenne { background: rgba(239,143,0,.12); color:#ef8f00; border-color: rgba(239,143,0,.28); }
+.badge-gravite.gravite--elevee  { background: rgba(198,40,40,.10); color:#c62828; border-color: rgba(198,40,40,.28); }
+.badge-gravite.gravite--na      { background: rgba(120,120,120,.12); color:#555; border-color: rgba(120,120,120,.25); }
+
+
 
 
 

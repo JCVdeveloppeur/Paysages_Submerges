@@ -375,6 +375,66 @@
     }
   }
 }
+/* Liens de navigation du footer (icône + texte) */
+.site-footer .footer-link {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  width: fit-content;           // la largeur colle au contenu (icône + texte)
+  color: #d8e6f3;
+  text-decoration: none;
+  gap: .45rem;
+  transition: color 0.3s ease;
+}
+
+/* Soulignement animé sous le lien */
+.site-footer .footer-link::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -4px;
+  width: 0;
+  height: 1.5px;
+  background: linear-gradient(to right, #8ecbff, #5fa8ff);
+  border-radius: 999px;
+  transition: width 0.35s ease;
+}
+
+.site-footer .footer-link:hover {
+  color: #ffffff;
+
+  &::after {
+    width: 100%;                // suit exactement la largeur du lien
+  }
+}
+
+/* Icône SVG du footer */
+.site-footer .footer-icon {
+  flex-shrink: 0;
+  opacity: 0.9;
+  transition: transform 0.25s ease;
+}
+
+/* Petit mouvement de l’icône au survol (comme avant avec les <i>) */
+.site-footer .footer-link:hover .footer-icon {
+  transform: translateX(3px);
+}
+
+/* Variante crème pour les pages claires */
+.site-footer--creme .footer-link {
+  color: #2b2b2b;
+
+  &::after {
+    background: linear-gradient(to right, #8bb8a8, #5f9e8b);
+  }
+
+  &:hover {
+    color: #000;
+  }
+}
+
+
+
 
 
 

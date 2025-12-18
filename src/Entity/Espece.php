@@ -69,7 +69,7 @@ class Espece
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $reproduction = null;
 
-    #[ORM\Column(length: 50)]
+    #[ORM\Column(length: 50, nullable: true)]
     private ?string $typeEspece = null;
 
     #[ORM\Column(length: 255, nullable: true)]
@@ -303,11 +303,10 @@ class Espece
         return $this->typeEspece;
     }
 
-    public function setTypeEspece(string $typeEspece): static
+    public function setTypeEspece(?string $typeEspece): static
     {
-        $this->typeEspece = $typeEspece;
-
-        return $this;
+    $this->typeEspece = $typeEspece;
+    return $this;
     }
 
     public function getBiotope(): ?string
@@ -369,5 +368,30 @@ class Espece
     {
         $this->updatedAt = $updatedAt;
     }
+    public function getTypeEspeceLabel(): string
+    {
+    $t = mb_strtolower(trim((string) $this->typeEspece), 'UTF-8');
 
+    if ($t === '') {
+        return '';
+    }
+
+    return match (true) {
+        str_starts_with($t, 'poisson') => 'Poisson',
+        str_starts_with($t, 'mollus')  => 'Mollusque',
+        str_starts_with($t, 'crust')   => 'Crustacé',
+        default => $this->typeEspece, // on garde la valeur d'origine
+    };
+    }
+    public function getTypeEspeceCss(): string
+    {
+    $t = mb_strtolower(trim((string) $this->typeEspece), 'UTF-8');
+
+    return match (true) {
+        str_starts_with($t, 'poisson') => 'poisson',
+        str_starts_with($t, 'mollus')  => 'mollusque',
+        str_starts_with($t, 'crust')   => 'crustace',
+        default => 'na',
+    };
+    }
     }

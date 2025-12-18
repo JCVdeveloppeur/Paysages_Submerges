@@ -1,0 +1,191 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Maladies des poissons{% endblock %}
+
+{% block body %}
+<div class="container my-5 maladie-index">
+    <h1 class="mb-3 text-center">💊 Les maladies des poissons d'eau douce</h1>
+    <p class="text-center text-muted mb-4">
+        Un coup d'œil rapide sur les principales maladies : gravité, contagion, agent pathogène, symptômes clés.
+    </p>
+        {# Barre outils : recherche + select (même ligne) #}
+        <div class="row justify-content-center mb-3">
+        <div class="col-12 col-lg-10">
+            <div class="d-flex flex-column flex-md-row align-items-stretch align-items-md-center gap-2">
+
+            {# --- Recherche (GET) --- #}
+            <div class="flex-grow-1 bloc-recherche-espece">
+                {{ form_start(form, {'method': 'GET', 'attr': {'id': 'recherche-maladie-form', 'class': 'w-100'}}) }}
+
+                {# conserver limit quand on cherche #}
+                <input type="hidden" name="limit" value="{{ limit }}">
+
+                <div class="position-relative">
+                    {{ form_widget(form.nom, {
+                    'attr': {
+                        'class': 'form-control pe-5',
+                        'placeholder': '🔍 Rechercher une maladie…'
+                    }
+                    }) }}
+
+                    <button type="button" class="btn-clear-search" title="Effacer la recherche">✖</button>
+                </div>
+
+                {{ form_end(form) }}
+            </div>
+
+            {# --- Select (GET) --- #}
+            <form method="get"
+                    class="d-flex align-items-center justify-content-md-end gap-2 small text-muted flex-shrink-0">
+
+                {# conserver la recherche #}
+                <input type="hidden" name="nom" value="{{ app.request.get('nom') }}">
+
+                {# reset page quand on change le limit #}
+                <input type="hidden" name="page" value="1">
+
+                <label for="limit" class="mb-0">Afficher :</label>
+
+                <select name="limit" id="limit"
+                        class="form-select form-select-sm"
+                        style="width: 80px"
+                        onchange="this.form.submit()">
+                <option value="6"  {{ limit == 6 ? 'selected' }}>6</option>
+                <option value="9"  {{ limit == 9 ? 'selected' }}>9</option>
+                <option value="12" {{ limit == 12 ? 'selected' }}>12</option>
+                </select>
+            </form>
+
+            </div>
+        </div>
+        </div>
+
+    {# Légende des niveaux de gravité #}
+    <div class="maladie-legend mb-4 text-center">
+        <span class="maladie-legend__item maladie-legend__item--faible">
+            <span class="maladie-legend__dot"></span> Gravité faible
+        </span>
+        <span class="maladie-legend__item maladie-legend__item--moyenne">
+            <span class="maladie-legend__dot"></span> Gravité moyenne
+        </span>
+        <span class="maladie-legend__item maladie-legend__item--elevee">
+            <span class="maladie-legend__dot"></span> Gravité élevée
+        </span>
+    </div>
+
+    {% if maladie_poissons|length == 0 %}
+        <div class="alert alert-info text-center mb-4">
+            Aucune maladie enregistrée pour le moment.
+        </div>
+    {% else %}
+
+        <div id="maladie-results" class="row row-cols-1 row-cols-md-3 g-4">
+            {% for maladie in maladie_poissons %}
+
+                {# Détection du niveau de gravité #}
+                {% set graviteValue = maladie.gravite ? maladie.gravite|lower : '' %}
+                {% set graviteLevel =
+                    graviteValue == 'faible' ? 'faible' :
+                    (graviteValue starts with 'moyen' ? 'moyenne' :
+                    (graviteValue starts with 'élev' or graviteValue starts with 'eleve' ? 'elevee' : ''))
+                %}
+                {% set graviteClass = graviteLevel ? 'gravite--' ~ graviteLevel : '' %}
+                {% set cardGraviteClass = graviteLevel ? 'card-maladie--' ~ graviteLevel : '' %}
+
+                <div class="col">
+                    <div class="card h-100 shadow-sm card-maladie {{ cardGraviteClass }}">
+
+                        {# IMAGE #}
+                        {% if maladie.image %}
+                        <img src="{{ asset('uploads/maladies/' ~ maladie.image) }}"
+                            class="card-img-top image-carte"
+                            alt="{{ maladie.nom }}">
+                        {% else %}
+                        <div class="image-carte image-carte--placeholder">
+                            <span>🩺</span>
+                        </div>
+                        {% endif %}
+
+                        <div class="card-body">
+                        <h5 class="card-title">
+                            <span class="me-1">💊</span>{{ maladie.nom }}
+                        </h5>
+
+                        <p class="card-text text-muted">
+                            {% if maladie.agentPathogene %}
+                            <em>Agent : {{ maladie.agentPathogene }}</em><br>
+                            {% endif %}
+
+                            <span class="d-inline-flex flex-wrap gap-2 mt-2">
+                            {% if maladie.gravite %}
+                                <span class="badge-gravite {{ graviteClass }}">{{ maladie.gravite }}</span>
+                            {% endif %}
+
+                            <span class="badge-contagion badge-contagion--mini {{ maladie.contagieuse ? 'badge-contagion--oui' : 'badge-contagion--non' }}">
+                                {{ maladie.contagieuse ? 'Contagieuse' : 'Non contagieuse' }}
+                            </span>
+                            </span>
+                        </p>
+
+                        <p class="card-text small text-muted mb-0">
+                            {% if maladie.symptomes %}
+                            {% set desc = maladie.symptomes|striptags %}
+                            {{ desc|length > 120 ? desc|slice(0, 120) ~ '…' : desc }}
+                            {% else %}
+                            <span class="text-muted">Symptômes à décrire.</span>
+                            {% endif %}
+                        </p>
+                        </div>
+
+                        <div class="card-footer text-end bg-light">
+                        <a href="{{ path('app_maladie_poisson_show', { id: maladie.id }) }}" class="btn btn-espece">
+                            🔍 Voir la fiche
+                        </a>
+                        </div>
+
+                    </div>
+                    </div>
+
+            {% endfor %}
+        </div>
+
+        <div class="d-flex justify-content-center mt-4">
+            {{ knp_pagination_render(maladie_poissons) }}
+        </div>
+    {% endif %}
+</div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const input = document.querySelector("#{{ form.nom.vars.id }}");
+            const form = document.querySelector("#recherche-maladie-form");
+            const clearBtn = document.querySelector(".btn-clear-search");
+
+            if (input && form && clearBtn) {
+
+                // Envoi auto quand on tape
+                input.addEventListener("input", () => {
+                    if (input.value.trim() === "") {
+                        form.submit();
+                    }
+                });
+
+                // Clic sur la croix = reset
+                clearBtn.addEventListener("click", () => {
+                    input.value = "";
+                    form.submit();
+                });
+            }
+        });
+    </script>
+{% endblock %}
+
+
+
+
+
+
+

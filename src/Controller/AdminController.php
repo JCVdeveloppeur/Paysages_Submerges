@@ -16,9 +16,11 @@ use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use App\Repository\PageBlockRepository;
+use App\Repository\MaladiePoissonRepository;
+
 
 class AdminController extends AbstractController
 {
@@ -38,7 +40,8 @@ class AdminController extends AbstractController
     CommentaireRepository $commentaireRepository,
     LikeRepository $likeRepository,
     EspeceRepository $especeRepository,
-    PageBlockRepository $pageBlockRepository
+    PageBlockRepository $pageBlockRepository,
+    MaladiePoissonRepository $maladiePoissonRepository
     ): Response {
     $aujourdHui = new \DateTimeImmutable('today');
     $labels = [];
@@ -51,6 +54,8 @@ class AdminController extends AbstractController
         $commentairesParJour[] = $commentaireRepository->countCommentairesDepuis($date->setTime(0, 0));
         $likesParJour[] = $likeRepository->countLikesDepuis($date->setTime(0, 0));
     }
+    $dernieresMaladies = $maladiePoissonRepository->findBy([], ['id' => 'DESC'], 5);
+
 
     return $this->render('admin/dashboard.html.twig', [
         'nombreArticles' => $articleRepository->count([]),
@@ -60,7 +65,8 @@ class AdminController extends AbstractController
         'utilisateursInactifs' => $userRepository->countUsersInactifsDerniersJours(7),
         'nombreCommentaires' => $commentaireRepository->count([]),
         'nombreLikes' => $likeRepository->count([]),
-        'nombreEspeces' => $especeRepository->count([]), // 👈 compteur ajouté
+        'nombreEspeces' => $especeRepository->count([]),
+        'nombreMaladies'  => $maladiePoissonRepository->count([]),
         'commentairesAujourdHui' => $commentaireRepository->countCommentairesDepuis($aujourdHui),
         'likesAujourdHui' => $likeRepository->countLikesDepuis($aujourdHui),
         'commentaires7Jours' => $commentaireRepository->countCommentairesDerniersJours(7),
@@ -68,7 +74,9 @@ class AdminController extends AbstractController
         'jours' => $labels,
         'commentairesParJour' => $commentairesParJour,
         'likesParJour' => $likesParJour,
-         'nombreBlocs' => $pageBlockRepository->count([]),
+        'nombreBlocs' => $pageBlockRepository->count([]),
+        'dernieresMaladies' => $dernieresMaladies,
+
     ]);
 
     }
@@ -271,15 +279,44 @@ class AdminController extends AbstractController
             ->orderBy('e.nomCommun', 'ASC')
             ->getQuery();
 
+        $limit = $request->query->getInt('limit', 5);
+
         $especes = $paginator->paginate(
             $query,
             $request->query->getInt('page', 1),
-            10
+            $limit
         );
 
         return $this->render('admin/espece/admin.html.twig', [
             'especes' => $especes,
             'nombreEspeces' => $especeRepository->count([]),
+            'limit' => $limit,
+        ]);
+    }
+
+    #[Route('/admin/maladies', name: 'admin_maladies')]
+    #[IsGranted('ROLE_ADMIN')]
+    public function adminMaladies(
+        MaladiePoissonRepository $repo,
+        Request $request,
+        PaginatorInterface $paginator
+    ): Response {
+        $query = $repo->createQueryBuilder('m')
+            ->orderBy('m.nom', 'ASC')
+            ->getQuery();
+
+        $limit = $request->query->getInt('limit', 5);
+
+        $maladies = $paginator->paginate(
+            $query,
+            $request->query->getInt('page', 1),
+            $limit
+        );
+
+        return $this->render('admin/maladie/admin.html.twig', [
+            'maladies' => $maladies,
+            'nombreMaladies' => $repo->count([]),
+            'limit' => $limit,
         ]);
     }
 }

@@ -1,0 +1,293 @@
+
+{# templates/maladie_poisson/show.html.twig #}
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ maladie_poisson.nom }} - Maladie des poissons{% endblock %}
+
+{% block body_class %}degrade-aquatique-body{% endblock %}
+
+{% block body %}
+<div class="container my-5 maladie-show">
+
+    <article class="maladie-carnet">
+
+        {# Bouton retour #}
+        <div class="mb-3">
+            <a href="{{ path('app_maladie_poisson_index') }}" class="btn btn-espece">
+                ← Retour à la liste des maladies
+            </a>
+        </div>
+
+        <header class="maladie-carnet__header">
+
+        {# Capsule à gauche du titre #}
+        <div class="maladie-carnet__icon">
+            💊
+        </div>
+
+        <div class="maladie-carnet__title-group">
+
+            <h1 class="maladie-carnet__title">
+                {{ maladie_poisson.nom }}
+            </h1>
+
+            {% if maladie_poisson.agentPathogene %}
+                <p class="maladie-carnet__subtitle">
+                    Agent pathogène : {{ maladie_poisson.agentPathogene }}
+                </p>
+            {% endif %}
+
+            {# Badges gravité / contagion #}
+            <div class="maladie-carnet__badges">
+                {% if maladie_poisson.gravite %}
+                    {% set graviteValue = maladie_poisson.gravite|lower %}
+                    {% set graviteLevel =
+                        graviteValue == 'faible' ? 'faible' :
+                        (graviteValue starts with 'moyen' ? 'moyenne' :
+                        (graviteValue starts with 'élev' or graviteValue starts with 'eleve' ? 'elevee' : ''))
+                    %}
+                    <span class="badge-gravite gravite--{{ graviteLevel }}">
+                        {{ maladie_poisson.gravite }}
+                    </span>
+                {% endif %}
+
+                <span class="badge-contagion {{ maladie_poisson.contagieuse ? 'badge-contagion--oui' : 'badge-contagion--non' }}">
+                    {{ maladie_poisson.contagieuse ? 'Contagieuse' : 'Non contagieuse' }}
+                </span>
+            </div>
+
+        </div>
+
+    </header>
+
+        <div class="maladie-carnet__category-wrapper">
+            <span class="maladie-carnet__category">
+                Fiche maladie - Poisson d'ornement
+            </span>
+        </div>
+        {# IMAGE PRINCIPALE #}
+        <figure class="maladie-carnet__figure carnet-image maladie-figure-zoom">
+            {% if maladie_poisson.image %}
+                <img
+                    src="{{ asset('uploads/maladies/' ~ maladie_poisson.image) }}"
+                    alt="{{ maladie_poisson.nom }}"
+                    class="maladie-carnet__image"
+                >
+            {% else %}
+                <div class="image-carte image-carte--placeholder">
+                    <span>🩺</span>
+                </div>
+            {% endif %}
+            <figcaption class="maladie-carnet__caption">
+                Illustration indicative - en cas de doute, consulter un vétérinaire spécialisé.
+            </figcaption>
+        </figure>
+
+        {# BANDEAU RÉSUMÉ #}
+        <div class="maladie-summary">
+            {% if maladie_poisson.gravite %}
+                <div class="maladie-summary__item">
+                    <span class="maladie-summary__label">Gravité</span>
+                    <span class="maladie-summary__value">{{ maladie_poisson.gravite }}</span>
+                </div>
+            {% endif %}
+
+            <div class="maladie-summary__item">
+                <span class="maladie-summary__label">Contagion</span>
+                <span class="maladie-summary__value">
+                    {% if maladie_poisson.contagieuse %}
+                        Contagieuse
+                    {% else %}
+                        Non contagieuse
+                    {% endif %}
+                </span>
+            </div>
+
+            {% if maladie_poisson.agentPathogene %}
+                <div class="maladie-summary__item">
+                    <span class="maladie-summary__label">Agent</span>
+                    <span class="maladie-summary__value">
+                        {{ maladie_poisson.agentPathogene }}
+                    </span>
+                </div>
+            {% endif %}
+
+            {% if maladie_poisson.zoneAtteinte is defined and maladie_poisson.zoneAtteinte %}
+                <div class="maladie-summary__item">
+                    <span class="maladie-summary__label">Zone atteinte</span>
+                    <span class="maladie-summary__value">
+                        {{ maladie_poisson.zoneAtteinte }}
+                    </span>
+                </div>
+            {% endif %}
+        </div>
+
+        {# LAYOUT 2 COLONNES #}
+        <div class="maladie-layout mt-3">
+            <div class="col-lg-8">
+
+                {% if maladie_poisson.symptomes %}
+                    <section class="fiche-section">
+                        <h2 class="fiche-titre">
+                            <span class="fiche-icone fiche-icone-symptomes">
+                                <svg class="fiche-icone-svg" viewBox="0 0 24 24" aria-hidden="true">
+                                    <path fill="none" stroke="currentColor"
+                                        d="M7 4v5a3 3 0 0 0 6 0V4M7 4H5M13 4h2
+                                            M9 14a4 4 0 0 0 8 0v-2.5
+                                            M17 18.5V19a3 3 0 0 1-3 3h-1
+                                            M18.5 7.5a1.75 1.75 0 1 1-3.5 0a1.75 1.75 0 0 1 3.5 0z" />
+                                </svg>
+                            </span>
+                            Symptômes
+                        </h2>
+                        <div class="fiche-texte">
+                            {{ maladie_poisson.symptomes|raw }}
+                        </div>
+                    </section>
+                {% endif %}
+
+                {% if maladie_poisson.causes is defined and maladie_poisson.causes %}
+                    <section class="fiche-section">
+                        <h2 class="fiche-titre">
+                            <span class="fiche-icone fiche-icone-causes">
+                                <svg class="fiche-icone-svg" viewBox="0 0 24 24" aria-hidden="true">
+                                    <circle cx="10.5" cy="10.5" r="4.5" fill="none" stroke="currentColor" />
+                                    <path fill="none" stroke="currentColor"
+                                        d="M14 14l3.5 3.5M9 8.5a2 2 0 0 1 2.5-1" />
+                                </svg>
+                            </span>
+                            Causes probables
+                        </h2>
+                        <div class="fiche-texte">
+                            {{ maladie_poisson.causes|raw }}
+                        </div>
+                    </section>
+                {% endif %}
+
+                {% if maladie_poisson.traitement is defined and maladie_poisson.traitement %}
+                    <section class="fiche-section">
+                        <h2 class="fiche-titre">
+                            <span class="fiche-icone fiche-icone-traitement">
+                                <svg class="fiche-icone-svg" viewBox="0 0 24 24" aria-hidden="true">
+                                    <path fill="none" stroke="currentColor"
+                                        d="M8 9a3 3 0 0 1 4.24-4.24l2 2A3 3 0 0 1 10 11z" />
+                                    <path fill="none" stroke="currentColor"
+                                        d="M13.76 11.76L16 14A3 3 0 1 1 11.76 18" />
+                                    <path fill="none" stroke="currentColor"
+                                        d="M16.5 6.5c.6-.6 1.6-1 2.5-1
+                                            c-.1.9-.4 1.9-1 2.5
+                                            c-.6.6-1.4.9-2.3 1" />
+                                </svg>
+                            </span>
+                            Traitement
+                        </h2>
+                        <div class="fiche-texte">
+                            {{ maladie_poisson.traitement|raw }}
+                        </div>
+
+                        {% if maladie_poisson.dureeTraitement is defined and maladie_poisson.dureeTraitement %}
+                            <div class="maladie-treatment-timeline">
+                                <div class="timeline-title">Durée indicative du traitement</div>
+                                <div class="timeline-bar">
+                                    <div class="timeline-step">
+                                        <span class="timeline-dot"></span>
+                                        <span class="timeline-label">Début</span>
+                                    </div>
+                                    <div class="timeline-step">
+                                        <span class="timeline-label">
+                                            {{ maladie_poisson.dureeTraitement }}
+                                        </span>
+                                    </div>
+                                    <div class="timeline-step">
+                                        <span class="timeline-dot"></span>
+                                        <span class="timeline-label">Fin</span>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endif %}
+                    </section>
+                {% endif %}
+
+                {% if maladie_poisson.prevention is defined and maladie_poisson.prevention %}
+                    <section class="fiche-section">
+                        <h2 class="fiche-titre">
+                            <span class="fiche-icone fiche-icone-prevention">
+                                <svg class="fiche-icone-svg" viewBox="0 0 24 24" aria-hidden="true">
+                                    <path fill="none" stroke="currentColor"
+                                        d="M12 3.5l5 2v4.2a8 8 0 0 1-3.6 6.6L12 18.8l-1.4-0.5A8 8 0 0 1 7 9.7v-4.2z" />
+                                    <path fill="none" stroke="currentColor"
+                                        d="M10.5 11.5c1.2-1.5 2.9-2.3 4.5-2.2
+                                            c-.1 1.6-.7 3.3-2.2 4.5
+                                            c-0.7.6-1.4.9-2.3 1" />
+                                </svg>
+                            </span>
+                            Prévention
+                        </h2>
+                        <div class="fiche-texte">
+                            {{ maladie_poisson.prevention|raw }}
+                        </div>
+                    </section>
+                {% endif %}
+
+                {% if maladie_poisson.rappel is defined and maladie_poisson.rappel %}
+                    <section class="fiche-section">
+                        <h2 class="fiche-titre">
+                            📌 Rappel important
+                        </h2>
+                        <div class="fiche-texte">
+                            {{ maladie_poisson.rappel|raw }}
+                        </div>
+                    </section>
+                {% endif %}
+
+            </div>
+
+            <aside class="maladie-meta-card">
+                <h3 class="maladie-meta-titre">Infos rapides</h3>
+
+                <dl class="maladie-meta-liste">
+
+                    <div class="maladie-meta-item">
+                    <dt>Agent pathogène</dt>
+                    <dd>{{ maladie_poisson.agentPathogene ?? 'Non précisé' }}</dd>
+                    </div>
+
+                    <div class="maladie-meta-item">
+                    <dt>Type</dt>
+                    <dd>{{ maladie_poisson.type ?? 'Non précisé' }}</dd>
+                    </div>
+
+                    <div class="maladie-meta-item">
+                    <dt>Durée indicative</dt>
+                    <dd>{{ maladie_poisson.dureeTraitement ?? 'Variable selon le traitement' }}</dd>
+                    </div>
+
+                    {# --- TOOLTIP contenu selon graviteLevel --- #}
+
+                    <div class="maladie-meta-item">
+                    <dt>Niveau de risque</dt>
+                    {{ include('components/_risk_info.html.twig', { risk: risk }) }}
+                    </div>
+                </dl>
+                </aside>
+        </div>
+
+        <footer class="maladie-carnet__footer mt-3 d-flex justify-content-between">
+            {# <a href="{{ path('app_maladie_poisson_index') }}" class="link-secondary">
+                ← Retour aux maladies
+            </a> #}
+        </footer>
+
+    </article>
+</div>
+{% endblock %}
+
+
+
+
+
+
+
+
+
+

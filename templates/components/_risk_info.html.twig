@@ -1,0 +1,30 @@
+{# variables attendues :
+   - risk: { level, label, tooltip, tooltipClass }
+#}
+
+{% set level = risk.level|default('') %}
+{% set tooltipClass = risk.tooltipClass|default('risque-tooltip') %}
+
+<dd class="risque risque--{{ level }}">
+  <span class="risque-label">{{ risk.label }}</span>
+
+  <button
+  type="button"
+  class="risque-info"
+  aria-label="Informations sur le niveau de risque"
+  title="{{ risk.tooltip|e('html_attr') }}"
+  data-bs-toggle="tooltip"
+  data-bs-placement="top"
+  data-bs-title="{{ risk.tooltip|e('html_attr') }}"
+  data-bs-custom-class="{{ tooltipClass }}"
+  data-bs-container="body"
+>
+    <span class="visually-hidden">Aide</span>
+    <svg class="risque-info__icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+      <path fill="currentColor" d="M12 2a10 10 0 1 0 .001 20.001A10 10 0 0 0 12 2Zm0 18a8 8 0 1 1 0-16a8 8 0 0 1 0 16Z"/>
+      <path fill="currentColor" d="M11 10h2v7h-2z"/>
+      <path fill="currentColor" d="M12 7.25a1.25 1.25 0 1 0 0 2.5a1.25 1.25 0 0 0 0-2.5z"/>
+    </svg>
+  </button>
+</dd>
+

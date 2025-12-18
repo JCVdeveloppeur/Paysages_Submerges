@@ -1,7 +1,5 @@
 
-// ----------------------
-// Chargement des dépendances (obligatoire en haut)
-// ----------------------
+
 @use "bootstrap/scss/bootstrap" as *;
 @use "variables" as *;
 @use "mixins" as *;
@@ -10,6 +8,8 @@
 @use "article_show";
 @use "badges";
 @use "especes";
+@use "plante";
+@use "maladie_poisson";
 @use "connexion";
 @use "inscription";
 @use "profil";

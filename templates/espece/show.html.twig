@@ -1,83 +1,234 @@
+{# templates/espece/show.html.twig #}
 {% extends 'base.html.twig' %}
 
 {% block title %}Fiche espèce - {{ espece.nomCommun }}{% endblock %}
 
-{# Applique le fond dégradé #}
+{# Même fond dégradé que la fiche maladie #}
 {% block body_class %}degrade-aquatique-body{% endblock %}
 
 {% block body %}
-<div class="fiche-espece mt-5 mb-5">
+<div class="container my-5 fiche-espece">
 
     <a href="{{ path('espece_public_index') }}" class="btn btn-retour btn-sm mb-4">
         ← Retour à la liste des espèces
     </a>
 
-    <div class="text-center mb-4">
-        <h1 class="display-5 fw-bold">{{ espece.nomCommun }}</h1>
-        <p class="fst-italic text-muted">({{ espece.nomScientifique }})</p>
-    </div>
+    <div class="espece-carnet">
+                {# HEADER #}
+        <header class="espece-carnet__header text-center">
+            <h1 class="espece-carnet__title">
+                {{ espece.nomCommun }}
+            </h1>
 
-    {% if espece.imageName %}
-        <div class="text-center mb-4">
-        <img src="{{ asset('uploads/especes/' ~ espece.imageName) }}" alt="{{ espece.nomCommun }}"
-         class="img-fluid image-espece">
+            {% if espece.nomScientifique %}
+                <div class="espece-nom-scientifique fst-italic">
+                    {{ espece.nomScientifique }}
+                </div>
+            {% endif %}
 
-        <small class="photo-caption d-block mt-2 text-muted fst-italic">
-        {{ espece.nomCommun }} dans son habitat naturel
-        </small>
-        </div>
+            <div class="espece-badges mt-2">
 
-    {% endif %}
+                {# Badge TYPE (vert, "Poisson", "Mollusque", etc.) #}
+                {% set t = (espece.typeEspece ?? '')|lower|trim %}
+                {% set typeClass =
+                t starts with 'poisson' ? 'type--poisson' :
+                (t starts with 'mollus' ? 'type--mollusque' :
+                (t starts with 'crust' ? 'type--crustace' : 'type--na'))
+                %}
 
-    <div class="row g-4">
-        <div class="col-md-6">
-            <h2 class="physique">Description physique</h2>
-            <div class="section">{{ espece.descriptionPhysique|nl2br }}</div>
+                {% if t %}
+                <span class="badge-type {{ typeClass }}">
+                    {{ t|capitalize }}
+                </span>
+                {% else %}
+                —
+                {% endif %}
 
-            <h2 class="comportement">Comportement</h2>
-            <div class="section">{{ espece.comportement|nl2br }}</div>
+                {# Badge BIOTOPE harmonisé avec les articles #}
+                {% if espece.biotope %}
+                    {% set b = espece.biotope|lower %}
 
-            <h2 class="alimentation">Alimentation</h2>
-            <div class="section">{{ espece.alimentation|nl2br }}</div>
-        </div>
+                    {# On déduit une "catégorie article" à partir du texte du biotope #}
+                    {% set biotopeCategorie =
+                        'amérique' in b ? 'Biotope Amérique du sud' :
+                        ('asie'      in b ? 'Biotope asiatique'      :
+                        ('afrique'   in b ? 'Biotope africain'       :
+                        ('austral'   in b ? 'Biotope australien'     : 'Autre')))
+                    %}
 
-        <div class="col-md-6">
-            <h2 class="reproduction">Reproduction</h2>
-            <div class="section">{{ espece.reproduction|nl2br }}</div>
+                    {% set badgeClass = {
+                        'Biotope Amérique du sud': 'badge-amerique-sud',
+                        'Biotope asiatique':        'badge-asiatique',
+                        'Biotope africain':         'badge-africain',
+                        'Biotope australien':       'badge-australien',
+                        'Autre':                    'badge-autre'
+                    }[biotopeCategorie] ?? 'badge-autre' %}
 
-            <h2 class="eau">Paramètres de l'eau</h2>
-            <div class="parametres-eau">
-                <ul class="list-unstyled mb-0">
-                    <li><strong>Température :</strong> {{ espece.temperatureMin ?? 'N/A' }} - {{ espece.temperatureMax ?? 'N/A' }} °C</li>
-                    <li><strong>pH :</strong> {{ espece.phMin ?? 'N/A' }} - {{ espece.phMax ?? 'N/A' }}</li>
-                    <li><strong>GH :</strong> {{ espece.ghMin ?? 'N/A' }} - {{ espece.ghMax ?? 'N/A' }}</li>
-                </ul>
+                    <span class="badge {{ badgeClass }}">
+                        {% if biotopeCategorie == 'Biotope Amérique du sud' %}🌱
+                        {% elseif biotopeCategorie == 'Biotope asiatique' %}🌊
+                        {% elseif biotopeCategorie == 'Biotope africain' %}🏜️
+                        {% elseif biotopeCategorie == 'Biotope australien' %}🪸
+                        {% else %}🌍
+                        {% endif %}
+                        {{ biotopeCategorie }}
+                    </span>
+                {% endif %}
             </div>
+        </header>
 
-            <h2 class="infos">Informations complémentaires</h2>
-            <div class="infos-complementaires">
-                <ul class="list-unstyled mb-0">
-                    <li><strong>Taille minimale du bac :</strong> {{ espece.tailleMinimaleBac ?? 'N/A' }} L</li>
-                    <li><strong>Durée de vie :</strong> {{ espece.dureeVie ?? 'N/A' }} ans</li>
-                    <li><strong>Biotope :</strong> {{ espece.biotope ?? 'N/A' }}</li>
-                    <li><strong>Type :</strong>
-                        <span class="badge-type">{{ espece.typeEspece ?? 'N/A' }}</span>
-                    </li>
-                </ul>
-            </div>
-        </div>
+        {# IMAGE PRINCIPALE + LÉGENDE #}
+        {% if espece.imageName %}
+        <figure class="fiche-espece__figure carnet-image">
+            <img src="{{ asset('uploads/especes/' ~ espece.imageName) }}"
+                alt="{{ espece.nomCommun }}"
+                class="fiche-espece__image">
+
+            <figcaption class="fiche-espece__caption">
+            {{ espece.nomCommun }} dans son habitat naturel
+            </figcaption>
+        </figure>
+        {% endif %}
+
+                {# LAYOUT 2 COLONNES, COMME POUR LA FICHE MALADIE #}
+                <div class="row espece-layout">
+                    <div class="col-lg-8">
+                        {# DESCRIPTION PHYSIQUE #}
+                        {% if espece.descriptionPhysique %}
+                            <section class="fiche-section">
+                                <h2 class="fiche-titre">
+                                    <span class="fiche-icone fiche-icone-physique">
+                                        🐟
+                                    </span>
+                                    Description
+                                </h2>
+                                <div class="fiche-texte">
+                                    {{ espece.descriptionPhysique|nl2br }}
+                                </div>
+                            </section>
+                        {% endif %}
+
+                        {# COMPORTEMENT #}
+                        {% if espece.comportement %}
+                            <section class="fiche-section">
+                                <h2 class="fiche-titre">
+                                    <span class="fiche-icone fiche-icone-comportement">
+                                        🧭
+                                    </span>
+                                    Comportement
+                                </h2>
+                                <div class="fiche-texte">
+                                    {{ espece.comportement|nl2br }}
+                                </div>
+                            </section>
+                        {% endif %}
+
+                        {# ALIMENTATION #}
+                        {% if espece.alimentation %}
+                            <section class="fiche-section">
+                                <h2 class="fiche-titre">
+                                    <span class="fiche-icone fiche-icone-alimentation">
+                                        🍽️
+                                    </span>
+                                    Alimentation
+                                </h2>
+                                <div class="fiche-texte">
+                                    {{ espece.alimentation|nl2br }}
+                                </div>
+                            </section>
+                        {% endif %}
+
+                        {# REPRODUCTION #}
+                        {% if espece.reproduction %}
+                            <section class="fiche-section">
+                                <h2 class="fiche-titre">
+                                    <span class="fiche-icone fiche-icone-reproduction">
+                                        🧬
+                                    </span>
+                                    Reproduction
+                                </h2>
+                                <div class="fiche-texte">
+                                    {{ espece.reproduction|nl2br }}
+                                </div>
+                            </section>
+                        {% endif %}
+                    </div>
+
+                    {# COLONNE DE DROITE : "INFOS RAPIDES" #}
+                    <aside class="col-lg-4">
+                        <section class="espece-meta-card">
+                            <h2 class="espece-meta-titre">Infos rapides</h2>
+
+                            <dl class="espece-meta-liste">
+                                <div class="espece-meta-item">
+                                    <dt>Biotope</dt>
+                                    <dd>{{ espece.biotope ?? 'N/A' }}</dd>
+                                </div>
+
+                                <div class="espece-meta-item">
+                                    <dt>Taille bac</dt>
+                                    <dd>{{ espece.tailleMinimaleBac ?? 'N/A' }} L</dd>
+                                </div>
+
+                                <div class="espece-meta-item">
+                                    <dt>Durée de vie</dt>
+                                    <dd>{{ espece.dureeVie ?? 'N/A' }} ans</dd>
+                                </div>
+
+                                <div class="espece-meta-item">
+                                    <dt>Température</dt>
+                                    <dd>{{ espece.temperatureMin ?? 'N/A' }} - {{ espece.temperatureMax ?? 'N/A' }} °C</dd>
+                                </div>
+
+                                <div class="espece-meta-item">
+                                    <dt>pH</dt>
+                                    <dd>{{ espece.phMin ?? 'N/A' }} - {{ espece.phMax ?? 'N/A' }}</dd>
+                                </div>
+
+                                <div class="espece-meta-item">
+                                    <dt>GH</dt>
+                                    <dd>{{ espece.ghMin ?? 'N/A' }} - {{ espece.ghMax ?? 'N/A' }}</dd>
+                                </div>
+
+                                <div class="espece-meta-item">
+                                    <dt>Type</dt>
+                                    <dd>{{ espece.typeEspece ?? 'N/A' }}</dd>
+                                </div>
+                            </dl>
+
+                            {# À RETENIR À L’INTÉRIEUR DE LA CARTE #}
+                            <div class="espece-meta-retour">
+                                <div class="espece-meta-retour__titre">À retenir</div>
+                                <div class="espece-meta-retour__texte">
+                                    Espèce : {{ espece.nomCommun }}.
+                                    <br>
+                                    Respectez les paramètres d'eau et prévoyez un bac adapté.
+                                </div>
+                            </div>
+                        </section>
+                    </aside>
+
+                </div>  {# <-- fermeture de .row espece-layout #}
+
+                {# FOOTER : RETOUR + BOUTONS ADMIN #}
+                <footer class="espece-carnet__footer mt-4 d-flex justify-content-between align-items-center flex-wrap gap-2">
+                    {# <a href="{{ path('espece_public_index') }}" class="link-secondary">
+                        ← Retour à la liste des espèces
+                    </a> #}
+
+                    {% if is_granted('ROLE_ADMIN') %}
+                        <div class="espece-carnet__actions">
+                            <a href="{{ path('espece_edit', {'id': espece.id}) }}" class="btn btn-outline-warning btn-sm me-2">
+                                ✏️ Modifier
+                            </a>
+                            {{ include('espece/_delete_form.html.twig') }}
+                        </div>
+                    {% endif %}
+                </footer>
     </div>
-
-    {% if is_granted('ROLE_ADMIN') %}
-        <div class="mt-5 text-end">
-            <a href="{{ path('espece_edit', {'id': espece.id}) }}" class="btn btn-outline-warning me-2">
-                ✏️ Modifier
-            </a>
-            {{ include('espece/_delete_form.html.twig') }}
-        </div>
-    {% endif %}
 </div>
 {% endblock %}
+
 
 
 

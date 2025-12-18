@@ -1,0 +1,183 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+    {{ plante.nomCommun ?? 'Fiche plante' }} - Paysages Submergés
+{% endblock %}
+
+{% block body %}
+<div class="container my-5 plante-show">
+    <div class="row justify-content-center">
+        <div class="col-lg-10 col-xl-9">
+            <div class="plant-carnet">
+                <div class="plant-carnet__header">
+                    <div class="plant-carnet__title-group">
+                        <p class="plant-carnet__tag">Fiche plante</p>
+
+                        <h1 class="plant-carnet__title">
+                            {{ plante.nomCommun ?? 'Nom commun à renseigner' }}
+                        </h1>
+
+                        {% if plante.nomScientifique %}
+                            <p class="plant-carnet__subtitle">
+                                <em>{{ plante.nomScientifique }}</em>
+                            </p>
+                        {% endif %}
+
+                        {% if plante.famille or plante.origine %}
+                            <p class="plant-carnet__meta">
+                                {% if plante.famille %}
+                                    Famille :
+                                    <span>{{ plante.famille }}</span>
+                                {% endif %}
+                                {% if plante.famille and plante.origine %}
+                                    •
+                                {% endif %}
+                                {% if plante.origine %}
+                                    Origine :
+                                    <span>{{ plante.origine }}</span>
+                                {% endif %}
+                            </p>
+                        {% endif %}
+
+                        {% if plante.no %}
+                            <p class="plant-carnet__meta">
+                                Référence interne :
+                                <span>{{ plante.no }}</span>
+                            </p>
+                        {% endif %}
+                    </div>
+
+                    {# Image principale si tu l’utilises #}
+                    {% if plante.image %}
+                        <figure class="plant-carnet__figure">
+                            {# adapte le chemin si besoin #}
+                            <img src="{{ asset('uploads/plantes/' ~ plante.image) }}"
+                                 alt="{{ plante.nomCommun ?? 'Plante aquatique' }}"
+                                 class="img-fluid">
+                            <figcaption>Aspect typique en aquarium</figcaption>
+                        </figure>
+                    {% endif %}
+                </div>
+
+                <div class="plant-carnet__body">
+                    <section class="plant-section">
+                        <h2 class="plant-section__title">Description</h2>
+                        <p class="plant-section__text">
+                            {{ plante.description|nl2br }}
+                        </p>
+                    </section>
+
+                    <section class="plant-section plant-section--two-cols">
+                        <div>
+                            <h3 class="plant-section__subtitle">Conditions de maintenance</h3>
+                            <ul class="plant-specs">
+                                {% if plante.eclairage %}
+                                    <li>
+                                        <span>Éclairage</span>
+                                        <strong>{{ plante.eclairage }}</strong>
+                                    </li>
+                                {% endif %}
+                                {% if plante.croissance %}
+                                    <li>
+                                        <span>Croissance</span>
+                                        <strong>{{ plante.croissance }}</strong>
+                                    </li>
+                                {% endif %}
+                                {% if plante.positionAquarium %}
+                                    <li>
+                                        <span>Position</span>
+                                        <strong>{{ plante.positionAquarium }}</strong>
+                                    </li>
+                                {% endif %}
+                                {% if plante.difficulte %}
+                                    <li>
+                                        <span>Difficulté</span>
+                                        <strong>{{ plante.difficulte }}</strong>
+                                    </li>
+                                {% endif %}
+                            </ul>
+                        </div>
+
+                        <div>
+                            <h3 class="plant-section__subtitle">Paramètres d’eau</h3>
+                            <ul class="plant-specs">
+                                {% if plante.tempMin or plante.tempMax %}
+                                    <li>
+                                        <span>Température</span>
+                                        <strong>
+                                            {% if plante.tempMin %}
+                                                {{ plante.tempMin }}°C
+                                            {% endif %}
+                                            {% if plante.tempMin and plante.tempMax %}
+                                                – 
+                                            {% endif %}
+                                            {% if plante.tempMax %}
+                                                {{ plante.tempMax }}°C
+                                            {% endif %}
+                                        </strong>
+                                    </li>
+                                {% endif %}
+
+                                {% if plante.phMin or plante.phMax %}
+                                    <li>
+                                        <span>pH</span>
+                                        <strong>
+                                            {% if plante.phMin %}
+                                                {{ plante.phMin }}
+                                            {% endif %}
+                                            {% if plante.phMin and plante.phMax %}
+                                                – 
+                                            {% endif %}
+                                            {% if plante.phMax %}
+                                                {{ plante.phMax }}
+                                            {% endif %}
+                                        </strong>
+                                    </li>
+                                {% endif %}
+
+                                {% if plante.hauteurMax %}
+                                    <li>
+                                        <span>Hauteur max.</span>
+                                        <strong>{{ plante.hauteurMax }} cm</strong>
+                                    </li>
+                                {% endif %}
+                            </ul>
+                        </div>
+                    </section>
+
+                    <section class="plant-section plant-section--notes">
+                        <h3 class="plant-section__subtitle">Notes d’aquascaping</h3>
+                        <p class="plant-section__hint">
+                            Utilisation dans le décor, associations possibles, rôle dans le paysage…
+                        </p>
+                        <div class="plant-notes">
+                            <p>
+                                À compléter avec vos observations : avant-plan en tapis, bosquets en milieu de bac,
+                                arrière-plan marqué, contrastes de textures, etc.
+                            </p>
+                        </div>
+                    </section>
+                </div>
+
+                <div class="plant-carnet__footer d-flex justify-content-between align-items-center mt-4">
+                    <a href="{{ path('app_plante_index') }}" class="btn btn-retour btn-sm mb-4">
+                        ← Retour aux plantes
+                    </a>
+                    <div class="plant-carnet__actions">
+                        <a href="{{ path('app_plante_edit', {'id': plante.id}) }}"
+                           class="btn btn-sm btn-outline-primary me-2">
+                            Modifier
+                        </a>
+                        {{ include('plante/_delete_form.html.twig') }}
+                    </div>
+                </div>
+
+                <div class="plant-carnet__stamp">
+                    <span>Observation · {{ "now"|date("Y") }}</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+

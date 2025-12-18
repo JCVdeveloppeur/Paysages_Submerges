@@ -1,10 +1,10 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Modifier une espèce – {{ espece.nomCommun }}{% endblock %}
+{% block title %}Modifier une espèce - {{ espece.nomCommun }}{% endblock %}
 
 {% block body %}
 <div class="container my-5">
-    <h1 class="mb-4">Modifier l’espèce : {{ espece.nomCommun|default('Nom inconnu') }}</h1>
+    <h1 class="mb-4">Modifier l'espèce : {{ espece.nomCommun|default('Nom inconnu') }}</h1>
 
     {{ form_start(form, {'attr': {'enctype': 'multipart/form-data'}}) }}
 

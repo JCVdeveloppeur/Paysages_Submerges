@@ -40,23 +40,6 @@
     margin-bottom: 1.5rem;
   }
 
-  h2 {
-    font-size: 1.4rem;
-    margin-top: 2rem;
-    margin-bottom: 0.75rem;
-    color: #5c4428;
-    display: flex;
-    align-items: center;
-    gap: 0.4rem;
-
-    &.physique::before { content: "👁️"; }
-    &.comportement::before { content: "🐟"; }
-    &.alimentation::before { content: "🌿"; }
-    &.reproduction::before { content: "💧"; }
-    &.eau::before { content: "🌊"; }
-    &.infos::before { content: "📌"; }
-  }
-
   .section {
     text-align: justify;
     line-height: 1.6;
@@ -94,6 +77,112 @@
     font-size: 0.85rem;
   }
 }
+  // -----------------------------
+  // Sections de la fiche (alignées sur les maladies)
+  // -----------------------------
+  .fiche-section {
+    margin-bottom: 1.6rem;
+    padding: 1.1rem 1.2rem;
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.9);
+    border: 1px solid rgba(0, 0, 0, 0.04);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.04);
+    position: relative;
+    overflow: hidden;
+
+    &::before {
+      // petit filet à gauche (comme sur les maladies)
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 4px;
+      height: 100%;
+      background: linear-gradient(
+        to bottom,
+        #9cc1ff,
+        #6da4ff
+      );
+      opacity: 0.85;
+    }
+
+    & + .fiche-section {
+      margin-top: 1.2rem;
+    }
+  }
+
+  .fiche-titre {
+    display: flex;
+    align-items: center;
+    gap: 0.55rem;
+    margin: 0 0 0.55rem;
+    font-family: "Merriweather", serif;
+    font-size: 1.05rem;
+    color: #223043;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+  }
+
+  .fiche-icone {
+    width: 26px;
+    height: 26px;
+    border-radius: 999px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+
+    svg {
+      width: 18px;
+      height: 18px;
+      display: block;
+    }
+  }
+
+  // Variantes d’icônes (palette alignée avec la fiche maladie)
+  .fiche-icone-physique {
+    color: #3c5a9a;
+    background: #e9f0ff;
+    border: 1px solid #c4d5ff;
+  }
+
+  .fiche-icone-comportement {
+    color: #8a5b1e;
+    background: #fff7e6;
+    border: 1px solid #f3d6a3;
+  }
+
+  .fiche-icone-alimentation {
+    color: #216244;
+    background: #e9f9f0;
+    border: 1px solid #bfe5cf;
+  }
+
+  .fiche-icone-reproduction {
+    color: #1d6b6b;
+    background: #e6f6f6;
+    border: 1px solid #b7e0df;
+  }
+
+  .fiche-texte {
+    font-size: 0.95rem;
+    line-height: 1.7;
+    color: #3c4048;
+
+    p {
+      margin-bottom: 0.6rem;
+    }
+
+    ul,
+    ol {
+      padding-left: 1.2rem;
+      margin-bottom: 0.6rem;
+    }
+
+    li {
+      margin-bottom: 0.25rem;
+    }
+  }
 
 // --- Image espèce avec cadre et effet zoom ---
 .image-espece {
@@ -180,7 +269,7 @@ a.btn-espece {
   }
 }
 
-// --- Style personnalisé pour la barre de recherche ---
+
 // --- Style personnalisé pour la barre de recherche avec effet glow ---
 .bloc-recherche-espece {
   .form-control {
@@ -234,6 +323,336 @@ a.btn-espece {
     }
   }
 }
+// ===============================
+// Fiche espèce : bloc photo
+// ===============================
+.fiche-espece__figure {
+  margin: 1.6rem auto 1.9rem;
+  max-width: 520px;
+  text-align: center;
+  padding: 0;
+  background: transparent;
+  border: none;
+}
+
+.fiche-espece__image {
+  display: block;
+  width: 100%;
+  max-height: 340px;
+  object-fit: cover;
+  border-radius: 12px;
+  background: #fff;
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  box-shadow:
+    0 6px 14px rgba(0, 0, 0, 0.12),
+    0 2px 4px rgba(0, 0, 0, 0.06);
+  transition: transform 0.28s ease;
+  transform-origin: center;
+
+  /* variables de zoom */
+  --zoom-base: 1;
+  --zoom-scroll: 0;
+  transform: scale(calc(var(--zoom-base) + var(--zoom-scroll)));
+}
+
+.fiche-espece__figure:hover .fiche-espece__image {
+  /* zoom léger au survol */
+  --zoom-base: 1.02;
+}
+
+.fiche-espece__caption {
+  margin-top: 0.55rem;
+  font-size: 0.85rem;
+  color: #7b818a;
+  font-style: italic;
+}
+/* ===============================
+   Cadre carnet pour image ESPÈCE
+   ============================== */
+
+.carnet-image {
+  position: relative;
+  background: #fbf9f5;
+  border-radius: 18px;
+  padding: 1.2rem;
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.18);
+  margin: 1.8rem auto 2rem;
+  max-width: 540px;
+  overflow: hidden;
+  border: 1px solid rgba(0, 0, 0, 0.04);
+
+  &::before {
+    content: "";
+    position: absolute;
+    inset: 10px;
+    border-radius: 16px;
+    border: 1px solid rgba(0, 0, 0, 0.05);
+    pointer-events: none;
+  }
+
+  &::after {
+  display: none;
+}
+}
+/* ================================
+   Encadré "Infos rapides" — Aligné sur les maladies
+================================ */
+
+.fiche-espece {
+  .espece-meta-card {
+    background: #fbf9f5;
+    border-radius: 16px;
+    padding: 1.3rem 1.35rem 1.2rem;
+    border: 1px solid rgba(0, 0, 0, 0.05);
+    box-shadow:
+      0 10px 22px rgba(0, 0, 0, 0.14),
+      0 0 0 1px rgba(255, 255, 255, 0.8);
+    position: relative;
+    overflow: hidden;
+
+    &::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 6px;
+      height: 100%;
+      background: linear-gradient(to bottom, #7aa0cf, #4969a3);
+      opacity: 0.9;
+    }
+  }
+
+  .espece-meta-titre {
+    font-family: "Merriweather", serif;
+    font-size: 1rem;
+    margin: 0 0 0.8rem 0.35rem;
+    color: #1c2b35;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+  }
+
+  .espece-meta-liste {
+    margin: 0;
+  }
+
+  .espece-meta-item {
+    display: flex;
+    flex-direction: column;
+    padding: 0.45rem 0.4rem 0.45rem 0.35rem;
+    border-bottom: 1px dashed rgba(0, 0, 0, 0.06);
+
+    &:last-child {
+      border-bottom: none;
+    }
+
+    dt {
+      font-size: 0.78rem;
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+      color: #8a8f99;
+      margin-bottom: 0.1rem;
+    }
+
+    dd {
+      margin: 0;
+      font-size: 0.9rem;
+      color: #31363f;
+    }
+  }
+
+  .espece-meta-card:hover {
+    box-shadow:
+      0 12px 26px rgba(0, 0, 0, 0.2),
+      0 0 0 1px rgba(255, 255, 255, 0.9);
+    transform: translateY(-1px);
+    transition:
+      box-shadow 0.22s ease,
+      transform 0.22s ease;
+  }
+}
+  /* --------- Bloc "À retenir" dans la carte Infos rapides --------- */
+
+  .espece-meta-retour {
+    background: #fbf9f5;
+    border-radius: 12px;
+    padding: 0.9rem 1rem;
+    border: 1px dashed rgba(132, 120, 106, 0.35);
+    margin-top: 0.9rem;
+  }
+
+  .espece-meta-retour__titre {
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.16em;
+    color: #7b6d5e;
+    margin-bottom: 0.35rem;
+  }
+
+  .espece-meta-retour__texte {
+    font-size: 0.9rem;
+    color: #4b4f57;
+  }
+  /* ================================
+   Fiche espèce – sections harmonisées
+   (mêmes styles que fiche maladie)
+   ================================ */
+
+.fiche-espece {
+
+  .fiche-section {
+    margin-bottom: 1.6rem;
+    padding: 1.1rem 1.2rem;
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.9);
+    border: 1px solid rgba(0, 0, 0, 0.04);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.04);
+    position: relative;
+    overflow: hidden;
+
+    &::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 4px;
+      height: 100%;
+      background: linear-gradient(
+        to bottom,
+        #9cc1ff,
+        #6da4ff
+      );
+      opacity: 0.85;
+    }
+
+    & + .fiche-section {
+      margin-top: 1.2rem;
+    }
+  }
+
+  .fiche-titre {
+    display: flex;
+    align-items: center;
+    gap: 0.55rem;
+    margin: 0 0 0.55rem;
+    font-family: "Merriweather", serif;
+    font-size: 1.05rem;
+    color: #223043;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+  }
+
+  .fiche-texte {
+    font-size: 0.95rem;
+    line-height: 1.7;
+    color: #3c4048;
+
+    p {
+      margin-bottom: 0.6rem;
+    }
+
+    ul,
+    ol {
+      padding-left: 1.2rem;
+      margin-bottom: 0.6rem;
+    }
+
+    li {
+      margin-bottom: 0.25rem;
+    }
+  }
+
+  /* Pastilles icône rondes */
+  .fiche-icone {
+    width: 26px;
+    height: 26px;
+    border-radius: 999px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    font-size: 14px;
+
+    svg {
+      width: 18px;
+      height: 18px;
+      display: block;
+    }
+  }
+
+  /* Harmonisation des couleurs d’icône
+     avec la fiche maladie */
+
+  /* Description physique ↔ Symptômes */
+  .fiche-icone-physique {
+    color: #3c5a9a;
+    background: #e9f0ff;
+    border: 1px solid #c4d5ff;
+  }
+
+  /* Comportement ↔ Causes probables */
+  .fiche-icone-comportement {
+    color: #8a5b1e;
+    background: #fff7e6;
+    border: 1px solid #f3d6a3;
+  }
+
+  /* Alimentation ↔ Traitement */
+  .fiche-icone-alimentation {
+    color: #1d6b6b;
+    background: #e6f6f6;
+    border: 1px solid #b7e0df;
+  }
+
+  /* Reproduction ↔ Prévention */
+  .fiche-icone-reproduction {
+    color: #216244;
+    background: #e9f9f0;
+    border: 1px solid #bfe5cf;
+  }
+}
+.fiche-espece {
+  .fiche-section {
+    transition:
+      transform 0.22s ease,
+      box-shadow 0.22s ease;
+
+    &:hover {
+      transform: translateY(-4px);
+      box-shadow:
+        0 12px 26px rgba(0, 0, 0, 0.18),
+        0 0 0 1px rgba(255, 255, 255, 0.8);
+    }
+  }
+}
+.espece-nom-scientifique {
+  font-style: italic;
+  font-size: 1rem;
+  color: #6f7a83;
+  margin-top: 0.2rem;
+}
+
+.espece-badges {
+  display: flex;
+  justify-content: center;
+  gap: 0.6rem;
+  margin-top: 0.6rem;
+}
+
+.badge-espece-type,
+.badge-espece-biotope {
+  background: rgba(70, 130, 180, 0.12);
+  border: 1px solid rgba(70, 130, 180, 0.25);
+  color: #2f4f66;
+  font-size: 0.75rem;
+  padding: 0.25rem 0.6rem;
+  border-radius: 999px;
+  font-weight: 500;
+}
+
+
+
+
+
 
 
 

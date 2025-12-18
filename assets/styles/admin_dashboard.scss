@@ -135,6 +135,42 @@
   color: #6c757d; // gris doux Bootstrap
   margin-bottom: 0.5rem;
 }
+.badge-type{
+  display: inline-flex;
+  align-items: center;
+  padding: .18rem .55rem;
+  border-radius: 999px;
+  font-size: .78rem;
+  font-weight: 600;
+  border: 1px solid transparent;
+  line-height: 1;
+  text-transform: capitalize;
+}
+
+.badge-type.type--poisson{
+  color: #0b4f6c;
+  background: rgba(11, 79, 108, .10);
+  border-color: rgba(11, 79, 108, .25);
+}
+
+.badge-type.type--mollusque{
+  color: #2e7d32;
+  background: rgba(46, 125, 50, .10);
+  border-color: rgba(46, 125, 50, .25);
+}
+
+.badge-type.type--crustace{
+  color: #8e5a00;
+  background: rgba(239, 143, 0, .12);
+  border-color: rgba(239, 143, 0, .30);
+}
+
+.badge-type.type--na{
+  color: #6b7280;
+  background: rgba(107, 114, 128, .10);
+  border-color: rgba(107, 114, 128, .25);
+}
+
 
 
 

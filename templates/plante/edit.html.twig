@@ -1,0 +1,37 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Modifier la plante - Paysages Submergés{% endblock %}
+
+{% block body %}
+<div class="container my-5 plante-form">
+    <div class="row justify-content-center">
+        <div class="col-lg-8 col-xl-7">
+            <div class="plante-form-card">
+                <div class="plante-form-card__header">
+                    <p class="plante-form-card__tag">Fiche plante</p>
+                    <h1 class="plante-form-card__title">
+                        Modifier : {{ plante.nomCommun ?? 'Plante' }}
+                    </h1>
+                    <p class="plante-form-card__intro">
+                        Ajuste les informations de cette plante pour garder ton encyclopédie à jour.
+                    </p>
+                </div>
+
+                <div class="plante-form-card__body">
+                    {{ include('plante/_form.html.twig', {'button_label': 'Mettre à jour'}) }}
+                </div>
+
+                <div class="plante-form-card__footer d-flex justify-content-between align-items-center mt-3">
+                    <a href="{{ path('app_plante_show', {'id': plante.id}) }}" class="btn btn-outline-secondary">
+                        ← Retour à la fiche
+                    </a>
+                    <div>
+                        {{ include('plante/_delete_form.html.twig') }}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+

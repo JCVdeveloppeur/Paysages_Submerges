@@ -1,0 +1,69 @@
+{{ form_start(form) }}
+<div class="row g-3">
+    <div class="col-md-6">
+        {{ form_row(form.nomCommun) }}
+    </div>
+    <div class="col-md-6">
+        {{ form_row(form.nomScientifique) }}
+    </div>
+
+    <div class="col-md-6">
+        {{ form_row(form.famille) }}
+    </div>
+    <div class="col-md-6">
+        {{ form_row(form.origine) }}
+    </div>
+
+    <div class="col-12">
+        {{ form_row(form.description) }}
+    </div>
+
+    <div class="col-md-6">
+        {{ form_row(form.eclairage) }}
+    </div>
+    <div class="col-md-6">
+        {{ form_row(form.croissance) }}
+    </div>
+
+    <div class="col-md-6">
+        {{ form_row(form.positionAquarium) }}
+    </div>
+    <div class="col-md-6">
+        {{ form_row(form.difficulte) }}
+    </div>
+
+    <div class="col-md-6">
+        {{ form_row(form.hauteurMax) }}
+    </div>
+
+    <div class="col-md-3">
+        {{ form_row(form.phMin) }}
+    </div>
+    <div class="col-md-3">
+        {{ form_row(form.phMax) }}
+    </div>
+
+    <div class="col-md-3">
+        {{ form_row(form.tempMin) }}
+    </div>
+    <div class="col-md-3">
+        {{ form_row(form.tempMax) }}
+    </div>
+
+    <div class="col-md-6">
+        {{ form_row(form.image) }}
+    </div>
+
+    <div class="col-md-6">
+        {{ form_row(form.no) }}
+    </div>
+</div>
+
+<div class="mt-4 d-flex justify-content-end">
+    <button class="btn btn-vert">
+        {{ button_label|default('Enregistrer') }}
+    </button>
+</div>
+
+{{ form_end(form) }}
+

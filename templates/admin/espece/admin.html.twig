@@ -18,6 +18,20 @@
     {% if especes is empty %}
         <div class="alert alert-warning">Aucune espèce enregistrée pour le moment.</div>
     {% else %}
+
+        <form method="get" class="d-flex justify-content-end mb-2 gap-2">
+        <input type="hidden" name="page" value="1">
+
+        <select name="limit"
+                class="form-select form-select-sm"
+                style="width:auto"
+                onchange="this.form.submit()">
+            <option value="5"  {{ limit == 5 ? 'selected' }}>5</option>
+            <option value="10" {{ limit == 10 ? 'selected' }}>10</option>
+            <option value="20" {{ limit == 20 ? 'selected' }}>20</option>
+        </select>
+        </form>
+
         <table class="table table-hover table-bordered align-middle">
             <thead class="table-light">
                 <tr>
@@ -35,7 +49,15 @@
                         <td>{{ espece.id }}</td>
                         <td>{{ espece.nomCommun|default('—') }}</td>
                         <td><em>{{ espece.nomScientifique|default('—') }}</em></td>
-                        <td>{{ espece.typeEspece|default('—') }}</td>
+                        <td>
+                            {% if espece.typeEspeceLabel %}
+                                <span class="badge-type type--{{ espece.typeEspeceCss }}">
+                                    {{ espece.typeEspeceLabel }}
+                                </span>
+                            {% else %}
+                                —
+                            {% endif %}
+                        </td>
                         <td>{{ espece.biotope|default('—') }}</td>
                         <td>
                             <a href="{{ path('espece_edit', { id: espece.id }) }}" class="btn-admin-modifier">
@@ -56,6 +78,10 @@
                 {% endfor %}
             </tbody>
         </table>
+        <div class="d-flex justify-content-center mt-4">
+        {{ knp_pagination_render(especes) }}
+        </div>
+
     {% endif %}
 
     <a href="{{ path('admin_dashboard') }}" class="btn-admin-retour mt-4">

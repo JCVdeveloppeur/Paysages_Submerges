@@ -24,9 +24,41 @@
         <input type="email" value="{{ last_username }}" name="email" id="inputEmail" class="form-control" required autofocus>
         </div>
 
-        <div class="mb-3">
-        <label for="inputPassword" class="form-label">Mot de passe</label>
-        <input type="password" name="password" id="inputPassword" class="form-control" required>
+        <div class="mb-3 password-field">
+            <label for="inputPassword" class="form-label">Mot de passe</label>
+            <div class="position-relative">
+                <input
+                    type="password"
+                    name="password"
+                    id="inputPassword"
+                    class="form-control"
+                    required
+                >
+                <button
+                    type="button"
+                    class="password-toggle-btn"
+                    tabindex="-1"
+                    aria-label="Afficher ou masquer le mot de passe"
+                >
+                    {# œil ouvert #}
+                    <svg class="password-icon password-icon-show" viewBox="0 0 24 24" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7S1 12 1 12z"
+                            fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                        <circle cx="12" cy="12" r="3"
+                                fill="none" stroke="currentColor" stroke-width="1.5"/>
+                    </svg>
+
+                    {# œil barré #}
+                    <svg class="password-icon password-icon-hide d-none" viewBox="0 0 24 24" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7S1 12 1 12z"
+                            fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                        <circle cx="12" cy="12" r="3"
+                                fill="none" stroke="currentColor" stroke-width="1.5"/>
+                        <line x1="4" y1="4" x2="20" y2="20"
+                            stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                    </svg>
+                </button>
+            </div>
         </div>
 
          <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
@@ -50,4 +82,30 @@
     </div>
 </div>
 {% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const toggleBtn = document.querySelector('.password-toggle-btn');
+            const passwordInput = document.getElementById('inputPassword');
+            const iconShow = document.querySelector('.password-icon-show');
+            const iconHide = document.querySelector('.password-icon-hide');
+
+            if (toggleBtn && passwordInput) {
+                toggleBtn.addEventListener('click', function () {
+                    const isPassword = passwordInput.getAttribute('type') === 'password';
+                    passwordInput.setAttribute('type', isPassword ? 'text' : 'password');
+
+                    if (iconShow && iconHide) {
+                        iconShow.classList.toggle('d-none', !isPassword);
+                        iconHide.classList.toggle('d-none', isPassword);
+                    }
+                });
+            }
+        });
+    </script>
+{% endblock %}
+
+
 

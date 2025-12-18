@@ -1,0 +1,31 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Nouvelle maladie - Paysages Submergés{% endblock %}
+
+{% block body %}
+<div class="container my-5 maladie-form">
+    <div class="row justify-content-center">
+        <div class="col-lg-8 col-xl-7">
+            <div class="maladie-form-card">
+                <div class="maladie-form-card__header">
+                    <p class="maladie-form-card__tag">Fiche maladie</p>
+                    <h1 class="maladie-form-card__title">Ajouter une maladie</h1>
+                    <p class="maladie-form-card__intro">
+                        Renseigne les symptômes, les causes et le traitement pour aider au diagnostic.
+                    </p>
+                </div>
+
+                <div class="maladie-form-card__body">
+                    {{ include('maladie_poisson/_form.html.twig', {'button_label': 'Enregistrer'}) }}
+                </div>
+
+                <div class="maladie-form-card__footer d-flex justify-content-between align-items-center mt-3">
+                    <a href="{{ path('app_maladie_poisson_index') }}" class="btn btn-outline-secondary">
+                        ← Retour aux maladies
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

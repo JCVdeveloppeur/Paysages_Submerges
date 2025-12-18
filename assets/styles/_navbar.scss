@@ -149,5 +149,123 @@
     &::after { display: none; }
   }
 }
+.navbar .nav-link svg.icon-capsule {
+  position: relative;
+  top: 1px;
+}
+
+/* État actif commun à tous les liens */
+
+.navbar .nav-link {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  color: #f8f9fa;
+  text-decoration: none;
+  transition: color 0.25s ease;
+
+  svg {
+    transition: transform 0.25s ease, filter 0.25s ease;
+  }
+
+  /** LE TRAIT UNIQUE (hover + actif) */
+  &::after {
+    content: "";
+    position: absolute;
+    left: 50%;
+    bottom: -6px;
+    transform: translateX(-50%);
+    width: 0;
+    height: 2px;
+    border-radius: 999px;
+    background: linear-gradient(to right, #9cc1ff, #6da4ff);
+    opacity: 0;
+    transition: width 0.25s ease, opacity 0.25s ease;
+  }
+
+  /** HOVER SIMPLE */
+  &:hover {
+    color: #fff;
+
+    &::after {
+      width: 100%;
+      opacity: 0.5;
+    }
+  }
+
+  /** ÉTAT ACTIF */
+  &.active {
+     font-weight: 600;
+  overflow: visible;
+
+  &::after {
+    content: "";
+    position: absolute;
+    left: 50%;
+    bottom: -8px;
+    width: 70%;
+    height: 6px;
+    transform: translateX(-50%);
+    background: url("data:image/svg+xml;utf8,\
+    <svg xmlns='http://www.w3.org/2000/svg' width='120' height='6' viewBox='0 0 120 6'>\
+    <path d='M0 3 Q 10 0 20 3 T 40 3 T 60 3 T 80 3 T 100 3 T 120 3' fill='none' stroke='%238fbfe8' stroke-width='2'/>\
+    </svg>");
+    background-repeat: repeat-x;
+    background-size: 120px 6px;
+    animation: wave-move 5s linear infinite;
+    opacity: 0.9;
+  }
+
+    svg {
+      transform: scale(1.1);
+      filter: drop-shadow(0 0 4px rgba(150, 190, 255, 0.6));
+    }
+  }
+}
+
+/** Capsule spéciale Pathologies */
+.navbar .nav-link.active .icon-capsule {
+  filter: drop-shadow(0 0 6px rgba(245, 130, 90, 0.8));
+  transform: scale(1.08);
+}
+@keyframes wave-move {
+  from {
+    background-position-x: 0;
+  }
+  to {
+    background-position-x: 120px;
+  }
+}
+/* Largeur du soulignement = mot uniquement, MAIS aligné à gauche */
+.navbar-nav .nav-link {
+  width: fit-content;      // garde la largeur du texte
+  margin-left: 0;         // annule le centrage
+  margin-right: auto;     // pousse le lien à gauche
+}
+
+/* Soulignement hover */
+.navbar-nav .nav-link::after {
+  left: 50%;
+  transform: translateX(-50%);
+  width: 0;
+}
+
+.navbar-nav .nav-link:hover::after {
+  width: 100%;
+}
+
+/* Soulignement actif */
+.navbar .nav-link.active::after {
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+}
+
+
+
+
+
+
+
 
 

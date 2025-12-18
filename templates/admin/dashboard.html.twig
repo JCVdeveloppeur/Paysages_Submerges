@@ -97,8 +97,26 @@
     </div>
 </div>
 
-{# Carte Blocs de page #}
-<div class="row mt-4">
+{# Rangée Pathologies + Blocs de page #}
+<div class="row mt-4 g-4">
+    {# Carte Pathologies #}
+    <div class="col-md-3">
+        <div class="card border-danger shadow-sm text-center h-100">
+            <div class="card-body">
+                <h5 class="card-title d-flex align-items-center justify-content-center gap-2">
+                    <i class="bi bi-capsule-pill"></i> Pathologies
+                    <span class="badge bg-danger">{{ nombreMaladies }}</span>
+                </h5>
+                <p class="card-text text-muted">Nombre total de fiches maladies.</p>
+                <a href="{{ path('admin_maladies') }}"
+                   class="btn btn-sm btn-bleu-profil w-100 d-flex align-items-center justify-content-center gap-2">
+                    <i class="bi bi-pencil-square"></i> Gérer les maladies
+                </a>
+            </div>
+        </div>
+    </div>
+
+    {# Carte Blocs de page #}
     <div class="col-md-3">
         <div class="card border-info shadow-sm text-center h-100">
             <div class="card-body">
@@ -118,18 +136,6 @@
     </div>
 </div>
 
-{# Graphique #}
-<div class="row mt-4">
-    <div class="col">
-        <div class="card border-info shadow-sm">
-            <div class="card-body">
-                <h5 class="card-title"><i class="bi bi-graph-up"></i> Évolution des interactions (7 derniers jours)</h5>
-                <canvas id="interactionChart" height="120"></canvas>
-            </div>
-        </div>
-    </div>
-</div>
-
 <hr class="my-5">
 
 {# Bouton pour rédiger un nouvel article #}
@@ -140,45 +146,9 @@
 </div>
 {% endblock %}
 
+
 {% block extra_js %}
-<script type="module">
-    import Chart from 'chart.js/auto';
-    const ctx = document.getElementById('interactionChart').getContext('2d');
-    const data = {
-        labels: {{ jours|json_encode|raw }},
-        datasets: [
-            {
-                label: 'Commentaires',
-                data: {{ commentairesParJour|json_encode|raw }},
-                backgroundColor: 'rgba(54, 162, 235, 0.5)',
-                borderColor: 'rgba(54, 162, 235, 1)',
-                borderWidth: 1,
-                tension: 0.3
-            },
-            {
-                label: 'Likes',
-                data: {{ likesParJour|json_encode|raw }},
-                backgroundColor: 'rgba(255, 99, 132, 0.5)',
-                borderColor: 'rgba(255, 99, 132, 1)',
-                borderWidth: 1,
-                tension: 0.3
-            }
-        ]
-    };
-    new Chart(ctx, {
-        type: 'line',
-        data: data,
-        options: {
-            responsive: true,
-            scales: {
-                y: {
-                    beginAtZero: true,
-                    ticks: { precision: 0 }
-                }
-            }
-        }
-    });
-</script>
+
 
 <script>
 document.addEventListener('DOMContentLoaded', function () {
@@ -189,6 +159,7 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 </script>
 {% endblock %}
+
 
 
 

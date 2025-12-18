@@ -1,0 +1,32 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Nouvelle plante - Paysages Submergés{% endblock %}
+
+{% block body %}
+<div class="container my-5 plante-form">
+    <div class="row justify-content-center">
+        <div class="col-lg-8 col-xl-7">
+            <div class="plante-form-card">
+                <div class="plante-form-card__header">
+                    <p class="plante-form-card__tag">Fiche plante</p>
+                    <h1 class="plante-form-card__title">Ajouter une plante</h1>
+                    <p class="plante-form-card__intro">
+                        Complète les informations de base de la plante. Tu pourras toujours revenir les ajuster plus tard.
+                    </p>
+                </div>
+
+                <div class="plante-form-card__body">
+                    {{ include('plante/_form.html.twig', {'button_label': 'Enregistrer'}) }}
+                </div>
+
+                <div class="plante-form-card__footer d-flex justify-content-between align-items-center mt-3">
+                    <a href="{{ path('app_plante_index') }}" class="btn btn-outline-secondary">
+                        ← Retour aux plantes
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+

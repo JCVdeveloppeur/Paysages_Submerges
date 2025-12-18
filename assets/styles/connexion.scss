@@ -22,4 +22,44 @@
     margin-bottom: 1rem;
   }
 }
+.password-field {
+  .position-relative {
+    .form-control {
+      padding-right: 2.8rem; // espace pour l'icône à droite
+    }
+
+    .password-toggle-btn {
+      position: absolute;
+      right: 1rem;
+      top: 50%;
+      transform: translateY(-50%);
+      border: none;
+      background: transparent;
+      padding: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: opacity 0.2s ease, transform 0.15s ease;
+      cursor: pointer;
+
+      .password-icon {
+        width: 20px;
+        height: 20px;
+        opacity: 0.75;
+        transition: opacity 0.2s ease, transform 0.15s ease;
+      }
+
+      &:hover .password-icon {
+        opacity: 1;
+        transform: scale(1.05);
+      }
+
+      &:focus-visible {
+        outline: 2px solid rgba(0, 0, 0, 0.3);
+        border-radius: 999px;
+      }
+    }
+  }
+}
+
 

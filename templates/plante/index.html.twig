@@ -1,0 +1,90 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Toutes les plantes{% endblock %}
+
+{% block body %}
+<div class="container my-5 plante-index">
+    <h1 class="mb-4 text-center">🌿 Fiches plantes</h1>
+
+    {% if plantes is empty %}
+        <div class="alert alert-info text-center mb-4">
+            Aucune plante enregistrée pour le moment.
+        </div>
+        <div class="text-center">
+            <a href="{{ path('app_plante_new') }}" class="btn btn-vert">
+                ➕ Ajouter une plante
+            </a>
+        </div>
+    {% else %}
+        <div class="row row-cols-1 row-cols-md-3 g-4">
+            {% for plante in plantes %}
+                <div class="col">
+                    <div class="card h-100 shadow-sm card-plante">
+                        {% if plante.image %}
+                            <img
+                                src="{{ asset('uploads/plantes/' ~ plante.image) }}"
+                                class="card-img-top image-carte"
+                                alt="{{ plante.nomCommun }}"
+                            >
+                        {% else %}
+                            <div class="card-img-top image-carte image-carte--placeholder">
+                                <span>🌿</span>
+                            </div>
+                        {% endif %}
+
+                        <div class="card-body">
+                            <h5 class="card-title mb-1">
+                                {{ plante.nomCommun|default('Nom non renseigné') }}
+                            </h5>
+
+                            {% if plante.nomScientifique %}
+                                <p class="card-subtitle text-muted">
+                                    <em>{{ plante.nomScientifique }}</em>
+                                </p>
+                            {% endif %}
+
+                            <p class="card-text mt-2 small">
+                                {% if plante.description %}
+                                    {% set desc = plante.description|striptags %}
+                                    {{ desc|length > 120 ? desc|slice(0, 120) ~ '…' : desc }}
+                                {% else %}
+                                    <span class="text-muted">Description à venir.</span>
+                                {% endif %}
+                            </p>
+
+                            <ul class="list-unstyled small text-muted mb-0">
+                                {% if plante.positionAquarium %}
+                                    <li><strong>Position :</strong> {{ plante.positionAquarium }}</li>
+                                {% endif %}
+                                {% if plante.eclairage %}
+                                    <li><strong>Éclairage :</strong> {{ plante.eclairage }}</li>
+                                {% endif %}
+                                {% if plante.difficulte %}
+                                    <li><strong>Difficulté :</strong> {{ plante.difficulte }}</li>
+                                {% endif %}
+                            </ul>
+                        </div>
+
+                        <div class="card-footer bg-light d-flex justify-content-between align-items-center">
+                            <a href="{{ path('app_plante_show', { id: plante.id }) }}" class="btn btn-sm btn-vert">
+                                🔍 Voir la fiche
+                            </a>
+                            <a href="{{ path('app_plante_edit', { id: plante.id }) }}" class="btn btn-sm btn-outline-secondary">
+                                Modifier
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+
+        <div class="text-center mt-4">
+        <a href="{{ path('app_plante_new') }}" class="btn btn-aqua">
+            ➕ Ajouter une nouvelle plante
+        </a>
+    </div>
+
+    {% endif %}
+</div>
+{% endblock %}
+

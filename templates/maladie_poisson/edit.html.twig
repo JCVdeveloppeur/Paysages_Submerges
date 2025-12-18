@@ -1,0 +1,37 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Modifier la maladie - Paysages Submergés{% endblock %}
+
+{% block body %}
+<div class="container my-5 maladie-form">
+    <div class="row justify-content-center">
+        <div class="col-lg-8 col-xl-7">
+            <div class="maladie-form-card">
+                <div class="maladie-form-card__header">
+                    <p class="maladie-form-card__tag">Fiche maladie</p>
+                    <h1 class="maladie-form-card__title">
+                        Modifier : {{ maladie_poisson.nom }}
+                    </h1>
+                    <p class="maladie-form-card__intro">
+                        Mets à jour cette fiche pour garder ton guide de santé à jour.
+                    </p>
+                </div>
+
+                <div class="maladie-form-card__body">
+                    {{ include('maladie_poisson/_form.html.twig', {'button_label': 'Mettre à jour'}) }}
+                </div>
+
+                <div class="maladie-form-card__footer d-flex justify-content-between align-items-center mt-3">
+                    <a href="{{ path('app_maladie_poisson_show', {'id': maladie_poisson.id}) }}" class="btn btn-outline-secondary">
+                        ← Retour à la fiche
+                    </a>
+                    <div>
+                        {{ include('maladie_poisson/_delete_form.html.twig') }}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+

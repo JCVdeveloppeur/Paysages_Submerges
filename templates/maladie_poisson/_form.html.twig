@@ -1,0 +1,66 @@
+{# templates/maladie_poisson/_form.html.twig #}
+
+{{ form_start(form, {
+    attr: { enctype: 'multipart/form-data' }
+}) }}
+<div class="row g-3">
+    <div class="col-md-6">
+        {{ form_row(form.nom) }}
+    </div>
+    <div class="col-md-6">
+        {{ form_row(form.agentPathogene) }}
+    </div>
+
+    <div class="col-md-4">
+        {{ form_row(form.gravite) }}
+    </div>
+    <div class="col-md-4">
+        {{ form_row(form.contagieuse) }}
+    </div>
+    <div class="col-md-4">
+        {{ form_row(form.dureeTraitement) }}
+    </div>
+
+    <div class="col-12">
+        {{ form_row(form.symptomes) }}
+    </div>
+
+    <div class="col-12">
+        {{ form_row(form.causes) }}
+    </div>
+
+    <div class="col-md-6">
+        {{ form_row(form.traitement) }}
+    </div>
+
+    <div class="col-md-6">
+        {{ form_row(form.prevention) }}
+    </div>
+
+    {# ---- Image : champ upload ---- #}
+    <div class="col-md-6">
+        {{ form_row(form.imageFile) }}
+    </div>
+
+    {# (Optionnel) aperçu de l’image existante en édition #}
+    {% if maladie_poisson is defined and maladie_poisson.image %}
+        <div class="col-md-6 d-flex align-items-end">
+            <div>
+                <p class="small text-muted mb-1">Image actuelle :</p>
+                <img src="{{ asset('uploads/maladies/' ~ maladie_poisson.image) }}"
+                     alt="{{ maladie_poisson.nom }}"
+                     class="img-fluid rounded"
+                     style="max-height: 150px; object-fit: cover;">
+            </div>
+        </div>
+    {% endif %}
+</div>
+
+<div class="mt-4 d-flex justify-content-end">
+    <button class="btn btn-vert">
+        {{ button_label|default('Enregistrer') }}
+    </button>
+</div>
+{{ form_end(form) }}
+
+
