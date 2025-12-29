@@ -1,0 +1,156 @@
+@use "variables" as *;
+@use "mixins" as *;
+@use "bouton" as *;
+
+/* ===============================
+   Barre de recherche (commun)
+   maladies + espèces
+   =============================== */
+
+.bloc-recherche-espece {
+  margin-left: auto;
+  margin-right: auto;
+  max-width: 600px;
+  width: 100%;
+}
+
+/* Sécurité : si tu oublies un jour le wrapper Bootstrap */
+.bloc-recherche-espece .position-relative {
+  position: relative;
+}
+
+/* Champ */
+.bloc-recherche-espece .form-control {
+  width: 100%;
+  border-radius: 30px;
+  padding-right: 3rem;
+  border: 1px solid #c4d7c5;
+  background: #f6fff4;
+  font-style: italic;
+  color: #344e41;
+
+  transition:
+    box-shadow 0.18s ease,
+    border-color 0.18s ease,
+    transform 0.18s ease,
+    background-color 0.18s ease;
+
+  &::placeholder {
+    color: #9bbca3;
+  }
+
+  &:focus {
+    background: rgba(255, 255, 255, 0.98);
+    border-color: rgba(102, 160, 140, 0.65);
+    box-shadow: 0 0 0 0.18rem rgba(102, 160, 140, 0.18), 0 10px 22px rgba(0,0,0,0.06);
+    transform: translateY(-1px);
+    outline: none;
+  }
+}
+
+/* Masquer la croix native des inputs type="search" (Chrome/Edge/Safari) */
+.bloc-recherche-espece input[type="search"]::-webkit-search-cancel-button,
+.bloc-recherche-espece input[type="search"]::-webkit-search-decoration,
+.bloc-recherche-espece input[type="search"]::-webkit-search-results-button,
+.bloc-recherche-espece input[type="search"]::-webkit-search-results-decoration {
+  -webkit-appearance: none;
+  appearance: none;
+  display: none;
+}
+
+.bloc-recherche-espece input[type="search"] {
+  -webkit-appearance: none;
+  appearance: none;
+}
+/* --- Bouton clear (SVG carnet) --- */
+.bloc-recherche-espece .btn-clear-search {
+  width: 28px;
+  height: 28px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  position: absolute;
+  right: 0.75rem;
+  top: 50%;
+  transform: translateY(-50%) scale(0.9);
+
+  border: none;
+  background: rgba(52, 78, 65, 0.06);
+  border-radius: 999px;
+  cursor: pointer;
+
+  /* état caché */
+  opacity: 0;
+  pointer-events: none;
+  filter: blur(2px);
+
+  transition:
+    opacity 0.18s ease,
+    transform 0.22s cubic-bezier(.34,1.56,.64,1),
+    filter 0.18s ease,
+    background-color 0.18s ease;
+}
+
+/* L’icône SVG */
+.bloc-recherche-espece .btn-clear-search .icon-carnet-x {
+  width: 18px;
+  height: 18px;
+  display: block;
+
+  fill: none;
+  stroke: #344e41;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+
+  opacity: 0.9;
+  transform: rotate(-0.6deg);
+}
+
+/* Visible uniquement quand il y a du texte */
+.bloc-recherche-espece.is-filled .btn-clear-search {
+  opacity: 0.9;
+  pointer-events: auto;
+  transform: translateY(-50%) scale(1);
+  filter: blur(0);
+}
+
+/* hover */
+.bloc-recherche-espece.is-filled .btn-clear-search:hover {
+  background: rgba(52, 78, 65, 0.10);
+  transform: translateY(-50%) scale(1.08);
+}
+
+/* hover sur l’icône */
+.bloc-recherche-espece.is-filled .btn-clear-search:hover .icon-carnet-x {
+  opacity: 1;
+}
+
+/* active */
+.bloc-recherche-espece.is-filled .btn-clear-search:active {
+  transform: translateY(-50%) scale(0.96);
+}
+
+/* Respiration au focus (uniquement si visible) */
+@keyframes breathe-soft {
+  0%, 100% { transform: translateY(-50%) scale(1); }
+  50%      { transform: translateY(-50%) scale(1.045); }
+}
+
+.bloc-recherche-espece.is-filled:focus-within .btn-clear-search {
+  animation: breathe-soft 1.35s ease-in-out infinite;
+}
+
+/* Accessibilité */
+@media (prefers-reduced-motion: reduce) {
+  .bloc-recherche-espece .btn-clear-search {
+    transition: none !important;
+    animation: none !important;
+    transform: translateY(-50%) !important;
+    filter: none !important;
+  }
+}
+
+
+

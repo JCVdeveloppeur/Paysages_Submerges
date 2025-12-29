@@ -4,33 +4,105 @@
 
 {% block body %}
     <div class="container my-5">
-    <h1 class="mb-4 text-center">🌿 Encyclopédie des espèces</h1>
+    <h1 class="page-title">
+    <span class="page-icon">🐟</span>
+    Encyclopédie des espèces
+    </h1>
 
-    {# --- Formulaire de recherche --- #}
-    <div class="row justify-content-center mb-4 bloc-recherche-espece">
-    <div class="col-md-6">
-        {{ form_start(form, {'method': 'GET', 'attr': {'id': 'recherche-espece-form'}}) }}
+    <p class="page-subtitle">
+    Un panorama des espèces d'eau douce : classification, biotope et caractéristiques essentielles.
+    </p>
+
+
+    {# Barre outils : recherche + select (même ligne) #}
+    <div class="row justify-content-center mb-3">
+    <div class="col-12 col-lg-10">
+        <div class="d-flex flex-column flex-md-row align-items-stretch align-items-md-center gap-2">
+
+        {# --- Recherche (GET) --- #}
+        <div class="flex-grow-1 bloc-recherche-espece">
+            {{ form_start(form, {'method': 'GET', 'attr': {'id': 'recherche-espece-form', 'class': 'w-100'}}) }}
+
+            {# conserver le limit quand on cherche #}
+            <input type="hidden" name="limit" value="{{ limit }}">
+
+            <div class="position-relative">
             {{ form_widget(form.nom, {
                 'attr': {
-                    'class': 'form-control',
-                    'placeholder': '🔍 Rechercher une espèce…',
-                    'onchange': 'this.form.submit();'
+                    'class': 'form-control pe-5',
+                    'placeholder': '🐟 Rechercher une espèce…'
                 }
             }) }}
-        {{ form_end(form) }}
+
+                <button type="button"
+                        class="btn-clear-search"
+                        aria-label="Effacer la recherche"
+                        title="Effacer la recherche">
+
+                <svg class="icon-carnet-x"
+                    viewBox="0 0 24 24"
+                    aria-hidden="true">
+
+                    <!-- cercle carnet (UNIQUEMENT contour) -->
+                    <path
+                    fill="none"
+                    d="M12 2.8
+                        C7.1 2.8 3.1 7 3.1 12
+                        c0 5.2 4 9.2 8.9 9.2
+                        c5 0 8.9-4 8.9-9.2
+                        c0-5-3.9-9.2-8.9-9.2z" />
+
+                    <!-- croix -->
+                    <path d="M8.2 8.4 L15.6 15.7" />
+                    <path d="M15.4 8.3 L8.3 15.6" />
+
+                </svg>
+                </button>
+        </div>
+
+            {{ form_end(form) }}
+        </div>
+
+        {# --- Select (GET) --- #}
+        <form method="get"
+                class="d-flex align-items-center justify-content-md-end gap-2 small text-muted flex-shrink-0">
+
+            {# conserver la recherche quand on change le limit #}
+            <input type="hidden" name="nom" value="{{ app.request.get('nom') }}">
+
+            {# reset page quand on change le limit #}
+            <input type="hidden" name="page" value="1">
+
+            <label for="limit" class="mb-0">Afficher :</label>
+
+            <select name="limit" id="limit"
+                    class="form-select form-select-sm"
+                    style="width:auto"
+                    onchange="this.form.submit()">
+            <option value="6"  {{ limit == 6 ? 'selected' }}>6</option>
+            <option value="9"  {{ limit == 9 ? 'selected' }}>9</option>
+            <option value="12" {{ limit == 12 ? 'selected' }}>12</option>
+            </select>
+        </form>
+
+        </div>
     </div>
     </div>
 
     {# --- Résultats --- #}
-    {% if pagination.items is empty %}
-        <div class="alert alert-info text-center">Aucune espèce trouvée.</div>
-    {% else %}
-        <div class="row row-cols-1 row-cols-md-3 g-4">
+{% if pagination|length == 0 %}
+    <div class="alert alert-info text-center">Aucune espèce trouvée.</div>
+{% else %}
+    <div class="paginated-content" id="espece-paginated">
+        <div id="espece-results"
+             class="row row-cols-1 row-cols-md-3 g-4 results-animate">
             {% for espece in pagination %}
-                <div class="col">
-                    <div class="card h-100 shadow-sm card-espece">
+                <div class="col results-item">
+                    <div class="card h-100 shadow-sm card-carnet card-carnet--large card-espece">
                         {% if espece.imageName %}
-                            <img src="{{ asset('uploads/especes/' ~ espece.imageName) }}" class="card-img-top image-carte" alt="{{ espece.nomCommun }}">
+                            <img src="{{ asset('uploads/especes/' ~ espece.imageName) }}"
+                                 class="card-img-top image-carte"
+                                 alt="{{ espece.nomCommun }}">
                         {% endif %}
 
                         <div class="card-body">
@@ -41,9 +113,11 @@
                                 Biotope : {{ espece.biotope|default('—') }}
                             </p>
                         </div>
-                        <div class="card-footer text-end bg-light">
-                            <a href="{{ path('espece_public_show', { id: espece.id }) }}" class="btn btn-espece">
-                            🔍 Voir la fiche
+
+                        <div class="card-footer d-flex justify-content-end">
+                            <a href="{{ path('espece_public_show', { id: espece.id }) }}"
+                               class="btn btn-espece btn-sm">
+                                🔍 Voir la fiche
                             </a>
 
                         </div>
@@ -55,25 +129,10 @@
         <div class="d-flex justify-content-center mt-4">
             {{ knp_pagination_render(pagination) }}
         </div>
-    {% endif %}
+    </div>
+{% endif %}
 </div>
-{% endblock %}
-{% block javascripts %}
-    {{ parent() }}
-    <script>
-        document.addEventListener("DOMContentLoaded", function () {
-            const input = document.querySelector("#{{ form.nom.vars.id }}");
-            const form = document.querySelector("#recherche-espece-form");
 
-            if (input && form) {
-                input.addEventListener("input", () => {
-                    if (input.value.trim() === "") {
-                        form.submit();
-                    }
-                });
-            }
-        });
-    </script>
 {% endblock %}
 
 

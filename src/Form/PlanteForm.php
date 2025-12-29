@@ -6,6 +6,8 @@ use App\Entity\Plante;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Form\Extension\Core\Type\FileType;
+use Symfony\Component\Validator\Constraints\File;
 
 class PlanteForm extends AbstractType
 {
@@ -13,6 +15,22 @@ class PlanteForm extends AbstractType
     {
         $builder
             ->add('nomCommun')
+            ->add('imageFile', FileType::class, [
+                'label' => 'Image (JPG/PNG/WebP)',
+                'mapped' => false,
+                'required' => false,
+                'constraints' => [
+                    new File([
+                        'maxSize' => '3M',
+                        'mimeTypes' => [
+                            'image/jpeg',
+                            'image/png',
+                            'image/webp',
+                        ],
+                        'mimeTypesMessage' => 'Formats acceptés : JPG, PNG, WebP',
+                    ])
+                ],
+            ])
             ->add('nomScientifique')
             ->add('famille')
             ->add('origine')
@@ -26,7 +44,6 @@ class PlanteForm extends AbstractType
             ->add('phMax')
             ->add('tempMin')
             ->add('tempMax')
-            ->add('image')
             ->add('no')
         ;
     }
@@ -38,3 +55,4 @@ class PlanteForm extends AbstractType
         ]);
     }
 }
+

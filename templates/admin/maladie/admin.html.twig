@@ -1,16 +1,13 @@
-{% extends 'base.html.twig' %}
+{% extends 'admin/layout.html.twig' %}
 
-{% block title %}Administration des pathologies{% endblock %}
+{% block page_title %}Administration des pathologies{% endblock %}
+{% block page_heading %}💊 Pathologies{% endblock %}
 
-{% block body %}
-<div class="container my-5">
-
+{% block content %}
   <div class="d-flex justify-content-between align-items-center mb-3">
-    <h2 class="mb-0">
-      🩺 Pathologies
-      <span class="badge bg-danger">{{ nombreMaladies }}</span>
-    </h2>
-
+    <div>
+      <span class="badge bg-primary">{{ nombreMaladies}}</span>
+    </div>
     <a href="{{ path('app_maladie_poisson_new') }}" class="btn-admin-ajouter">
       <i class="bi bi-plus-circle"></i> Ajouter une pathologie
     </a>
@@ -21,16 +18,16 @@
   {% else %}
 
     <form method="get" class="d-flex justify-content-end mb-2 gap-2">
-    <input type="hidden" name="page" value="1">
+      <input type="hidden" name="page" value="1">
 
-    <select name="limit"
-            class="form-select form-select-sm"
-            style="width:auto"
-            onchange="this.form.submit()">
+      <select name="limit"
+              class="form-select form-select-sm"
+              style="width:auto"
+              onchange="this.form.submit()">
         <option value="5"  {{ limit == 5 ? 'selected' }}>5</option>
         <option value="10" {{ limit == 10 ? 'selected' }}>10</option>
         <option value="20" {{ limit == 20 ? 'selected' }}>20</option>
-    </select>
+      </select>
     </form>
 
     <table class="table table-hover table-bordered align-middle">
@@ -51,24 +48,26 @@
             <td>{{ m.id }}</td>
             <td>{{ m.nom|default('—') }}</td>
             <td><em>{{ m.agentPathogene|default('—') }}</em></td>
-            <td>
-            {% set g = (m.gravite ?? '')|lower %}
 
-            {% set graviteClass =
+            <td>
+              {% set g = (m.gravite ?? '')|lower %}
+              {% set graviteClass =
                 g == 'faible' ? 'gravite--faible' :
                 (g starts with 'moyen' ? 'gravite--moyenne' :
                 (g starts with 'élev' or g starts with 'eleve' ? 'gravite--elevee' : 'gravite--na'))
-            %}
+              %}
 
-            {% if m.gravite %}
+              {% if m.gravite %}
                 <span class="badge-gravite {{ graviteClass }}">
-                    {{ m.gravite|capitalize }}
+                  {{ m.gravite|capitalize }}
                 </span>
-            {% else %}
+              {% else %}
                 —
-            {% endif %}
+              {% endif %}
             </td>
+
             <td>{{ m.contagieuse ? 'Oui' : 'Non' }}</td>
+
             <td>
               <a href="{{ path('app_maladie_poisson_edit', { id: m.id }) }}" class="btn-admin-modifier">
                 <i class="bi bi-pencil-square"></i> Modifier
@@ -88,15 +87,15 @@
         {% endfor %}
       </tbody>
     </table>
+
     <div class="d-flex justify-content-center mt-4">
-        {{ knp_pagination_render(maladies) }}
-        </div>
+      {{ knp_pagination_render(maladies) }}
+    </div>
   {% endif %}
 
   <a href="{{ path('admin_dashboard') }}" class="btn-admin-retour mt-4">
     <i class="bi bi-arrow-left"></i> Retour au tableau de bord
   </a>
+ {% endblock %}
 
-</div>
-{% endblock %}
 

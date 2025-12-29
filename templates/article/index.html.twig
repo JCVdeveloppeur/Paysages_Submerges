@@ -9,21 +9,65 @@
         <p class="lead text-center mb-5">Laissez-vous émerveiller par la diversité sous-marine.</p>
 
         {% if searchTerm is defined and searchTerm %}
-            <div class="alert alert-info text-center">
-                Résultats pour : <strong>{{ searchTerm }}</strong> - {{ articles|length }} article{{ articles|length > 1 ? 's' : '' }} trouvé{{ articles|length > 1 ? 's' : '' }}.
-            </div>
+        <div class="alert alert-info text-center">
+            Résultats pour : <strong>{{ searchTerm }}</strong> -
+            {{ articles.getTotalItemCount }} article{{ articles.getTotalItemCount > 1 ? 's' : '' }}
+            trouvé{{ articles.getTotalItemCount > 1 ? 's' : '' }}.
+        </div>
         {% endif %}
 
         <div class="row">
             <!-- Colonne principale -->
             <div class="col-lg-9">
-                {% if articles is not empty %}
+                {% if articles|length > 0 %}
+                <form method="get" class="d-flex justify-content-end mb-3 gap-2">
+                {# Conserver les filtres existants #}
+                {% if searchTerm %}
+                    <input type="hidden" name="q" value="{{ searchTerm }}">
+                {% endif %}
+
+                {% if app.request.query.get('auteur') %}
+                    <input type="hidden" name="auteur" value="{{ app.request.query.get('auteur') }}">
+                {% endif %}
+
+                {# Reset page quand on change le nombre #}
+                <input type="hidden" name="page" value="1">
+
+                <label for="limit" class="mb-0">Afficher :</label>
+
+                <select
+                    name="limit"
+                    class="form-select form-select-sm"
+                    style="width:auto"
+                    onchange="this.form.submit()"
+                >
+                    <option value="6"  {{ limit == 6  ? 'selected' }}>6</option>
+                    <option value="9"  {{ limit == 9  ? 'selected' }}>9</option>
+                    <option value="12" {{ limit == 12 ? 'selected' }}>12</option>
+                </select>
+            </form>
+
+                <div class="paginated-content">
                     <div class="row" id="articles-list">
                         {% for article in articles %}
+                            {# badgeClass : 1 seule fois, en haut #}
+                            {% set badgeClass = {
+                                'Biotope Amérique du sud': 'badge-amerique-sud',
+                                'Biotope asiatique': 'badge-asiatique',
+                                'Biotope africain': 'badge-africain',
+                                'Biotope australien': 'badge-australien',
+                                'Autre': 'badge-autre'
+                            }[article.categorie] ?? 'badge-autre' %}
+
                             <div class="col-md-6 col-xl-4 mb-4">
-                                <div class="card h-100 shadow-sm">
+                                <div
+                                    class="card h-100 shadow-sm
+                                            card-carnet card-carnet--compact
+                                            card-article card-accent-{{ badgeClass }}">
                                     {% if article.image %}
-                                        <img src="{{ asset('uploads/articles/' ~ article.image) }}" class="card-img-top" alt="{{ article.titre }}">
+                                        <img src="{{ asset('uploads/articles/' ~ article.image) }}"
+                                            class="card-img-top image-carte"
+                                            alt="{{ article.titre }}">
                                     {% else %}
                                         {% set dossierCategorie = {
                                             'Biotope Amérique du sud': 'amerique-sud',
@@ -33,19 +77,13 @@
                                             'Autre': 'autre'
                                         }[article.categorie] ?? 'autre' %}
                                         {% set randomImage = random([1, 2, 3]) %}
-                                        <img src="{{ asset('build/images/defaults/articles/' ~ dossierCategorie ~ '/' ~ randomImage ~ '.jpg') }}" class="card-img-top" alt="Image par défaut pour {{ article.categorie }}">
+                                        <img src="{{ asset('build/images/defaults/articles/' ~ dossierCategorie ~ '/' ~ randomImage ~ '.jpg') }}"
+                                            class="card-img-top image-carte"
+                                            alt="Image par défaut pour {{ article.categorie }}">
                                     {% endif %}
 
                                     <div class="card-body">
                                         <h5 class="card-title">{{ article.titre }}</h5>
-
-                                        {% set badgeClass = {
-                                            'Biotope Amérique du sud': 'badge-amerique-sud',
-                                            'Biotope asiatique': 'badge-asiatique',
-                                            'Biotope africain': 'badge-africain',
-                                            'Biotope australien': 'badge-australien',
-                                            'Autre': 'badge-autre'
-                                        }[article.categorie] ?? 'badge-autre' %}
 
                                         <span class="badge {{ badgeClass }}">
                                             {{ {
@@ -66,24 +104,11 @@
                                             <a href="{{ path('app_article_show', {'id': article.id}) }}" class="btn btn-lire-suite">Lire la suite</a>
 
                                             {% if app.user %}
-                                                {% if is_granted('ROLE_ADMIN') %}
+                                                {% if is_granted('ROLE_ADMIN') or (article.user == app.user and not article.estApprouve) %}
                                                     <a href="{{ path('article_edit', {'id': article.id}) }}" class="btn-admin-modifier">
                                                         <i class="bi bi-pencil-square"></i> Modifier
                                                     </a>
-                                                    <button
-                                                        type="button"
-                                                        class="btn-admin-supprimer"
-                                                        data-bs-toggle="modal"
-                                                        data-bs-target="#deleteModal"
-                                                        data-action="{{ path('article_delete', {'id': article.id}) }}"
-                                                        data-token="{{ csrf_token('delete' ~ article.id) }}"
-                                                        title="Supprimer">
-                                                        <i class="bi bi-trash3"></i> Supprimer
-                                                    </button>
-                                                {% elseif article.user == app.user and not article.estApprouve %}
-                                                    <a href="{{ path('article_edit', {'id': article.id}) }}" class="btn-admin-modifier">
-                                                        <i class="bi bi-pencil-square"></i> Modifier
-                                                    </a>
+
                                                     <button
                                                         type="button"
                                                         class="btn-admin-supprimer"
@@ -102,10 +127,18 @@
                                     <div class="card-footer text-muted">
                                         Publié {{ article.createdAt|human_date }}
                                     </div>
+
                                 </div>
                             </div>
+
                         {% endfor %}
+
                     </div>
+                    {# Pagination  #}
+                    <div class="d-flex justify-content-center mt-4">
+                        {{ knp_pagination_render(articles) }}
+                    </div>
+                </div>
                 {% else %}
                     <div class="alert alert-warning text-center">
                         {% if searchTerm is defined and searchTerm %}
@@ -204,7 +237,7 @@
                                         alt="{{ last.titre }}" loading="lazy">
                                 {% else %}
                                     <img src="{{ asset('build/images/defaults/articles/' ~ catFolder ~ '/' ~ randomImage ~ '.jpg') }}"
-                                        alt="Image par défaut – {{ last.categorie }}" loading="lazy">
+                                        alt="Image par défaut - {{ last.categorie }}" loading="lazy">
                                 {% endif %}
                                 </div>
 
@@ -268,24 +301,11 @@
 
 {% block javascripts %}
     {{ parent() }}
-    <script>
-        const deleteModal = document.getElementById('deleteModal');
-        deleteModal.addEventListener('show.bs.modal', function (event) {
-            const button = event.relatedTarget;
-            const action = button.getAttribute('data-action');
-            const token = button.getAttribute('data-token');
 
-            const form = deleteModal.querySelector('#deleteForm');
-            const tokenInput = deleteModal.querySelector('#deleteFormToken');
-
-            form.setAttribute('action', action);
-            tokenInput.value = token;
-        });
-    </script>
-    
     <script>
         // Lors de l’ouverture de la modale
         const deleteModal = document.getElementById('deleteModal');
+        if (deleteModal) {
         deleteModal.addEventListener('show.bs.modal', function (event) {
             const button = event.relatedTarget;
             const action = button.getAttribute('data-action');
@@ -305,6 +325,7 @@
                 }
             }, 10);
         });
+        }
     </script>
 {% endblock %}
 

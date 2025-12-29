@@ -99,7 +99,7 @@
   .blur {
   filter: blur(0.8px) brightness(0.9) saturate(0.85);
   opacity: 0.5;
-  transform: scale(0.95); // léger éloignement visuel
+  transform: scale(0.95); 
 }
 }
 
@@ -164,13 +164,13 @@
   z-index: 5;
 }
 
-// --- CREVETTES TRANSLUCIDES BOOSTÉES ---
+// --- CREVETTES TRANSLUCIDES ---
 .shrimp-group {
   position: absolute;
-  bottom: 60px; // ↑↑↑ On les remonte un peu
+  bottom: 60px; 
   left: 0;
   width: 100%;
-  height: 160px; // plus grand pour qu’elles aient la place de danser
+  height: 160px; 
   pointer-events: none;
   z-index: 3;
   overflow: visible;

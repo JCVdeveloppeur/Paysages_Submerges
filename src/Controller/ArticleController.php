@@ -16,37 +16,59 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\String\Slugger\SluggerInterface;
+use Knp\Component\Pager\PaginatorInterface;
 
 class ArticleController extends AbstractController
 {
     #[Route('/articles', name: 'app_articles')]
-    public function index(Request $request, ArticleRepository $articleRepository): Response
-    {
-        $searchTerm = $request->query->get('q');
-        $auteurId = $request->query->get('auteur');
+public function index(
+    Request $request,
+    ArticleRepository $articleRepository,
+    PaginatorInterface $paginator
+): Response {
+    $searchTerm = $request->query->get('q');
+    $auteurId   = $request->query->get('auteur');
 
-        $articles = match (true) {
-        $auteurId => $articleRepository->createQueryBuilder('a')
-            ->andWhere('a.user = :u')->setParameter('u', $auteurId)
-            ->andWhere('a.estApprouve = true')
-            ->orderBy('a.createdAt', 'DESC')->getQuery()->getResult(),
-        $searchTerm => $articleRepository->createQueryBuilder('a')
-            ->andWhere('(a.titre LIKE :term OR a.contenu LIKE :term)')
-            ->andWhere('a.estApprouve = true')
-            ->setParameter('term', '%'.$searchTerm.'%')
-            ->orderBy('a.createdAt', 'DESC')->getQuery()->getResult(),
-        default => $articleRepository->findBy(['estApprouve' => true], ['createdAt' => 'DESC']),
-    };
-
-        $lastArticles = $articleRepository->findLatestPublished(3);
-
-        return $this->render('article/index.html.twig', [
-            'articles' => $articles,
-            'searchTerm' => $searchTerm,
-             'lastArticles' => $lastArticles,
-        ]);
+    //  Limite choisie (6/9/12)
+    $limit = $request->query->getInt('limit', 6);
+    if (!in_array($limit, [6, 9, 12], true)) {
+        $limit = 6;
     }
 
+    // Base QueryBuilder
+    $qb = $articleRepository->createQueryBuilder('a')
+        ->andWhere('a.estApprouve = true')
+        ->orderBy('a.createdAt', 'DESC');
+
+    // Filtre par auteur
+    if ($auteurId) {
+        $qb->andWhere('a.user = :u')
+           ->setParameter('u', $auteurId);
+    }
+
+    // Recherche texte
+    if ($searchTerm) {
+        $qb->andWhere('(a.titre LIKE :term OR a.contenu LIKE :term)')
+           ->setParameter('term', '%' . $searchTerm . '%');
+    }
+
+    // Pagination
+    $articles = $paginator->paginate(
+        $qb,
+        $request->query->getInt('page', 1),
+        $limit
+    );
+
+    // Sidebar : derniers articles (non paginés)
+    $lastArticles = $articleRepository->findLatestPublished(3);
+
+    return $this->render('article/index.html.twig', [
+        'articles'     => $articles,
+        'searchTerm'   => $searchTerm,
+        'lastArticles' => $lastArticles,
+        'limit'        => $limit,
+    ]);
+}
     #[Route('/article/{id<\d+>}', name: 'app_article_show')]
     public function show(
         Article $article,

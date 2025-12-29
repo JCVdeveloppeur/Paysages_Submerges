@@ -2,12 +2,16 @@
 @use "mixins" as *;
 @use "bouton" as *;
 
+/* =========================================================
+   ARTICLES — index + sidebar + modale
+   ========================================================= */
+
 .section-articles {
   padding: 4rem 0;
 
   h1 {
     font-size: 2.5rem;
-    font-weight: bold;
+    font-weight: 700;
     text-align: center;
     margin-bottom: 1rem;
   }
@@ -18,86 +22,111 @@
     text-align: center;
     margin-bottom: 3rem;
   }
+}
 
-  .card {
-    background: #fff;
-    border-radius: $border-radius;
+/* =========================================================
+   Cards articles (tu as .card-article dans le Twig)
+   ========================================================= */
+.card-article {
+  .card-text {
+    font-size: 0.95rem;
+    color: #555;
+    display: -webkit-box;
+    -webkit-line-clamp: 3; // ⭐ 2 ou 3 
+    line-clamp: 3;
+    -webkit-box-orient: vertical;
     overflow: hidden;
-    box-shadow: $shadow-light;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
 
-    &:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
-    }
+  .btn-lire-suite {
+    @include bouton-nature($btn-vert, $btn-vert-hover);
+  }
+}
 
-    .card-img-top {
-      width: 100%;
-      height: 250px;
-      object-fit: cover;
-    }
-
-    .card-body {
-      padding: 1.5rem;
-
-      .card-title {
-        font-size: 1.25rem;
-        font-weight: bold;
-        margin-bottom: 0.75rem;
-      }
-
-      .badge {
-        font-size: 0.85rem;
-        display: inline-block;
-        margin-bottom: 0.75rem;
-      }
-
-      .card-text {
-        font-size: 0.95rem;
-        color: #555;
-      }
-
-      .btn {
-        margin-top: 1rem;
-
-        &.btn-lire-suite {
-          @include bouton-nature($btn-vert, $btn-vert-hover);
-        }
-      }
-    }
-
-    .card-footer {
-      background-color: #f8f9fa;
-      padding: 0.75rem 1.25rem;
-      font-size: 0.85rem;
-      color: #6c757d;
-    }
+/* hauteur image spécifique Articles (ton index affiche des cartes compactes) */
+@media (min-width: 768px) {
+  .card-article {
+    --carnet-img-h: 250px;
   }
 }
 
 @media (max-width: 768px) {
-  .section-articles .card .card-img-top {
-    height: 200px;
+  .card-article {
+    --carnet-img-h: 200px;
   }
 }
 
-.badge {
-  font-size: 0.85rem;
-  padding: 0.4em 0.6em;
-  border-radius: 0.5em;
+/* =========================================================
+   Sidebar : mini-posts "Derniers articles"
+   ========================================================= */
+.mini-posts {
+  .mini-post + .mini-post {
+    margin-top: 0.85rem;
+  }
+
+  .mini-link {
+    display: flex;
+    gap: 0.75rem;
+    text-decoration: none;
+    color: inherit;
+    border-radius: 12px;
+    padding: 0.55rem;
+    transition: transform 0.18s ease, box-shadow 0.18s ease;
+
+    &:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.08);
+    }
+  }
+
+  .thumb-wrap {
+    width: 68px;
+    height: 56px;
+    flex: 0 0 auto;
+    overflow: hidden;
+    border-radius: 10px;
+    border: 1px solid rgba(0, 0, 0, 0.06);
+    background: #f3f4f6;
+
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+  }
+
+  .meta {
+    min-width: 0;
+  }
+
+  .title {
+    font-size: 0.92rem;
+    margin: 0 0 0.35rem;
+    font-weight: 700;
+    line-height: 1.25;
+  }
+
+  .row-aux {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem 0.6rem;
+    align-items: center;
+
+    .badge {
+      font-size: 0.72rem;
+      padding: 0.25rem 0.5rem;
+    }
+
+    .date {
+      font-size: 0.78rem;
+    }
+  }
 }
 
-.avatar-mini {
-  width: 28px;
-  height: 28px;
-  border-radius: 50%;
-  object-fit: cover;
-}
-
-// --------------------
-// Modale personnalisée
-// --------------------
-
+/* =========================================================
+   Modale suppression
+   ========================================================= */
 .modal-content {
   background-color: #fdfdfd;
   border: none;
@@ -136,14 +165,8 @@
 }
 
 @keyframes popIn {
-  0% {
-    transform: scale(0.97);
-    opacity: 0;
-  }
-  100% {
-    transform: scale(1);
-    opacity: 1;
-  }
+  from { transform: scale(0.97); opacity: 0; }
+  to   { transform: scale(1); opacity: 1; }
 }
 
 

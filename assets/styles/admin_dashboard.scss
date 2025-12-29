@@ -67,28 +67,10 @@
       background-color: #f8f9fa;
     }
   }
-
-  // Pagination personnalisée
-  .pagination {
-    .page-link {
-      color: #053d6f;
-      border-radius: 0.375rem;
-
-      &:hover {
-        background-color: #e7f1ff;
-      }
-
-      &.active {
-        background-color: #053d6f;
-        color: #fff;
-        border-color: #053d6f;
-      }
-    }
-  }
-
-  .btn-back {
+.btn-back {
     margin-top: 2rem;
   }
+  
 }
 
 // ✅ Badge personnalisé "En attente" (en dehors de .admin-dashboard si utilisé ailleurs)

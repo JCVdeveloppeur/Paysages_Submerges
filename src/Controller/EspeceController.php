@@ -15,21 +15,33 @@ use Knp\Component\Pager\PaginatorInterface;
 #[Route('/admin/especes')]
 class EspeceController extends AbstractController
 {
-    #[Route('/', name: 'espece_index', methods: ['GET'])]
-public function index(Request $request, EspeceRepository $especeRepository, PaginatorInterface $paginator): Response
-{
-    $query = $especeRepository->createQueryBuilder('e')
-        ->orderBy('e.nomCommun', 'ASC')
-        ->getQuery();
+   #[Route('/', name: 'espece_index', methods: ['GET'])]
+public function index(
+    Request $request,
+    EspeceRepository $especeRepository,
+    PaginatorInterface $paginator
+): Response {
+    // limit sécurisé (comme maladies)
+    $limitRaw = $request->query->get('limit', 6);
+    $limit = ctype_digit((string) $limitRaw) ? (int) $limitRaw : 6;
+
+    // (optionnel) garde-fou : uniquement 6/9/12
+    if (!in_array($limit, [6, 9, 12], true)) {
+        $limit = 6;
+    }
+
+    $qb = $especeRepository->createQueryBuilder('e')
+        ->orderBy('e.nomCommun', 'ASC');
 
     $pagination = $paginator->paginate(
-        $query,
-        $request->query->getInt('page', 1), // page courante
-        3 // nombre d'espèces par page
+        $qb, // QueryBuilder OK
+        $request->query->getInt('page', 1),
+        $limit
     );
 
     return $this->render('espece/index.html.twig', [
         'pagination' => $pagination,
+        'limit' => $limit,
     ]);
 }
 

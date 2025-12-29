@@ -189,9 +189,7 @@
     {% endfor %}
 
     {% block body %}{% endblock %}
-</main>
-
-{# juste au-dessus du footer, on peut aussi déclarer la liste si tu veux la réutiliser ailleurs #}
+    </main>
     {% set cremeRoutes = ['app_articles', 'app_article_show'] %}
 
     <footer class="site-footer {{ app.request.attributes.get('_route') in cremeRoutes ? 'site-footer--creme' : '' }}">
@@ -285,7 +283,6 @@
             </ul>
         </div>
 
-
         <div class="footer-group">
         <div class="group-title">Réseaux</div>
         <ul>
@@ -306,12 +303,7 @@
         <a href="{{ path('app_contact') }}">Contact</a>
         </div>
     </div>
-
-    <button class="back-to-top"
-            onclick="window.scrollTo({top:0,behavior:'smooth'})"
-            aria-label="Retour en haut">
-        <i class="bi bi-arrow-up"></i> Haut de page
-    </button>
+    
     </footer>
 
 
@@ -396,6 +388,11 @@
     </mask>
   </defs>
 </svg>
+<button id="backToTop"
+        class="back-to-top"
+        aria-label="Retour en haut">
+  <i class="bi bi-arrow-up"></i>
+</button>
 
 </body>
 </html>

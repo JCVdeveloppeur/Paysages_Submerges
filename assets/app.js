@@ -17,6 +17,8 @@ import './vague_boutons.js';
 // (Optionnel) Import de CSS pur 
 // import './styles/app.css';
 
+document.documentElement.classList.add("js-enabled");
+
 // Console de test
 console.log('🚀 JS chargé avec succès depuis app.js');
 
@@ -60,11 +62,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 });
 
-// // Activation des tooltips Bootstrap
-// document.addEventListener('DOMContentLoaded', () => {
-//   const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]');
-//   tooltipTriggerList.forEach(t => new bootstrap.Tooltip(t));
-// });
+
 
 // Zoom image (modal)
 document.addEventListener('click', (e) => {
@@ -158,80 +156,88 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 });
 
-// animation changement page
+// UI listes (maladies + espèces) : croix + animation résultats
+document.addEventListener("DOMContentLoaded", () => {
 
-document.addEventListener("DOMContentLoaded", function () {
-    const results = document.querySelector("#maladie-results");
-    if (results) {
-      requestAnimationFrame(() => results.classList.add("is-ready"));
-    }
+  // Croix "effacer" (toutes les pages qui ont une searchbar)
 
-    // Scroll doux vers la grille quand on clique sur la pagination
-    document.querySelectorAll(".pagination a").forEach(a => {
-      a.addEventListener("click", () => {
-        sessionStorage.setItem("maladie_scroll_to_results", "1");
-      });
+  const initClear = (formSelector) => {
+    const form = document.querySelector(formSelector);
+    if (!form) return;
+
+    // on prend le champ visible, pas le hidden "limit"
+    const input =
+      form.querySelector('input[type="search"]') ||
+      form.querySelector('input[type="text"]') ||
+      form.querySelector('input:not([type="hidden"])');
+
+    const wrapper = form.closest(".bloc-recherche-espece");
+    const clearBtn = form.querySelector(".btn-clear-search");
+
+    if (!input || !wrapper || !clearBtn) return;
+
+    const updateState = () => {
+      wrapper.classList.toggle("is-filled", input.value.trim().length > 0);
+    };
+
+    updateState();
+
+    input.addEventListener("input", () => {
+      updateState();
+      if (input.value.trim() === "") form.submit();
     });
 
-    if (sessionStorage.getItem("maladie_scroll_to_results") === "1") {
-      sessionStorage.removeItem("maladie_scroll_to_results");
-      const anchor = document.querySelector("#maladie-results");
-      if (anchor) anchor.scrollIntoView({ behavior: "smooth", block: "start" });
-    }
-  });
-// Croix "effacer" : cachée si champ vide (page maladies)
-document.addEventListener("DOMContentLoaded", function () {
-  const form = document.querySelector("#recherche-maladie-form");
-  if (!form) return;
-
-  // ⚠️ IMPORTANT : on cible le vrai champ "nom"
-  const input = form.querySelector("#maladie_search_nom"); 
-  const clearBtn = form.querySelector(".btn-clear-search");
-
-  if (!input || !clearBtn) return;
-
-  const toggleClear = () => {
-    const hasValue = input.value.trim().length > 0;
-    clearBtn.style.display = hasValue ? "block" : "none";
-  };
-
-  toggleClear();
-
-  input.addEventListener("input", () => {
-    toggleClear();
-    if (input.value.trim() === "") {
+    clearBtn.addEventListener("click", (e) => {
+      e.preventDefault();
+      input.value = "";
+      updateState();
       form.submit();
-    }
-  });
-
-  clearBtn.addEventListener("click", () => {
-    input.value = "";
-    toggleClear();
-    form.submit();
-  });
-});
-document.addEventListener("DOMContentLoaded", () => {
-  const input = document.querySelector("#recherche-maladie-form input");
-  const wrapper = document.querySelector(".bloc-recherche-espece");
-  const clearBtn = document.querySelector(".btn-clear-search");
-
-  if (!input || !wrapper || !clearBtn) return;
-
-  const updateState = () => {
-    wrapper.classList.toggle("is-filled", input.value.trim().length > 0);
+    });
   };
 
-  // état initial (au rechargement avec recherche active)
-  updateState();
+  document.querySelectorAll("form .btn-clear-search").forEach(btn => {
+  const form = btn.closest("form");
+  if (form?.id && !form.dataset.clearInit) {
+    form.dataset.clearInit = "1";
+    initClear(`#${form.id}`);
+  }
 
-  input.addEventListener("input", updateState);
+});
 
-  clearBtn.addEventListener("click", () => {
-    input.value = "";
-    updateState();
-    input.form.submit();
+  // Animation arrivée résultats (micro délai, robuste)
+  const animateResults = () => {
+    document.querySelectorAll(".results-animate").forEach(el => {
+  setTimeout(() => el.classList.add("is-ready"), 80);
+    });
+  };
+
+  animateResults();
+
+  //  Si l’utilisateur revient en arrière (bfcache), on relance
+  window.addEventListener("pageshow", animateResults);
+});
+
+// retour en haut articles
+  document.addEventListener("DOMContentLoaded", () => {
+  const backToTop = document.getElementById("backToTop");
+  if (!backToTop) return;
+
+  const toggle = () => {
+    backToTop.classList.toggle("is-visible", window.scrollY > 300);
+  };
+
+  toggle();
+  window.addEventListener("scroll", toggle, { passive: true });
+
+  backToTop.addEventListener("click", () => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
   });
 });
+
+
+
+
+
 
 
 

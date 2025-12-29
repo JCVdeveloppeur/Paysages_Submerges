@@ -3,14 +3,70 @@
 @use "mixins" as *;
 @use "bouton" as *;
 
-/* ===============================
-   FICHE MALADIE – PAGE SHOW
-   =============================== */
+/* =========================================================
+   MALADIES POISSONS — SHOW + INDEX + UI
+   ========================================================= */
 
+/* =========================================================
+   Badges (commun SHOW + INDEX)
+   ========================================================= */
+.badge-gravite {
+  position: relative;
+  padding: 0.2rem 0.7rem 0.2rem 1.4rem;
+  border-radius: 999px;
+  font-family: "Lato", sans-serif;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  border: 1px solid transparent;
+
+  &::before {
+    content: "";
+    position: absolute;
+    left: 0.55rem;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 0.45rem;
+    height: 0.45rem;
+    border-radius: 999px;
+    background-color: currentColor;
+    opacity: 0.9;
+  }
+}
+
+.gravite--faible  { background: #e5f7e9; color: #256332; border-color: #b6e4c0; }
+.gravite--moyenne { background: #fff4e0; color: #8a5b1e; border-color: #f1d3a1; }
+.gravite--elevee  { background: #ffe5e5; color: #a02932; border-color: #f1b4b9; }
+
+.badge-contagion {
+  padding: 0.2rem 0.6rem;
+  border-radius: 999px;
+  font-family: "Lato", sans-serif;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  border: 1px solid transparent;
+}
+
+.badge-contagion--oui { background: #fff0f0; color: #b02031; border-color: #f0b3bf; }
+.badge-contagion--non { background: #eaf8f0; color: #216244; border-color: #b6e3c9; }
+
+.badge-duree {
+  padding: 0.2rem 0.6rem;
+  border-radius: 999px;
+  font-family: "Lato", sans-serif;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  background: #eaf1ff;
+  color: #274571;
+  border: 1px solid #c0d1ff;
+}
+
+/* =========================================================
+   SHOW — fiche maladie
+   ========================================================= */
 .maladie-show {
-  /* ==========================
-     Carte principale "carnet"
-     ========================== */
   .maladie-carnet {
     position: relative;
     background: #fdfdfb;
@@ -31,6 +87,7 @@
       pointer-events: none;
     }
 
+    /* timbre */
     &::after {
       content: "";
       position: absolute;
@@ -51,9 +108,6 @@
     }
   }
 
-  /* ==========================
-     Header : icône + titre
-     ========================== */
   .maladie-carnet__header {
     display: flex;
     gap: 1.4rem;
@@ -68,9 +122,7 @@
     margin-top: 0.2rem;
   }
 
-  .maladie-carnet__title-group {
-    flex: 1;
-  }
+  .maladie-carnet__title-group { flex: 1; }
 
   .maladie-carnet__title {
     font-family: "Merriweather", serif;
@@ -94,9 +146,6 @@
     margin-top: 0.1rem;
   }
 
-  /* ==========================
-     Badge bleu centré
-     ========================== */
   .maladie-carnet__category-wrapper {
     text-align: center;
     margin: 0.6rem 0 1.2rem;
@@ -118,9 +167,6 @@
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
   }
 
-  /* ==========================
-     Bloc photo
-     ========================== */
   .maladie-carnet__figure {
     margin: 0.6rem auto 2rem;
     max-width: 540px;
@@ -138,9 +184,7 @@
     border-radius: 12px;
     background: #fff;
     border: 1px solid rgba(0, 0, 0, 0.06);
-    box-shadow:
-      0 6px 14px rgba(0, 0, 0, 0.12),
-      0 2px 4px rgba(0, 0, 0, 0.06);
+    box-shadow: 0 6px 14px rgba(0, 0, 0, 0.12), 0 2px 4px rgba(0, 0, 0, 0.06);
     transition: transform 0.28s ease;
     transform-origin: center;
 
@@ -161,97 +205,14 @@
     font-style: italic;
   }
 
-  /* ==========================
-     Badges gravité / contagion
-     ========================== */
-  .badge-gravite {
-    position: relative;
-    padding: 0.2rem 0.7rem 0.2rem 1.4rem;
-    border-radius: 999px;
-    font-family: "Lato", sans-serif;
-    font-size: 0.75rem;
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-    border: 1px solid transparent;
-
-    &::before {
-      content: "";
-      position: absolute;
-      left: 0.55rem;
-      top: 50%;
-      transform: translateY(-50%);
-      width: 0.45rem;
-      height: 0.45rem;
-      border-radius: 999px;
-      background-color: currentColor;
-      opacity: 0.9;
-    }
-  }
-
-  .gravite--faible {
-    background: #e5f7e9;
-    color: #256332;
-    border-color: #b6e4c0;
-  }
-
-  .gravite--moyenne {
-    background: #fff4e0;
-    color: #8a5b1e;
-    border-color: #f1d3a1;
-  }
-
-  .gravite--elevee {
-    background: #ffe5e5;
-    color: #a02932;
-    border-color: #f1b4b9;
-  }
-
-  .badge-contagion {
-    padding: 0.2rem 0.6rem;
-    border-radius: 999px;
-    font-family: "Lato", sans-serif;
-    font-size: 0.75rem;
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-    border: 1px solid transparent;
-  }
-
-  .badge-contagion--oui {
-    background: #fff0f0;
-    color: #b02031;
-    border-color: #f0b3bf;
-  }
-
-  .badge-contagion--non {
-    background: #eaf8f0;
-    color: #216244;
-    border-color: #b6e3c9;
-  }
-
-  .badge-duree {
-    padding: 0.2rem 0.6rem;
-    border-radius: 999px;
-    font-family: "Lato", sans-serif;
-    font-size: 0.75rem;
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-    background: #eaf1ff;
-    color: #274571;
-    border: 1px solid #c0d1ff;
-  }
-
-  /* ==========================
-     Bandeau résumé
-     ========================== */
+  /* bandeau résumé */
   .maladie-summary {
     margin: 1.4rem auto 1.8rem;
     padding: 0.95rem 1.5rem;
     border-radius: 14px;
     background: linear-gradient(to bottom, #fdfbf7, #f7f2eb);
     border: 1px solid rgba(196, 186, 168, 0.4);
-    box-shadow:
-      0 10px 24px rgba(0, 0, 0, 0.06),
-      0 0 0 1px rgba(255, 255, 255, 0.7);
+    box-shadow: 0 10px 24px rgba(0, 0, 0, 0.06), 0 0 0 1px rgba(255, 255, 255, 0.7);
     display: flex;
     flex-wrap: wrap;
     align-items: stretch;
@@ -270,18 +231,6 @@
       opacity: 0.9;
     }
 
-    &::after {
-      content: "";
-      position: absolute;
-      top: 0;
-      left: 4px;
-      width: 2px;
-      height: 100%;
-      background: rgba(0, 0, 0, 0.05);
-      filter: blur(1px);
-      pointer-events: none;
-    }
-
     &__item {
       position: relative;
       min-width: 170px;
@@ -296,12 +245,7 @@
       right: -0.9rem;
       bottom: 12%;
       width: 1px;
-      background: linear-gradient(
-        to bottom,
-        transparent,
-        rgba(150, 130, 110, 0.35),
-        transparent
-      );
+      background: linear-gradient(to bottom, transparent, rgba(150, 130, 110, 0.35), transparent);
       opacity: 0.7;
     }
 
@@ -323,9 +267,7 @@
     }
   }
 
-  /* ===============================
-     Layout fiche maladie – 2 colonnes
-     =============================== */
+  /* layout 2 colonnes */
   .maladie-layout {
     display: grid;
     grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
@@ -340,10 +282,7 @@
     width: 100%;
   }
 
-  .maladie-layout .col-lg-8 > .fiche-section:first-child {
-    margin-top: -0.2rem;
-  }
-
+  /* sections fiche (proche espèces) */
   .fiche-section {
     margin-bottom: 1.6rem;
     padding: 1.1rem 1.2rem;
@@ -365,18 +304,12 @@
       opacity: 0.85;
     }
 
-    & + .fiche-section {
-      margin-top: 1.2rem;
-    }
+    & + .fiche-section { margin-top: 1.2rem; }
 
     &:hover {
-      box-shadow:
-        0 10px 20px rgba(0, 0, 0, 0.12),
-        0 0 0 1px rgba(255, 255, 255, 0.6);
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.12), 0 0 0 1px rgba(255, 255, 255, 0.6);
       transform: translateY(-1px);
-      transition:
-        box-shadow 0.22s ease,
-        transform 0.22s ease;
+      transition: box-shadow 0.22s ease, transform 0.22s ease;
     }
   }
 
@@ -411,29 +344,10 @@
     }
   }
 
-  .fiche-icone-symptomes {
-    color: #3c5a9a;
-    background: #e9f0ff;
-    border: 1px solid #c4d5ff;
-  }
-
-  .fiche-icone-causes {
-    color: #8a5b1e;
-    background: #fff7e6;
-    border: 1px solid #f3d6a3;
-  }
-
-  .fiche-icone-traitement {
-    color: #1d6b6b;
-    background: #e6f6f6;
-    border: 1px solid #b7e0df;
-  }
-
-  .fiche-icone-prevention {
-    color: #216244;
-    background: #e9f9f0;
-    border: 1px solid #bfe5cf;
-  }
+  .fiche-icone-symptomes { color: #3c5a9a; background: #e9f0ff; border: 1px solid #c4d5ff; }
+  .fiche-icone-causes    { color: #8a5b1e; background: #fff7e6; border: 1px solid #f3d6a3; }
+  .fiche-icone-traitement{ color: #1d6b6b; background: #e6f6f6; border: 1px solid #b7e0df; }
+  .fiche-icone-prevention{ color: #216244; background: #e9f9f0; border: 1px solid #bfe5cf; }
 
   .fiche-texte {
     font-family: "Lato", sans-serif;
@@ -442,12 +356,8 @@
     color: #3c4048;
     text-align: justify;
     hyphens: auto;
-    -webkit-hyphens: auto;
-    -ms-hyphens: auto;
 
-    p {
-      margin-bottom: 0.6rem;
-    }
+    p { margin-bottom: 0.6rem; }
 
     ul,
     ol {
@@ -456,19 +366,16 @@
       text-align: left;
     }
 
-    li {
-      margin-bottom: 0.25rem;
-    }
+    li { margin-bottom: 0.25rem; }
   }
 
+  /* aside */
   .maladie-meta-card {
     background: #fbf9f5;
     border-radius: 16px;
     padding: 1.3rem 1.35rem 1.2rem;
     border: 1px solid rgba(0, 0, 0, 0.05);
-    box-shadow:
-      0 10px 22px rgba(0, 0, 0, 0.14),
-      0 0 0 1px rgba(255, 255, 255, 0.8);
+    box-shadow: 0 10px 22px rgba(0, 0, 0, 0.14), 0 0 0 1px rgba(255, 255, 255, 0.8);
     position: relative;
     overflow: hidden;
     margin-top: 0;
@@ -485,13 +392,9 @@
     }
 
     &:hover {
-      box-shadow:
-        0 12px 26px rgba(0, 0, 0, 0.2),
-        0 0 0 1px rgba(255, 255, 255, 0.9);
+      box-shadow: 0 12px 26px rgba(0, 0, 0, 0.2), 0 0 0 1px rgba(255, 255, 255, 0.9);
       transform: translateY(-1px);
-      transition:
-        box-shadow 0.22s ease,
-        transform 0.22s ease;
+      transition: box-shadow 0.22s ease, transform 0.22s ease;
     }
   }
 
@@ -504,9 +407,7 @@
     letter-spacing: 0.14em;
   }
 
-  .maladie-meta-liste {
-    margin: 0;
-  }
+  .maladie-meta-liste { margin: 0; }
 
   .maladie-meta-item {
     display: flex;
@@ -514,9 +415,7 @@
     padding: 0.45rem 0.4rem 0.45rem 0.35rem;
     border-bottom: 1px dashed rgba(0, 0, 0, 0.06);
 
-    &:last-child {
-      border-bottom: none;
-    }
+    &:last-child { border-bottom: none; }
 
     dt {
       font-family: "Lato", sans-serif;
@@ -559,6 +458,7 @@
     }
   }
 
+  /* timeline */
   .maladie-treatment-timeline {
     margin-top: 0.9rem;
     padding-top: 0.6rem;
@@ -578,7 +478,6 @@
     position: relative;
     display: flex;
     justify-content: space-between;
-    gap: 0;
     padding: 0.6rem 0.4rem 0.2rem;
 
     &::before {
@@ -613,19 +512,9 @@
     margin-bottom: 0.3rem;
   }
 
-  .timeline-label {
-    display: block;
-    margin-top: 0.05rem;
-    letter-spacing: 0.05em;
-  }
-
-  .timeline-step:first-child {
-    text-align: left;
-  }
-
-  .timeline-step:last-child {
-    text-align: right;
-  }
+  .timeline-label { display: block; margin-top: 0.05rem; letter-spacing: 0.05em; }
+  .timeline-step:first-child { text-align: left; }
+  .timeline-step:last-child  { text-align: right; }
 
   .maladie-carnet__footer {
     position: relative;
@@ -633,10 +522,9 @@
   }
 }
 
-/* ==========================
-   Index des maladies
-   ========================== */
-
+/* =========================================================
+   INDEX — liste maladies
+   ========================================================= */
 .maladie-index {
   .maladie-legend {
     display: flex;
@@ -667,22 +555,17 @@
     &__item--elevee  .maladie-legend__dot { background-color: #c62828; }
   }
 
+  /* carte basée sur carnet */
   .card-maladie {
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    overflow: hidden;
-    border-radius: 18px;
-    background: #fbfaf5;
-    border: 1px solid rgba(0, 0, 0, 0.05);
-    transition: all 0.28s ease;
 
+    --carnet-img-h: 220px;
+    --carnet-accent: linear-gradient(to bottom, #9cc1ff, #6da4ff);
+
+    /* images + placeholder */
     .image-carte {
       width: 100%;
-      height: 220px;
+      height: var(--carnet-img-h);
       object-fit: cover;
-      border-top-left-radius: 0.5rem;
-      border-top-right-radius: 0.5rem;
 
       &.image-carte--placeholder {
         display: flex;
@@ -691,15 +574,40 @@
         background: #e8f0ff;
         font-size: 2rem;
       }
+        .card-maladie {
+    position: relative; /* important pour ::before */
+    overflow: hidden;   /* important pour éviter que le liseré déborde */
+
+    /* liseré caché par défaut */
+    &::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 14px;
+  bottom: 14px;
+  width: 4px;
+  background: var(--carnet-accent);
+  border-radius: 0 999px 999px 0;
+  opacity: 0;
+  transform: translateX(-1px);
+  transition: opacity .2s ease, width .2s ease;
+  pointer-events: none;
+}
+
+&:hover::before {
+  opacity: 1;
+  width: 4px;
+}
+
+  }
+
     }
 
     .card-body {
       display: flex;
       flex-direction: column;
       flex: 1;
-      padding: 1rem;
-      background-color: #fcfcfa;
-      border-top: 1px solid #eee;
+    
     }
 
     .card-title {
@@ -713,7 +621,8 @@
       font-size: 0.95rem;
       color: #444;
     }
-    // texte symptômes (le 2e p) pousse le footer en bas
+
+    /* symptômes (le 2e p) pousse le footer en bas */
     .card-text.small {
       flex-grow: 1;
       display: -webkit-box;
@@ -722,249 +631,183 @@
       -webkit-box-orient: vertical;
       overflow: hidden;
     }
-    .badge-gravite,
-    .badge-contagion {
-      font-family: "Lato", sans-serif;
-      font-size: 0.72rem;
-      letter-spacing: 0.1em;
-      transition:
-        transform 0.18s ease,
-        filter 0.18s ease,
-        box-shadow 0.18s ease,
-        background-color 0.18s ease,
-        border-color 0.18s ease;
-      will-change: transform, box-shadow;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      line-height: 1;          // important pour la baseline
-      vertical-align: middle;  // au cas où ils restent inline
-      padding-top: 0.22rem;    // harmonise le “centrage”
-      padding-bottom: 0.22rem;
-      min-height: 24px;        // même “niveau” visuel
-    }
-
-    .badge-contagion--mini {
-      font-size: 0.7rem;
-      padding: 0.18rem 0.55rem;
-    }
-
-    /* Hover badge direct */
-    .badge-gravite:hover,
-    .badge-contagion:hover {
-      transform: translateY(-1px);
-      filter: saturate(1.08);
-      box-shadow:
-        0 6px 14px rgba(0, 0, 0, 0.10),
-        0 0 0 1px rgba(255, 255, 255, 0.7);
-    }
 
     .card-footer {
       margin-top: auto;
       border-top: 1px solid rgba(0, 0, 0, 0.05);
     }
 
-    &::before {
-      content: "";
-      position: absolute;
-      left: 0;
-      top: 0;
-      width: 4px;
-      height: 100%;
-      background: linear-gradient(to bottom, #9cc1ff, #6da4ff);
-      opacity: 0;
-      transition: opacity 0.3s ease;
+    /* hover badges (léger) */
+    .badge-gravite,
+    .badge-contagion {
+      font-size: 0.72rem;
+      letter-spacing: 0.1em;
+      transition: transform 0.18s ease, filter 0.18s ease, box-shadow 0.18s ease;
+      will-change: transform, box-shadow;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      line-height: 1;
+      min-height: 24px;
     }
 
-    /* HOVER UNIQUE */
-    &:hover {
-    /* Carte */
-      transform: translateY(-4px);
-      background-color: #fffdf8;
-      border-color: rgba(255, 195, 100, 0.4);
-      box-shadow:
-        0 12px 28px rgba(0, 0, 0, 0.18),
-        0 0 12px rgba(255, 195, 100, 0.25);
+    &:hover .badge-gravite,
+    &:hover .badge-contagion {
+      transform: translateY(-1px);
+      filter: saturate(1.08);
+      box-shadow: 0 6px 14px rgba(0, 0, 0, 0.10), 0 0 0 1px rgba(255, 255, 255, 0.7);
+    }
 
-      &::before {
-        opacity: 1;
-      }
-      /* Badges */
-      .badge-gravite,
-      .badge-contagion {
-        transform: translateY(-1px);
-        filter: saturate(1.08);
-        box-shadow:
-          0 6px 14px rgba(0, 0, 0, 0.10),
-          0 0 0 1px rgba(255, 255, 255, 0.7);
-      }
+    .badge-contagion--mini {
+      font-size: 0.7rem;
+      padding: 0.18rem 0.55rem;
     }
   }
 
-  .card-maladie--faible  { border-left: 4px solid #2e7d32; }
-  .card-maladie--moyenne { border-left: 4px solid #ff9800; }
-  .card-maladie--elevee  { border-left: 4px solid #c62828; }
+  /* bordure gravité (visuel direct) */
+  .card-maladie--faible  { --carnet-accent: #2e7d32; }
+  .card-maladie--moyenne { --carnet-accent: #ff9800; }
+  .card-maladie--elevee  { --carnet-accent: #c62828; }
 
-  /* Renfort “gravité élevée” */
+  /* renfort “gravité élevée” au hover */
   .card-maladie--elevee:hover {
     box-shadow:
       0 14px 30px rgba(198, 40, 40, 0.22),
       0 0 16px rgba(198, 40, 40, 0.25);
     border-color: rgba(198, 40, 40, 0.7);
+  }
 
-    .badge-gravite.gravite--elevee {
-      background-color: #ffe0e0;
-      border-color: rgba(198, 40, 40, 0.85);
-      box-shadow:
-        0 0 0 1px rgba(198, 40, 40, 0.45),
-        0 0 14px rgba(198, 40, 40, 0.35);
-      filter: saturate(1.1);
+  /* barre outils */
+  .bloc-recherche-espece {
+    max-width: 600px;
+    width: 100%;
+
+    input.form-control {
+      border-radius: 999px;
+      padding-left: 1rem;
+      padding-right: 2.5rem;
+      font-size: 0.95rem;
+      background-color: #f4fbf6;
+      border: 1px solid rgba(0, 0, 0, 0.08);
+
+      &:focus {
+        box-shadow: 0 0 0 0.15rem rgba(76, 175, 80, 0.2);
+        border-color: #6da77a;
+      }
+    }
+
+    .btn-clear-search {
+      right: 12px;
+      font-size: 0.8rem;
     }
   }
 
-  .card-maladie--faible:hover .badge-gravite.gravite--faible {
-    background-color: #dbf2e3;
-    border-color: #7fd39a;
-    color: #1f5c33;
-    box-shadow:
-      0 0 0 1px rgba(46, 125, 50, 0.35),
-      0 0 12px rgba(46, 125, 50, 0.25);
+  select.form-select-sm {
+    border-radius: 999px;
+    font-size: 0.85rem;
+    padding: 0.25rem 1.4rem 0.25rem 0.75rem;
+    background-color: #f8f9fa;
+    border: 1px solid rgba(0, 0, 0, 0.1);
   }
 
-  .card-maladie--moyenne:hover .badge-gravite.gravite--moyenne {
-    background-color: #ffedd2;
-    border-color: #ffb74d;
-    color: #7a4a12;
-    box-shadow:
-      0 0 0 1px rgba(255, 152, 0, 0.4),
-      0 0 12px rgba(255, 152, 0, 0.3);
+  label {
+    font-size: 0.75rem;
+    opacity: 0.6;
   }
-
-  .card-maladie--elevee:hover .badge-gravite.gravite--elevee {
-    background-color: #ffe0e0;
-    border-color: #d84343;
-    color: #8e1f28;
-    box-shadow:
-      0 0 0 1px rgba(198, 40, 40, 0.5),
-      0 0 16px rgba(198, 40, 40, 0.4);
-    filter: saturate(1.12);
-  }
-
-  .card-maladie:hover .badge-contagion--oui {
-    background-color: #ffe8ea;
-    border-color: #e57373;
-    color: #9f1f2f;
-    box-shadow:
-      0 0 0 1px rgba(176, 32, 49, 0.35),
-      0 0 10px rgba(176, 32, 49, 0.25);
-  }
-
-  .card-maladie:hover .badge-contagion--non {
-    background-color: #e6f6ee;
-    border-color: #7bcfa6;
-    color: #1f5c40;
-    box-shadow:
-      0 0 0 1px rgba(33, 98, 68, 0.35),
-      0 0 10px rgba(33, 98, 68, 0.25);
-  }
-    // Micro-animation focus barre de recherche
-  .bloc-recherche-espece {
-    margin-left: auto;
-    margin-right: auto;
-  }
-  .bloc-recherche-espece .position-relative {
-  position: relative;
 }
-  .bloc-recherche-espece .form-control {
-    transition: box-shadow .18s ease, border-color .18s ease, transform .18s ease, background-color .18s ease;
+
+/* =========================================================
+   Risque (UI + tooltips)
+   ========================================================= */
+.risque {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+
+  .risque-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
   }
 
-  .bloc-recherche-espece .form-control:focus {
-    background-color: rgba(255, 255, 255, 0.98);
-    border-color: rgba(102, 160, 140, 0.65);
-    box-shadow: 0 0 0 .18rem rgba(102, 160, 140, 0.18);
-    transform: translateY(-1px);
-  }
-
-  .bloc-recherche-espece:focus-within .btn-clear-search {
-  transform: translateY(-50%) scale(1.06);
-  opacity: 1;
-  }
-
-  .btn-clear-search {
-    width: 28px;
-    height: 28px;
+  .risque-info {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    line-height: 1;
-    position: absolute;
-    right: 0.75rem;
-    top: 50%;
-    transform: translateY(-50%);
-    
-    border: none;
-    background: transparent;
-    font-size: 0.9rem;
+    margin-left: 0.35rem;
+    width: 26px;
+    height: 26px;
+    border-radius: 999px;
+    border: 1px solid rgba(0, 0, 0, 0.10);
+    background: rgba(255, 255, 255, 0.65);
+    color: #274571;
     cursor: pointer;
+    opacity: 0.95;
+    transition: transform 0.12s ease, filter 0.12s ease, box-shadow 0.12s ease, border-color 0.12s ease;
 
-    opacity: 0;
-    pointer-events: none;
+    &:hover { transform: scale(1.06); filter: saturate(1.05); }
+    &:active { transform: scale(0.96); }
 
-    transition:
-      opacity 0.18s ease,
-      transform 0.18s ease;
-  }
-
-  /* Quand on écrit → la croix apparaît */
-  .bloc-recherche-espece.is-filled .btn-clear-search {
-    opacity: 0.85;
-    pointer-events: auto;
-  }
-
-  /* Petit bonus hover */
-  .btn-clear-search:hover {
-    opacity: 1;
-    transform: translateY(-50%) scale(1.1);
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    .bloc-recherche-espece .form-control,
-    .btn-clear-search {
-      transition: none !important;
+    &:focus-visible {
+      outline: 0;
+      box-shadow: 0 0 0 0.2rem rgba(122, 160, 207, 0.35);
+      border-color: rgba(122, 160, 207, 0.55);
     }
   }
-  .card-text.text-muted .d-inline-flex {
-  align-items: center;
+
+  .risque-info__icon {
+    width: 16px;
+    height: 16px;
+    display: block;
   }
-  .bloc-recherche-espece .form-control:focus {
-    box-shadow: 0 0 0 .18rem rgba(102, 160, 140, 0.18), 0 10px 22px rgba(0,0,0,.06);
+
+  .risque { font-weight: 600; }
+}
+
+.risque--faible  .risque-info { color: #2e7d32; background: rgba(46, 125, 50, 0.08); border-color: rgba(46, 125, 50, 0.35); }
+.risque--moyenne .risque-info { color: #ef8f00; background: rgba(239, 143, 0, 0.10); border-color: rgba(239, 143, 0, 0.40); }
+.risque--elevee  .risque-info { color: #c62828; background: rgba(198, 40, 40, 0.10); border-color: rgba(198, 40, 40, 0.45); }
+
+.tooltip.risque-tooltip .tooltip-inner {
+  background-color: #344f4f;
+  color: #f5f7f8;
+  font-size: 0.75rem;
+  line-height: 1.4;
+  white-space: pre-line;
+  max-width: 260px;
+  padding: 0.5rem 0.65rem;
+  border-radius: 8px;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.25), 0 0 0 1px rgba(255, 255, 255, 0.08);
+}
+
+.tooltip.risque-tooltip .tooltip-arrow::before {
+  border-top-color: #344f4f;
+}
+
+.tooltip.risque-tooltip { opacity: 0; transition: opacity 0.15s ease, transform 0.15s ease; }
+.tooltip.show.risque-tooltip { opacity: 1; transform: translateY(-2px); }
+
+.tooltip.risque-tooltip--faible  .tooltip-inner { border-left: 3px solid #7bcfa6; }
+.tooltip.risque-tooltip--moyenne .tooltip-inner { border-left: 3px solid #ffb74d; }
+.tooltip.risque-tooltip--elevee  .tooltip-inner { border-left: 3px solid #e57373; }
+
+/* =========================================================
+   Résultats (une seule version)
+   ========================================================= */
+#maladie-results {
+  opacity: 0;
+  transform: translateY(6px);
+  transition: opacity 0.18s ease, transform 0.18s ease;
+
+  &.is-ready {
+    opacity: 1;
+    transform: translateY(0);
   }
 }
 
-.maladie-meta-card {
-
-  .risque {
-    font-weight: 600;
-  }
-
-  .risque--faible {
-    color: #2e7d32;
-  }
-
-  .risque--moyenne {
-    color: #ff9800;
-  }
-
-  .risque--elevee {
-    color: #c62828;
-  }
-}
-
-/* ===============================
+/* =========================================================
    Formulaire maladie
-   =============================== */
-
+   ========================================================= */
 .maladie-form {
   .maladie-form-card {
     background: #fbf9f5;
@@ -973,9 +816,7 @@
     box-shadow: 0 18px 40px rgba(0, 0, 0, 0.18);
     border: 1px solid rgba(0, 0, 0, 0.04);
 
-    .maladie-form-card__header {
-      margin-bottom: 1.5rem;
-    }
+    .maladie-form-card__header { margin-bottom: 1.5rem; }
 
     .maladie-form-card__tag {
       text-transform: uppercase;
@@ -1033,28 +874,9 @@
   }
 }
 
-/* Bouton clear de la recherche (index) */
-.btn-clear-search {
-  position: absolute;
-  top: 50%;
-  right: 12px;
-  transform: translateY(-50%);
-  border: none;
-  background: transparent;
-  font-size: 14px;
-  opacity: 0.5;
-  cursor: pointer;
-  transition: opacity 0.2s ease;
-
-  &:hover {
-    opacity: 1;
-  }
-}
-
-/* ===============================
+/* =========================================================
    Responsive fiche maladie
-   =============================== */
-
+   ========================================================= */
 @media (max-width: 767.98px) {
   .maladie-show {
     .maladie-carnet {
@@ -1062,9 +884,7 @@
       border-radius: 0;
       padding: 1.7rem 1.4rem 2rem;
 
-      &::before {
-        inset: 8px;
-      }
+      &::before { inset: 8px; }
     }
 
     .maladie-carnet__header {
@@ -1073,23 +893,12 @@
       margin-bottom: 1rem;
     }
 
-    .maladie-carnet__icon {
-      font-size: 1.7rem;
-      margin-top: 0.15rem;
-    }
+    .maladie-carnet__icon { font-size: 1.7rem; margin-top: 0.15rem; }
 
-    .maladie-carnet__title {
-      font-size: 1.55rem;
-      line-height: 1.2;
-    }
+    .maladie-carnet__title { font-size: 1.55rem; line-height: 1.2; }
+    .maladie-carnet__subtitle { font-size: 0.9rem; }
 
-    .maladie-carnet__subtitle {
-      font-size: 0.9rem;
-    }
-
-    .maladie-carnet__category-wrapper {
-      margin: 0.4rem 0 1rem;
-    }
+    .maladie-carnet__category-wrapper { margin: 0.4rem 0 1rem; }
 
     .maladie-carnet__category {
       font-size: 0.68rem;
@@ -1102,9 +911,7 @@
       max-width: 100%;
     }
 
-    .maladie-carnet__image {
-      max-height: 260px;
-    }
+    .maladie-carnet__image { max-height: 260px; }
 
     .maladie-carnet__caption {
       font-size: 0.8rem;
@@ -1118,31 +925,11 @@
       flex-direction: column;
       gap: 0.55rem;
 
-      &::before {
-        width: 4px;
-      }
-
-      &::after {
-        display: none;
-      }
-
-      &__item {
-        min-width: 0;
-        padding-left: 0.2rem;
-      }
-
-      &__item::after {
-        display: none;
-      }
-
-      &__label {
-        font-size: 0.7rem;
-        letter-spacing: 0.14em;
-      }
-
-      &__value {
-        font-size: 0.9rem;
-      }
+      &::before { width: 4px; }
+      &__item { min-width: 0; padding-left: 0.2rem; }
+      &__item::after { display: none; }
+      &__label { font-size: 0.7rem; letter-spacing: 0.14em; }
+      &__value { font-size: 0.9rem; }
     }
 
     .maladie-layout {
@@ -1151,253 +938,43 @@
       margin-top: 1rem;
     }
 
-    .fiche-section {
-      padding: 1rem 1.05rem;
-      border-radius: 12px;
-    }
-
-    .fiche-titre {
-      font-size: 0.95rem;
-      letter-spacing: 0.16em;
-      gap: 0.45rem;
-    }
+    .fiche-section { padding: 1rem 1.05rem; }
+    .fiche-titre { font-size: 0.95rem; letter-spacing: 0.16em; gap: 0.45rem; }
 
     .fiche-icone {
       width: 24px;
       height: 24px;
 
-      svg.fiche-icone-svg {
-        width: 14px;
-        height: 14px;
-      }
+      svg.fiche-icone-svg { width: 14px; height: 14px; }
     }
 
-    .maladie-meta-card {
-      margin-top: 0.9rem;
-      padding: 1.1rem 1.1rem 1.05rem;
-    }
+    .maladie-meta-card { margin-top: 0.9rem; padding: 1.1rem 1.1rem 1.05rem; }
+    .maladie-meta-titre { font-size: 0.9rem; margin-bottom: 0.6rem; letter-spacing: 0.13em; }
+    .maladie-meta-item dt { font-size: 0.76rem; }
+    .maladie-meta-item dd { font-size: 0.88rem; }
 
-    .maladie-meta-titre {
-      font-size: 0.9rem;
-      margin-bottom: 0.6rem;
-      letter-spacing: 0.13em;
-    }
-
-    .maladie-meta-item dt {
-      font-size: 0.76rem;
-    }
-
-    .maladie-meta-item dd {
-      font-size: 0.88rem;
-    }
-
-    .maladie-aside-extra {
-      margin-top: 0.7rem;
-      padding: 0.9rem 1rem;
-    }
+    .maladie-aside-extra { margin-top: 0.7rem; padding: 0.9rem 1rem; }
   }
 }
 
 @media (max-width: 480px) {
-  .maladie-show {
-    .maladie-carnet__category {
-      padding: 0.15rem 0.55rem;
-      font-size: 0.6rem;
-      border-radius: 999px;
-    }
+  .maladie-show .maladie-carnet__category {
+    padding: 0.15rem 0.55rem;
+    font-size: 0.6rem;
   }
 }
 
-@media (max-width: 420px) {
-  .maladie-show .fiche-texte {
-    text-align: justify;
-    word-spacing: -1px;
-  }
+@media (max-width: 576px) {
+  .maladie-index .bloc-recherche-espece { max-width: 100%; }
 }
 
 @media (min-width: 992px) {
   .maladie-show {
-    .maladie-carnet__header {
-      align-items: flex-start;
-    }
-
-    .maladie-carnet__category-wrapper {
-      margin-top: 0.4rem;
-      margin-bottom: 1.3rem;
-    }
-  }
-}
-.risque {
-  display: flex;
-  align-items: center;
-  gap: .35rem;
-
-  .risque-label {
-    display: inline-flex;
-    align-items: center;
-    gap: .35rem;
-  }
-
-  .risque-info {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    margin-left: .35rem;
-
-    width: 26px;
-    height: 26px;
-    border-radius: 999px;
-
-    border: 1px solid rgba(0,0,0,.10);
-    background: rgba(255,255,255,.65);
-    color: #274571;
-
-    padding: 0;
-    line-height: 1;
-    cursor: pointer;
-    opacity: .95;
-
-    transition: transform .12s ease, filter .12s ease, box-shadow .12s ease, border-color .12s ease;
-
-    &:hover { transform: scale(1.06); filter: saturate(1.05); }
-    &:active { transform: scale(0.96); }
-
-    &:focus-visible {
-      outline: 0;
-      box-shadow: 0 0 0 .2rem rgba(122,160,207,.35);
-      border-color: rgba(122,160,207,.55);
-    }
-  }
-
-  .risque-info__icon {
-    width: 16px;
-    height: 16px;
-    display: block;
+    .maladie-carnet__header { align-items: flex-start; }
+    .maladie-carnet__category-wrapper { margin-top: 0.4rem; margin-bottom: 1.3rem; }
   }
 }
 
-/* Couleur de l’icône selon le niveau */
-.risque--faible  .risque-info { color:#2e7d32; background:rgba(46,125,50,.08); border-color:rgba(46,125,50,.35); }
-.risque--moyenne .risque-info { color:#ef8f00; background:rgba(239,143,0,.10); border-color:rgba(239,143,0,.40); }
-.risque--elevee  .risque-info { color:#c62828; background:rgba(198,40,40,.10); border-color:rgba(198,40,40,.45); }
-
-.tooltip.risque-tooltip .tooltip-inner{
-  background-color:#344f4f;
-  color:#f5f7f8;
-  font-size:.75rem;
-  line-height:1.4;
-  white-space:pre-line;
-  max-width:260px;
-  padding:.5rem .65rem;
-  border-radius:8px;
-  box-shadow:0 6px 18px rgba(0,0,0,.25), 0 0 0 1px rgba(255,255,255,.08);
-}
-
-.tooltip.risque-tooltip .tooltip-arrow::before{
-  border-top-color:#344f4f;
-}
-
-/* Petite anim */
-.tooltip.risque-tooltip{ opacity:0; transition:opacity .15s ease, transform .15s ease; }
-.tooltip.show.risque-tooltip{ opacity:1; transform:translateY(-2px); }
-
-/* Bordure “niveau” */
-.tooltip.risque-tooltip--faible  .tooltip-inner{ border-left:3px solid #7bcfa6; }
-.tooltip.risque-tooltip--moyenne .tooltip-inner{ border-left:3px solid #ffb74d; }
-.tooltip.risque-tooltip--elevee  .tooltip-inner{ border-left:3px solid #e57373; }
-
-/* transition douce à chaque rechargement */
-#maladie-results {
-  opacity: 0;
-  transform: translateY(6px);
-  transition: opacity .18s ease, transform .18s ease;
-}
-
-#maladie-results.is-ready {
-  opacity: 1;
-  transform: translateY(0);
-}
-/* ================================
-   Barre outils – Liste maladies
-================================ */
-
-.maladie-index {
-
-  .bloc-recherche-espece {
-  max-width: 600px;
-  width: 100%;
-
-    input.form-control {
-      border-radius: 999px;
-      padding-left: 1rem;
-      padding-right: 2.5rem;
-      font-size: 0.95rem;
-      background-color: #f4fbf6;
-      border: 1px solid rgba(0, 0, 0, 0.08);
-
-      &:focus {
-        box-shadow: 0 0 0 0.15rem rgba(76, 175, 80, 0.2);
-        border-color: #6da77a;
-      }
-    }
-
-    .btn-clear-search {
-      position: absolute;
-      top: 50%;
-      right: 12px;
-      transform: translateY(-50%);
-      border: none;
-      background: transparent;
-      font-size: 0.8rem;
-      opacity: 0.5;
-      cursor: pointer;
-
-      &:hover {
-        opacity: 1;
-      }
-    }
-  }
-
-  /* Select "Afficher : 6 / 9 / 12" */
-  select.form-select-sm {
-    border-radius: 999px;
-    font-size: 0.85rem;
-    padding: 0.25rem 1.4rem 0.25rem 0.75rem;
-    background-color: #f8f9fa;
-    border: 1px solid rgba(0, 0, 0, 0.1);
-  }
-
-  label {
-    font-size: 0.75rem;
-    opacity: 0.6;
-  }
-}
-/* état initial (avant JS) */
-#maladie-results {
-  opacity: 0;
-  transform: translateY(6px);
-}
-
-/* déclenchement après DOMContentLoaded */
-#maladie-results.is-ready {
-  animation: fadeUp 0.35s ease-out both;
-}
-
-@keyframes fadeUp {
-  from {
-    opacity: 0;
-    transform: translateY(6px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-@media (max-width: 576px) {
-  .bloc-recherche-espece {
-    max-width: 100%;
-  }
-}
 
 
 

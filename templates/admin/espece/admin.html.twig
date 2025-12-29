@@ -1,93 +1,87 @@
-{% extends 'base.html.twig' %}
+{% extends 'admin/layout.html.twig' %}
 
-{% block title %}Administration des espèces{% endblock %}
+{% block page_title %}Administration des espèces{% endblock %}
+{% block page_heading %}🐟 Fiches espèces{% endblock %}
 
-{% block body %}
-<div class="container my-5">
-
-    <div class="d-flex justify-content-between align-items-center mb-3">
-        <h2 class="mb-0">
-            🐠 Fiches Espèces 
-            <span class="badge bg-primary">{{ nombreEspeces }}</span>
-        </h2>
-        <a href="{{ path('espece_new') }}" class="btn-admin-ajouter">
-            <i class="bi bi-plus-circle"></i> Ajouter une espèce
-        </a>
+{% block content %}
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <div>
+      <span class="badge bg-primary">{{ nombreEspeces }}</span>
     </div>
 
-    {% if especes is empty %}
-        <div class="alert alert-warning">Aucune espèce enregistrée pour le moment.</div>
-    {% else %}
+    <a href="{{ path('espece_new') }}" class="btn-admin-ajouter">
+      <i class="bi bi-plus-circle"></i> Ajouter une espèce
+    </a>
+  </div>
 
-        <form method="get" class="d-flex justify-content-end mb-2 gap-2">
-        <input type="hidden" name="page" value="1">
+  {% if especes is empty %}
+    <div class="alert alert-warning">Aucune espèce enregistrée pour le moment.</div>
+  {% else %}
 
-        <select name="limit"
-                class="form-select form-select-sm"
-                style="width:auto"
-                onchange="this.form.submit()">
-            <option value="5"  {{ limit == 5 ? 'selected' }}>5</option>
-            <option value="10" {{ limit == 10 ? 'selected' }}>10</option>
-            <option value="20" {{ limit == 20 ? 'selected' }}>20</option>
-        </select>
-        </form>
+    <form method="get" class="d-flex justify-content-end mb-2 gap-2">
+      <input type="hidden" name="page" value="1">
+      <select name="limit" class="form-select form-select-sm" style="width:auto" onchange="this.form.submit()">
+        <option value="5"  {{ limit == 5 ? 'selected' }}>5</option>
+        <option value="10" {{ limit == 10 ? 'selected' }}>10</option>
+        <option value="20" {{ limit == 20 ? 'selected' }}>20</option>
+      </select>
+    </form>
 
-        <table class="table table-hover table-bordered align-middle">
-            <thead class="table-light">
-                <tr>
-                    <th scope="col">#</th>
-                    <th scope="col">Nom commun</th>
-                    <th scope="col">Nom scientifique</th>
-                    <th scope="col">Type</th>
-                    <th scope="col">Biotope</th>
-                    <th scope="col">Actions</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for espece in especes %}
-                    <tr>
-                        <td>{{ espece.id }}</td>
-                        <td>{{ espece.nomCommun|default('—') }}</td>
-                        <td><em>{{ espece.nomScientifique|default('—') }}</em></td>
-                        <td>
-                            {% if espece.typeEspeceLabel %}
-                                <span class="badge-type type--{{ espece.typeEspeceCss }}">
-                                    {{ espece.typeEspeceLabel }}
-                                </span>
-                            {% else %}
-                                —
-                            {% endif %}
-                        </td>
-                        <td>{{ espece.biotope|default('—') }}</td>
-                        <td>
-                            <a href="{{ path('espece_edit', { id: espece.id }) }}" class="btn-admin-modifier">
-                                <i class="bi bi-pencil-square"></i> Modifier
-                            </a>
-                            <form method="post" action="{{ path('espece_delete', { id: espece.id }) }}"
-                                onsubmit="return confirm('Supprimer cette espèce ?');"
-                                class="d-inline">
-                                <input type="hidden" name="_token" value="{{ csrf_token('delete-espece-' ~ espece.id) }}">
-                                <button class="btn-admin-supprimer" title="Supprimer">
-                                    <i class="bi bi-trash3"></i> Supprimer
-                                </button>
-                            </form>
-                        </td>
+    <table class="table table-hover table-bordered align-middle">
+      <thead class="table-light">
+        <tr>
+          <th>#</th>
+          <th>Nom commun</th>
+          <th>Nom scientifique</th>
+          <th>Type</th>
+          <th>Biotope</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for espece in especes %}
+          <tr>
+            <td>{{ espece.id }}</td>
+            <td>{{ espece.nomCommun|default('—') }}</td>
+            <td><em>{{ espece.nomScientifique|default('—') }}</em></td>
+            <td>
+              {% if espece.typeEspeceLabel %}
+                <span class="badge-type type--{{ espece.typeEspeceCss }}">{{ espece.typeEspeceLabel }}</span>
+              {% else %}
+                —
+              {% endif %}
+            </td>
+            <td>{{ espece.biotope|default('—') }}</td>
+            <td>
+              <a href="{{ path('espece_edit', { id: espece.id }) }}" class="btn-admin-modifier">
+                <i class="bi bi-pencil-square"></i> Modifier
+              </a>
 
+              <form method="post"
+                    action="{{ path('espece_delete', { id: espece.id }) }}"
+                    onsubmit="return confirm('Supprimer cette espèce ?');"
+                    class="d-inline">
+                <input type="hidden" name="_token" value="{{ csrf_token('delete-espece-' ~ espece.id) }}">
+                <button class="btn-admin-supprimer" title="Supprimer">
+                  <i class="bi bi-trash3"></i> Supprimer
+                </button>
+              </form>
+            </td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
 
-                    </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-        <div class="d-flex justify-content-center mt-4">
-        {{ knp_pagination_render(especes) }}
-        </div>
+    <div class="d-flex justify-content-center mt-4">
+      {{ knp_pagination_render(especes) }}
+    </div>
+  {% endif %}
 
-    {% endif %}
-
-    <a href="{{ path('admin_dashboard') }}" class="btn-admin-retour mt-4">
-    <i class="bi bi-arrow-left"></i> Retour au tableau de bord</a>
-
-</div>
+  <a href="{{ path('admin_dashboard') }}" class="btn-admin-retour mt-4">
+    <i class="bi bi-arrow-left"></i> Retour au tableau de bord
+  </a>
 {% endblock %}
+
+
 
 

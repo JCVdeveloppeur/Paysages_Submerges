@@ -8,8 +8,10 @@ use App\Entity\Like;
 use App\Entity\User;
 use App\Repository\ArticleRepository;
 use App\Repository\CommentaireRepository;
-use App\Repository\EspeceRepository;
 use App\Repository\LikeRepository;
+use App\Repository\EspeceRepository;
+use App\Repository\PlanteRepository;
+use App\Repository\MaladiePoissonRepository;
 use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Knp\Component\Pager\PaginatorInterface;
@@ -19,7 +21,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use App\Repository\PageBlockRepository;
-use App\Repository\MaladiePoissonRepository;
+
 
 
 class AdminController extends AbstractController
@@ -41,7 +43,8 @@ class AdminController extends AbstractController
     LikeRepository $likeRepository,
     EspeceRepository $especeRepository,
     PageBlockRepository $pageBlockRepository,
-    MaladiePoissonRepository $maladiePoissonRepository
+    MaladiePoissonRepository $maladiePoissonRepository,
+    PlanteRepository $planteRepository
     ): Response {
     $aujourdHui = new \DateTimeImmutable('today');
     $labels = [];
@@ -76,6 +79,7 @@ class AdminController extends AbstractController
         'likesParJour' => $likesParJour,
         'nombreBlocs' => $pageBlockRepository->count([]),
         'dernieresMaladies' => $dernieresMaladies,
+        'nombrePlantes' => $planteRepository->count([]),
 
     ]);
 
@@ -92,7 +96,7 @@ class AdminController extends AbstractController
         ]);
     }
 
-    #[Route('/admin/article/{id}/approve', name: 'admin_article_approve', methods: ['POST'])]
+    #[Route('/admin/article/{id}/approve', name: 'admin_article_approve', methods: ['POST'],requirements: ['id' => '\d+'])]
     #[IsGranted('ROLE_ADMIN')]
     public function approveArticle(Article $article, EntityManagerInterface $em): Response
     {
@@ -103,7 +107,7 @@ class AdminController extends AbstractController
         return $this->redirectToRoute('admin_articles_moderation');
     }
 
-    #[Route('/admin/article/{id}/delete', name: 'admin_article_delete', methods: ['POST'])]
+    #[Route('/admin/article/{id}/delete', name: 'admin_article_delete', methods: ['POST'],  requirements: ['id' => '\d+'])]
     #[IsGranted('ROLE_ADMIN')]
     public function deleteArticle(Article $article, EntityManagerInterface $em): Response
     {
@@ -135,7 +139,7 @@ class AdminController extends AbstractController
             'articles' => $articles,
         ]);
     }
-    #[Route('/admin/article/{id}', name: 'admin_article_show')]
+    #[Route('/admin/article/{id}', name: 'admin_article_show', requirements: ['id' => '\d+'])]
     #[IsGranted('ROLE_ADMIN')]
     public function showUnpublishedArticle(Article $article): Response
     {
@@ -143,7 +147,6 @@ class AdminController extends AbstractController
             'article' => $article,
         ]);
     }
-
 
     #[Route('/admin/utilisateurs', name: 'admin_users')]
     #[IsGranted('ROLE_ADMIN')]
@@ -280,6 +283,9 @@ class AdminController extends AbstractController
             ->getQuery();
 
         $limit = $request->query->getInt('limit', 5);
+        if (!in_array($limit, [5, 10, 20], true)) {
+            $limit = 5;
+        }
 
         $especes = $paginator->paginate(
             $query,
@@ -293,6 +299,35 @@ class AdminController extends AbstractController
             'limit' => $limit,
         ]);
     }
+    #[Route('/admin/plantes', name: 'admin_plantes')]
+    #[IsGranted('ROLE_ADMIN')]
+    public function adminPlantes(
+        PlanteRepository $planteRepository,
+        Request $request,
+        PaginatorInterface $paginator
+    ): Response {
+        $query = $planteRepository->createQueryBuilder('p')
+            ->orderBy('p.nomCommun', 'ASC')
+            ->getQuery();
+
+        $limit = $request->query->getInt('limit', 5);
+        if (!in_array($limit, [5, 10, 20], true)) {
+            $limit = 5;
+        }
+
+        $plantes = $paginator->paginate(
+            $query,
+            $request->query->getInt('page', 1),
+            $limit
+        );
+
+        return $this->render('admin/plante/admin.html.twig', [
+            'plantes' => $plantes,
+            'nombrePlantes' => $planteRepository->count([]),
+            'limit' => $limit,
+        ]);
+    }
+
 
     #[Route('/admin/maladies', name: 'admin_maladies')]
     #[IsGranted('ROLE_ADMIN')]
@@ -306,6 +341,9 @@ class AdminController extends AbstractController
             ->getQuery();
 
         $limit = $request->query->getInt('limit', 5);
+        if (!in_array($limit, [5, 10, 20], true)) {
+            $limit = 5;
+        }
 
         $maladies = $paginator->paginate(
             $query,

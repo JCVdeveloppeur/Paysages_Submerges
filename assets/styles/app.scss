@@ -1,30 +1,44 @@
 
-
 @use "bootstrap/scss/bootstrap" as *;
+
 @use "variables" as *;
 @use "mixins" as *;
+
+@use "bouton"; 
+@use "cards/carnet";
+
 @use "navbar";
+@use "accueil";
+@use "animations_accueil";
+@use "titre_flottant";
+@use "footer";
+@use "legal";
+
 @use "article";
 @use "article_show";
+@use "article-edit" as *;
 @use "badges";
+
+@use "maladie_poisson";
 @use "especes";
 @use "plante";
-@use "maladie_poisson";
+
+@use "animations_maladies_especes";
+
+@use "searchbar";
+@use "pagination";
+
 @use "connexion";
 @use "inscription";
 @use "profil";
 @use "public_profile";
+
 @use "like";
 @use "commentaire";
+
 @use "admin_dashboard";
 @use "sidebar";
-@use "bouton";
-@use "accueil";
-@use "animations_accueil";
-@use "titre_flottant"; 
-@use "footer";
-@use "legal";
-@use "article-edit" as *;
+
 
 
 
@@ -121,13 +135,14 @@ button, .btn {
     box-sizing: border-box;
 }
 
-// Conteneurs sur fond clair
-.card, .container, .content-wrapper {
+/* Conteneurs sur fond clair (sans toucher aux cards) */
+.container, .content-wrapper {
   background-color: #ffffff;
   border-radius: 0.75rem;
   padding: 1rem;
   color: #000;
 }
+
 
 
 

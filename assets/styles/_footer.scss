@@ -9,7 +9,7 @@
   padding: 2.5rem 1rem 2rem;
   font-size: .95rem;
   border-top: 1px solid rgba(255,255,255,.08);
-  overflow: hidden; // on garde, la vague reste DANS le footer
+  overflow: hidden; 
 
   /* vague décorative en haut */
   &::before {
@@ -22,13 +22,13 @@
       radial-gradient(22px 12px at 11px 12px, rgba(255,255,255,.14) 35%, rgba(255,255,255,0) 36%)
       0 100% / 44px 24px repeat-x;
     opacity: .35;
-    transform: none; // collée en haut à l’intérieur du footer
+    transform: none; 
   }
 
-  /* Liens du footer : couleur, soulignement animé et text-shadow au hover */
+  /* Liens du footer : couleur, soulignement animé*/
   a {
-    position: relative; // nécessaire pour le ::after animé
-    color: #cce7f5; // teinte claire par défaut
+    position: relative; 
+    color: #cce7f5; 
     text-decoration: none;
     transition: color .3s ease, text-shadow .3s ease;
 
@@ -45,7 +45,7 @@
 
     &:hover,
     &:focus-visible {
-      color: #4fc3f7; // teinte accent
+      color: #4fc3f7; 
       text-shadow: 0 0 6px rgba(255,255,255,.5);
       outline: none;
 
@@ -181,11 +181,11 @@
 
     .back-to-top {
       right: 50%;
-      transform: translateX(50%); // position de base centrée
+      transform: translateX(50%); 
 
       &:hover,
       &:focus-visible {
-        transform: translateX(50%) translateY(-2px); // compose le déplacement au hover/focus
+        transform: translateX(50%) translateY(-2px); 
       }
     }
   }
@@ -193,12 +193,12 @@
 /* Variante crème pour les pages blanches (liste + article) */
 .site-footer {
   &.site-footer--creme {
-    /* Fond crème en léger dégradé pour rester chic */
+    
     background: linear-gradient(180deg, #fbf8f3, #f5efe7);
-    color: #2b2b2b; /* texte par défaut plus sombre */
+    color: #2b2b2b; 
     border-top: 1px solid rgba(0,0,0,.08);
 
-    /* vague décorative atténuée et dans des tons neutres */
+    /* vague décorative
     &::before {
       background:
         radial-gradient(22px 12px at 11px 12px, rgba(0,0,0,.10) 35%, rgba(0,0,0,0) 36%)
@@ -259,12 +259,12 @@
     }
   }
 }
-/* Variante crème douce pour les pages blanches (liste + article) */
+/* Variante crème pour les pages blanches (liste + article) */
 .site-footer {
   &.site-footer--creme {
-    /* Fond crème clair et chaleureux */
+   
     background: linear-gradient(180deg, #fbf8f3, #f5efe7);
-    color: #2b2b2b; /* texte plus sombre pour contraste */
+    color: #2b2b2b; 
     border-top: 1px solid rgba(0,0,0,.08);
 
     /* vague décorative adoucie */
@@ -275,7 +275,7 @@
       opacity: .2;
     }
 
-    /* Liens : on conserve la touche bleutée */
+    /* Liens :  bleutée */
     a {
       color: if(global-variable-exists(bleu-ciel), darken($bleu-ciel, 10%), #2f5b6b);
 
@@ -286,7 +286,7 @@
       &:hover,
       &:focus-visible {
         color: if(global-variable-exists(bleu-ciel), darken($bleu-ciel, 20%), #1f4856);
-        text-shadow: none; /* inutile sur fond clair */
+        text-shadow: none; 
       }
     }
 
@@ -332,25 +332,25 @@
 /* --- Fix bouton "Haut de page" sur mobile --- */
 .site-footer {
   @media (max-width: 640px) {
-    /* On réserve de la place pour le bouton en bas à droite */
-    padding-bottom: 4.25rem; /* ↑ un peu plus que 3.25rem pour être tranquille */
+    
+    padding-bottom: 4.25rem; 
 
     .footer-credits {
-      /* Espace à droite pour éviter tout chevauchement avec le bouton */
+     
       padding-right: 5.5rem;
     }
 
     .back-to-top {
-      /* On quitte la position centrée */
+      
       right: max(1rem, env(safe-area-inset-right));
       bottom: max(1rem, env(safe-area-inset-bottom));
       transform: none;
 
-      /* Légèrement plus compact sur petit écran */
+      
       padding: .5rem .7rem;
       font-size: .95rem;
 
-      /* Un peu plus de lisibilité au-dessus du fond crème */
+      
       box-shadow: 0 4px 12px rgba(0,0,0,.08);
     }
   }
@@ -359,17 +359,17 @@
 .site-footer {
   @media (max-width: 640px) {
     .back-to-top {
-      /* position déjà à droite + en bas dans ton dernier patch */
+     
       right: max(1rem, env(safe-area-inset-right));
       bottom: max(1rem, env(safe-area-inset-bottom));
       transform: none;
 
-      /* on retire l’animation de déplacement */
+     
       transition: background .2s ease, border-color .2s ease, box-shadow .2s ease;
 
       &:hover,
       &:focus-visible {
-        /* ne bouge plus du tout */
+       
         transform: none;
       }
     }
@@ -404,7 +404,7 @@
   color: #ffffff;
 
   &::after {
-    width: 100%;                // suit exactement la largeur du lien
+    width: 100%;                
   }
 }
 
@@ -415,7 +415,7 @@
   transition: transform 0.25s ease;
 }
 
-/* Petit mouvement de l’icône au survol (comme avant avec les <i>) */
+/* Petit mouvement de l’icône au survol*/
 .site-footer .footer-link:hover .footer-icon {
   transform: translateX(3px);
 }

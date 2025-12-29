@@ -55,9 +55,9 @@
   }
 }
 .article-edit textarea.form-control{
-  height: auto !important;   /* neutralise un éventuel override */
-  min-height: 14rem;         /* ~224px */
-  resize: vertical;          /* poignée de redimensionnement */
+  height: auto !important;  
+  min-height: 14rem;        
+  resize: vertical;        
   line-height: 1.5;
 }
 

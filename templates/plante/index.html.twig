@@ -4,22 +4,70 @@
 
 {% block body %}
 <div class="container my-5 plante-index">
-    <h1 class="mb-4 text-center">🌿 Fiches plantes</h1>
+    <h1 class="mb-2 text-center page-title">
+    🌿 Encyclopédie des plantes aquatiques
+    </h1>
+    <p class="text-center page-subtitle mb-4">
+    Un aperçu des plantes : position dans l'aquarium, éclairage, difficulté et caractéristiques clés.
+    </p>
 
-    {% if plantes is empty %}
-        <div class="alert alert-info text-center mb-4">
-            Aucune plante enregistrée pour le moment.
+    {# Barre outils : recherche + select #}
+
+    <div class="row justify-content-center mb-3 plante-toolbar">
+    <div class="col-12 col-lg-10">
+        <div class="d-flex flex-column flex-md-row align-items-stretch align-items-md-center gap-2">
+
+        {# Recherche #}
+        <form method="get" class="w-100 flex-grow-1 bloc-recherche-espece" id="recherche-plante-form">
+            <input type="hidden" name="limit" value="{{ limit|default(6) }}">
+            <input type="hidden" name="page" value="1">
+            <div class="position-relative">
+            <input
+                type="text"
+                name="nom"
+                value="{{ nom }}"
+                class="form-control pe-5"
+                placeholder="🌿 Rechercher une plante…"
+            >
+            <button type="button" class="btn-clear-search" aria-label="Effacer la recherche" title="Effacer la recherche">
+                ✕
+            </button>
+            </div>
+        </form>
+
+        {# Select afficher #}
+        <form method="get" class="d-flex align-items-center justify-content-md-end gap-2 small text-muted flex-shrink-0">
+            <input type="hidden" name="nom" value="{{ nom }}">
+            <input type="hidden" name="page" value="1">
+            <label for="limit" class="mb-0">Afficher :</label>
+
+            <select name="limit" id="limit" class="form-select form-select-sm" style="width:auto" onchange="this.form.submit()">
+            <option value="6"  {{ limit == 6 ? 'selected' }}>6</option>
+            <option value="9"  {{ limit == 9 ? 'selected' }}>9</option>
+            <option value="12" {{ limit == 12 ? 'selected' }}>12</option>
+            </select>
+        </form>
+
         </div>
-        <div class="text-center">
-            <a href="{{ path('app_plante_new') }}" class="btn btn-vert">
-                ➕ Ajouter une plante
-            </a>
-        </div>
-    {% else %}
-        <div class="row row-cols-1 row-cols-md-3 g-4">
-            {% for plante in plantes %}
-                <div class="col">
-                    <div class="card h-100 shadow-sm card-plante">
+    </div>
+    </div>
+
+    {% if pagination.items is empty %}
+    <div class="alert alert-info text-center mb-4">
+        Aucune plante enregistrée pour le moment.
+    </div>
+    <div class="text-center">
+        <a href="{{ path('app_plante_new') }}" class="btn btn-vert">
+            ➕ Ajouter une plante
+        </a>
+    </div>
+{% else %}
+
+    <div class="paginated-content">
+        <div id="plante-results" class="row row-cols-1 row-cols-md-3 g-4 results-animate">
+            {% for plante in pagination %}
+                <div class="col results-item">
+                    <div class="card h-100 shadow-sm card-carnet card-carnet--large card-plante">
                         {% if plante.image %}
                             <img
                                 src="{{ asset('uploads/plantes/' ~ plante.image) }}"
@@ -65,26 +113,28 @@
                             </ul>
                         </div>
 
-                        <div class="card-footer bg-light d-flex justify-content-between align-items-center">
-                            <a href="{{ path('app_plante_show', { id: plante.id }) }}" class="btn btn-sm btn-vert">
+                        <div class="card-footer d-flex justify-content-end gap-2">
+                            <a href="{{ path('app_plante_show', { id: plante.id }) }}" class="btn btn-espece btn-sm">
                                 🔍 Voir la fiche
                             </a>
-                            <a href="{{ path('app_plante_edit', { id: plante.id }) }}" class="btn btn-sm btn-outline-secondary">
-                                Modifier
-                            </a>
+                            {% if is_granted('ROLE_ADMIN') %}
+                                <a href="{{ path('app_plante_edit', {'id': plante.id}) }}" class="btn btn-sm btn-outline-secondary">
+                                    Modifier
+                                </a>
+                            {% endif %}
                         </div>
                     </div>
                 </div>
             {% endfor %}
         </div>
 
-        <div class="text-center mt-4">
-        <a href="{{ path('app_plante_new') }}" class="btn btn-aqua">
-            ➕ Ajouter une nouvelle plante
-        </a>
+        <div class="d-flex justify-content-center mt-4">
+            {{ knp_pagination_render(pagination) }}
+        </div>
     </div>
 
-    {% endif %}
+{% endif %}
+
 </div>
 {% endblock %}
 

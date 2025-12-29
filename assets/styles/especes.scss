@@ -2,20 +2,34 @@
 @use "mixins" as *;
 @use "bouton" as *;
 
-// --- Fiche espèce : style épuré et naturaliste + animation d'apparition ---
+/* =========================================================
+   ESPÈCES — FICHE (SHOW) + LISTE (INDEX) + UI COMMUN
+   ========================================================= */
+
+/* -----------------------------
+   Keyframes (idéalement à mutualiser plus tard)
+------------------------------ */
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(30px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* =========================================================
+   PAGE SHOW — .fiche-espece
+   ========================================================= */
 .fiche-espece {
   margin: 2rem auto;
   padding: 2.5rem;
   max-width: 960px;
+
   background-color: #fdfdfb;
   border: 1px solid #dad7cd;
   border-radius: 16px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-  font-family: 'Segoe UI', sans-serif;
-  color: #2c2c2c;
-  transition: box-shadow 0.3s ease;
 
-  // --- Animation d’apparition ---
+  font-family: "Segoe UI", sans-serif;
+  color: #2c2c2c;
+
   opacity: 0;
   transform: translateY(30px);
   animation: fadeInUp 0.8s ease-out forwards;
@@ -53,7 +67,15 @@
     padding: 1.2rem;
     border-radius: 10px;
     margin-top: 1.2rem;
-    box-shadow: inset 0 0 4px rgba(0,0,0,0.03);
+    box-shadow: inset 0 0 4px rgba(0, 0, 0, 0.03);
+  }
+
+  .badge-type {
+    background-color: #6a994e;
+    color: #fff;
+    padding: 0.3rem 0.9rem;
+    border-radius: 20px;
+    font-size: 0.85rem;
   }
 
   .btn-retour {
@@ -64,22 +86,12 @@
     border: none;
     border-radius: 8px;
 
-    &:hover {
-      background-color: #3a5a40;
-    }
+    &:hover { background-color: #3a5a40; }
   }
 
-  .badge-type {
-    background-color: #6a994e;
-    color: white;
-    padding: 0.3rem 0.9rem;
-    border-radius: 20px;
-    font-size: 0.85rem;
-  }
-}
-  // -----------------------------
-  // Sections de la fiche (alignées sur les maladies)
-  // -----------------------------
+  /* -----------------------------
+     Sections “fiche”
+  ------------------------------ */
   .fiche-section {
     margin-bottom: 1.6rem;
     padding: 1.1rem 1.2rem;
@@ -89,25 +101,26 @@
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.04);
     position: relative;
     overflow: hidden;
+    transition: transform 0.22s ease, box-shadow 0.22s ease;
 
     &::before {
-      // petit filet à gauche (comme sur les maladies)
       content: "";
       position: absolute;
       left: 0;
       top: 0;
       width: 4px;
       height: 100%;
-      background: linear-gradient(
-        to bottom,
-        #9cc1ff,
-        #6da4ff
-      );
+      background: linear-gradient(to bottom, #9cc1ff, #6da4ff);
       opacity: 0.85;
     }
 
-    & + .fiche-section {
-      margin-top: 1.2rem;
+    & + .fiche-section { margin-top: 1.2rem; }
+
+    &:hover {
+      transform: translateY(-4px);
+      box-shadow:
+        0 12px 26px rgba(0, 0, 0, 0.18),
+        0 0 0 1px rgba(255, 255, 255, 0.8);
     }
   }
 
@@ -139,7 +152,6 @@
     }
   }
 
-  // Variantes d’icônes (palette alignée avec la fiche maladie)
   .fiche-icone-physique {
     color: #3c5a9a;
     background: #e9f0ff;
@@ -153,15 +165,15 @@
   }
 
   .fiche-icone-alimentation {
-    color: #216244;
-    background: #e9f9f0;
-    border: 1px solid #bfe5cf;
-  }
-
-  .fiche-icone-reproduction {
     color: #1d6b6b;
     background: #e6f6f6;
     border: 1px solid #b7e0df;
+  }
+
+  .fiche-icone-reproduction {
+    color: #216244;
+    background: #e9f9f0;
+    border: 1px solid #bfe5cf;
   }
 
   .fiche-texte {
@@ -169,9 +181,7 @@
     line-height: 1.7;
     color: #3c4048;
 
-    p {
-      margin-bottom: 0.6rem;
-    }
+    p { margin-bottom: 0.6rem; }
 
     ul,
     ol {
@@ -179,226 +189,105 @@
       margin-bottom: 0.6rem;
     }
 
-    li {
-      margin-bottom: 0.25rem;
-    }
+    li { margin-bottom: 0.25rem; }
   }
 
-// --- Image espèce avec cadre et effet zoom ---
-.image-espece {
-  display: block;
-  max-width: 400px;
-  width: 100%;
-  height: auto;
-  margin: 1rem auto 1rem;
-  border: 1px solid #ccc;
-  padding: 0.4rem;
-  border-radius: 6px;
-  background-color: #fff;
-  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
-  transition: transform 0.4s ease;
-
-  &:hover {
-    transform: scale(1.05);
-  }
-}
-
-.photo-caption {
-  text-align: center;
-  font-style: italic;
-  font-size: 0.9rem;
-  color: #555;
-  margin-top: 0.5rem;
-  margin-bottom: 2rem;
-}
-
-// --- Carte espèce ---
-.card-espece {
-  .image-carte {
-    width: 100%;
-    height: 220px;
-    object-fit: cover;
-    border-top-left-radius: 0.5rem;
-    border-top-right-radius: 0.5rem;
-  }
-
-  .card-body {
-    padding: 1rem;
-    background-color: #fcfcfa;
-    border-top: 1px solid #eee;
-  }
-
-  h5 {
-    font-family: 'Merriweather', serif;
-    font-weight: 700;
-    margin-bottom: 0.5rem;
-  }
-
-  p {
-    font-size: 0.95rem;
-    color: #444;
-  }
-
-  .badge {
-    background-color: $bleu-profond;
-  }
-}
-a.btn-espece {
-  @include bouton-nature($btn-vert, $btn-vert-hover);
-}
-
-
-// --- Animation keyframes ---
-@keyframes fadeInUp {
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-.form-control {
-  border-radius: 30px;
-  padding: 0.75rem 1.5rem;
-  border: 1px solid #c4d7c5;
-  background-color: #f8fff6;
-  font-style: italic;
-  transition: box-shadow 0.3s;
-
-  &:focus {
-    box-shadow: 0 0 0 0.2rem rgba(88, 129, 87, 0.25);
-    border-color: #588157;
-  }
-}
-
-
-// --- Style personnalisé pour la barre de recherche avec effet glow ---
-.bloc-recherche-espece {
-  .form-control {
-    border-radius: 30px;
-    padding: 0.75rem 1.5rem;
-    border: 1px solid #c4d7c5;
-    background-color: #f6fff4;
+  /* -----------------------------
+     Nom scientifique + badges
+  ------------------------------ */
+  .espece-nom-scientifique {
     font-style: italic;
     font-size: 1rem;
-    color: #344e41;
-    transition: box-shadow 0.3s ease, border-color 0.3s ease;
-
-    &::placeholder {
-      color: #9bbca3;
-    }
-
-    &:focus {
-      border-color: #588157;
-      background-color: #ffffff;
-      box-shadow:
-        0 0 0 0.15rem rgba(88, 129, 87, 0.3),
-        0 0 8px 2px rgba(106, 153, 78, 0.4);
-      outline: none;
-    }
-  }
-}
-.pagination {
-  justify-content: center;
-  margin-top: 2rem;
-
-  .page-item {
-    margin: 0 0.2rem;
-
-    .page-link {
-      background-color: #f8f5ee;
-      color: $btn-brun;
-      border: 1px solid $btn-brun;
-      border-radius: 6px;
-      transition: background-color 0.3s ease, color 0.3s ease;
-
-      &:hover {
-        background-color: $btn-brun;
-        color: #fff;
-      }
-    }
-
-    &.active .page-link {
-      background-color: $btn-brun;
-      color: #fff;
-      border-color: $btn-brun;
-    }
-  }
-}
-// ===============================
-// Fiche espèce : bloc photo
-// ===============================
-.fiche-espece__figure {
-  margin: 1.6rem auto 1.9rem;
-  max-width: 520px;
-  text-align: center;
-  padding: 0;
-  background: transparent;
-  border: none;
-}
-
-.fiche-espece__image {
-  display: block;
-  width: 100%;
-  max-height: 340px;
-  object-fit: cover;
-  border-radius: 12px;
-  background: #fff;
-  border: 1px solid rgba(0, 0, 0, 0.06);
-  box-shadow:
-    0 6px 14px rgba(0, 0, 0, 0.12),
-    0 2px 4px rgba(0, 0, 0, 0.06);
-  transition: transform 0.28s ease;
-  transform-origin: center;
-
-  /* variables de zoom */
-  --zoom-base: 1;
-  --zoom-scroll: 0;
-  transform: scale(calc(var(--zoom-base) + var(--zoom-scroll)));
-}
-
-.fiche-espece__figure:hover .fiche-espece__image {
-  /* zoom léger au survol */
-  --zoom-base: 1.02;
-}
-
-.fiche-espece__caption {
-  margin-top: 0.55rem;
-  font-size: 0.85rem;
-  color: #7b818a;
-  font-style: italic;
-}
-/* ===============================
-   Cadre carnet pour image ESPÈCE
-   ============================== */
-
-.carnet-image {
-  position: relative;
-  background: #fbf9f5;
-  border-radius: 18px;
-  padding: 1.2rem;
-  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.18);
-  margin: 1.8rem auto 2rem;
-  max-width: 540px;
-  overflow: hidden;
-  border: 1px solid rgba(0, 0, 0, 0.04);
-
-  &::before {
-    content: "";
-    position: absolute;
-    inset: 10px;
-    border-radius: 16px;
-    border: 1px solid rgba(0, 0, 0, 0.05);
-    pointer-events: none;
+    color: #6f7a83;
+    margin-top: 0.2rem;
   }
 
-  &::after {
-  display: none;
-}
-}
-/* ================================
-   Encadré "Infos rapides" — Aligné sur les maladies
-================================ */
+  .espece-badges {
+    display: flex;
+    justify-content: center;
+    gap: 0.6rem;
+    margin-top: 0.6rem;
+  }
 
-.fiche-espece {
+  .badge-espece-type,
+  .badge-espece-biotope {
+    background: rgba(70, 130, 180, 0.12);
+    border: 1px solid rgba(70, 130, 180, 0.25);
+    color: #2f4f66;
+    font-size: 0.75rem;
+    padding: 0.25rem 0.6rem;
+    border-radius: 999px;
+    font-weight: 500;
+  }
+
+  /* -----------------------------
+     Bloc photo
+  ------------------------------ */
+  .fiche-espece__figure {
+    margin: 1.6rem auto 1.9rem;
+    max-width: 520px;
+    text-align: center;
+    padding: 0;
+    background: transparent;
+    border: none;
+  }
+
+  .fiche-espece__image {
+    display: block;
+    width: 100%;
+    max-height: 340px;
+    object-fit: cover;
+    border-radius: 12px;
+    background: #fff;
+    border: 1px solid rgba(0, 0, 0, 0.06);
+    box-shadow:
+      0 6px 14px rgba(0, 0, 0, 0.12),
+      0 2px 4px rgba(0, 0, 0, 0.06);
+    transition: transform 0.28s ease;
+    transform-origin: center;
+
+    --zoom-base: 1;
+    --zoom-scroll: 0;
+    transform: scale(calc(var(--zoom-base) + var(--zoom-scroll)));
+  }
+
+  .fiche-espece__figure:hover .fiche-espece__image {
+    --zoom-base: 1.02;
+  }
+
+  .fiche-espece__caption {
+    margin-top: 0.55rem;
+    font-size: 0.85rem;
+    color: #7b818a;
+    font-style: italic;
+  }
+
+  .carnet-image {
+    position: relative;
+    background: #fbf9f5;
+    border-radius: 18px;
+    padding: 1.2rem;
+    box-shadow: 0 18px 40px rgba(0, 0, 0, 0.18);
+    margin: 1.8rem auto 2rem;
+    max-width: 540px;
+    overflow: hidden;
+    border: 1px solid rgba(0, 0, 0, 0.04);
+
+    &::before {
+      content: "";
+      position: absolute;
+      inset: 10px;
+      border-radius: 16px;
+      border: 1px solid rgba(0, 0, 0, 0.05);
+      pointer-events: none;
+    }
+
+    &::after { display: none; }
+  }
+
+  /* -----------------------------
+     Encadré "Infos rapides"
+  ------------------------------ */
   .espece-meta-card {
     background: #fbf9f5;
     border-radius: 16px;
@@ -420,6 +309,14 @@ a.btn-espece {
       background: linear-gradient(to bottom, #7aa0cf, #4969a3);
       opacity: 0.9;
     }
+
+    &:hover {
+      box-shadow:
+        0 12px 26px rgba(0, 0, 0, 0.2),
+        0 0 0 1px rgba(255, 255, 255, 0.9);
+      transform: translateY(-1px);
+      transition: box-shadow 0.22s ease, transform 0.22s ease;
+    }
   }
 
   .espece-meta-titre {
@@ -431,9 +328,7 @@ a.btn-espece {
     letter-spacing: 0.14em;
   }
 
-  .espece-meta-liste {
-    margin: 0;
-  }
+  .espece-meta-liste { margin: 0; }
 
   .espece-meta-item {
     display: flex;
@@ -441,9 +336,7 @@ a.btn-espece {
     padding: 0.45rem 0.4rem 0.45rem 0.35rem;
     border-bottom: 1px dashed rgba(0, 0, 0, 0.06);
 
-    &:last-child {
-      border-bottom: none;
-    }
+    &:last-child { border-bottom: none; }
 
     dt {
       font-size: 0.78rem;
@@ -460,18 +353,7 @@ a.btn-espece {
     }
   }
 
-  .espece-meta-card:hover {
-    box-shadow:
-      0 12px 26px rgba(0, 0, 0, 0.2),
-      0 0 0 1px rgba(255, 255, 255, 0.9);
-    transform: translateY(-1px);
-    transition:
-      box-shadow 0.22s ease,
-      transform 0.22s ease;
-  }
-}
-  /* --------- Bloc "À retenir" dans la carte Infos rapides --------- */
-
+  
   .espece-meta-retour {
     background: #fbf9f5;
     border-radius: 12px;
@@ -492,162 +374,82 @@ a.btn-espece {
     font-size: 0.9rem;
     color: #4b4f57;
   }
-  /* ================================
-   Fiche espèce – sections harmonisées
-   (mêmes styles que fiche maladie)
-   ================================ */
+}
 
-.fiche-espece {
+/* =========================================================
+   PAGE INDEX — cartes (liste)
+   ========================================================= */
+.card-espece {
 
-  .fiche-section {
-    margin-bottom: 1.6rem;
-    padding: 1.1rem 1.2rem;
-    border-radius: 12px;
-    background: rgba(255, 255, 255, 0.9);
-    border: 1px solid rgba(0, 0, 0, 0.04);
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.04);
-    position: relative;
+  /* accent spécifique “espèces” */
+  --carnet-accent: linear-gradient(
+    to bottom,
+    rgba(102, 160, 140, 0.70),
+    rgba(52, 78, 65, 0.70)
+  );
+
+  /* petit bonus: interaction bouton dans la carte */
+  &:hover .btn-espece {
+    transform: translateY(-1px);
+    filter: saturate(1.06);
+  }
+
+  .btn-espece {
+    transition: transform 0.18s ease, filter 0.18s ease;
+    will-change: transform;
+  }
+
+  &:active .btn-espece { transform: translateY(0); }
+  
+  .card-text {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    line-clamp: 3;
+    -webkit-box-orient: vertical;
     overflow: hidden;
-
-    &::before {
-      content: "";
-      position: absolute;
-      left: 0;
-      top: 0;
-      width: 4px;
-      height: 100%;
-      background: linear-gradient(
-        to bottom,
-        #9cc1ff,
-        #6da4ff
-      );
-      opacity: 0.85;
-    }
-
-    & + .fiche-section {
-      margin-top: 1.2rem;
-    }
-  }
-
-  .fiche-titre {
-    display: flex;
-    align-items: center;
-    gap: 0.55rem;
-    margin: 0 0 0.55rem;
-    font-family: "Merriweather", serif;
-    font-size: 1.05rem;
-    color: #223043;
-    text-transform: uppercase;
-    letter-spacing: 0.14em;
-  }
-
-  .fiche-texte {
-    font-size: 0.95rem;
-    line-height: 1.7;
-    color: #3c4048;
-
-    p {
-      margin-bottom: 0.6rem;
-    }
-
-    ul,
-    ol {
-      padding-left: 1.2rem;
-      margin-bottom: 0.6rem;
-    }
-
-    li {
-      margin-bottom: 0.25rem;
-    }
-  }
-
-  /* Pastilles icône rondes */
-  .fiche-icone {
-    width: 26px;
-    height: 26px;
-    border-radius: 999px;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
-    font-size: 14px;
-
-    svg {
-      width: 18px;
-      height: 18px;
-      display: block;
-    }
-  }
-
-  /* Harmonisation des couleurs d’icône
-     avec la fiche maladie */
-
-  /* Description physique ↔ Symptômes */
-  .fiche-icone-physique {
-    color: #3c5a9a;
-    background: #e9f0ff;
-    border: 1px solid #c4d5ff;
-  }
-
-  /* Comportement ↔ Causes probables */
-  .fiche-icone-comportement {
-    color: #8a5b1e;
-    background: #fff7e6;
-    border: 1px solid #f3d6a3;
-  }
-
-  /* Alimentation ↔ Traitement */
-  .fiche-icone-alimentation {
-    color: #1d6b6b;
-    background: #e6f6f6;
-    border: 1px solid #b7e0df;
-  }
-
-  /* Reproduction ↔ Prévention */
-  .fiche-icone-reproduction {
-    color: #216244;
-    background: #e9f9f0;
-    border: 1px solid #bfe5cf;
   }
 }
-.fiche-espece {
-  .fiche-section {
-    transition:
-      transform 0.22s ease,
-      box-shadow 0.22s ease;
 
-    &:hover {
-      transform: translateY(-4px);
-      box-shadow:
-        0 12px 26px rgba(0, 0, 0, 0.18),
-        0 0 0 1px rgba(255, 255, 255, 0.8);
-    }
-  }
+/* bouton espèce */
+a.btn-espece {
+  @include bouton-nature($btn-vert, $btn-vert-hover);
 }
-.espece-nom-scientifique {
+
+/* =========================================================
+   Barre de recherche (index)
+   ========================================================= */
+.bloc-recherche-espece .form-control {
+  border-radius: 30px;
+  padding: 0.75rem 1.5rem;
+  border: 1px solid #c4d7c5;
+  background-color: #f8fff6;
   font-style: italic;
-  font-size: 1rem;
-  color: #6f7a83;
-  margin-top: 0.2rem;
+  transition: box-shadow 0.3s;
+
+  &:focus {
+    box-shadow: 0 0 0 0.2rem rgba(88, 129, 87, 0.25);
+    border-color: #588157;
+  }
 }
 
-.espece-badges {
-  display: flex;
-  justify-content: center;
-  gap: 0.6rem;
-  margin-top: 0.6rem;
+/* =========================================================
+   Reduced motion (à mutualiser plus tard)
+   ========================================================= */
+@media (prefers-reduced-motion: reduce) {
+  .fiche-espece,
+  .card-espece,
+  .card-espece .btn-espece {
+    animation: none !important;
+    transition: none !important;
+    transform: none !important;
+    filter: none !important;
+  }
 }
 
-.badge-espece-type,
-.badge-espece-biotope {
-  background: rgba(70, 130, 180, 0.12);
-  border: 1px solid rgba(70, 130, 180, 0.25);
-  color: #2f4f66;
-  font-size: 0.75rem;
-  padding: 0.25rem 0.6rem;
-  border-radius: 999px;
-  font-weight: 500;
-}
+
+
+
+
 
 
 

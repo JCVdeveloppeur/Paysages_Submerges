@@ -1,0 +1,137 @@
+
+@use "variables" as *;
+
+.pagination {
+  justify-content: center;
+  margin-top: 2rem;
+
+  .page-item {
+    margin: 0 0.25rem;
+
+    .page-link {
+      background-color: $vert-clair-ui;
+      color: $btn-vert;
+      border: 1px solid $vert-clair-ui-border;
+      border-radius: 6px;
+      font-weight: 500;
+
+      transition:
+        background-color 0.25s ease,
+        color 0.25s ease,
+        border-color 0.25s ease,
+        transform 0.2s ease,
+        box-shadow 0.2s ease,
+        opacity 0.2s ease;
+
+      &:hover {
+        background-color: lighten($btn-vert, 26%);
+        color: $btn-vert;
+        border-color: $btn-vert;
+        transform: translateY(-1px);
+        box-shadow: 0 3px 6px rgba(0, 0, 0, 0.12);
+      }
+
+      &:focus {
+        box-shadow: 0 0 0 0.2rem rgba(88, 129, 87, 0.25);
+      }
+    }
+
+    /* Page active */
+    &.active .page-link {
+      background-color: $btn-vert;
+      color: #fff;
+      border-color: $btn-vert;
+      box-shadow: 0 3px 8px rgba(0, 0, 0, 0.18);
+      cursor: default;
+      transform: none;
+    }
+
+    /* Page désactivée */
+    &.disabled .page-link {
+      opacity: 0.45;
+      cursor: not-allowed;
+      pointer-events: none;
+      box-shadow: none;
+      transform: none;
+    }
+  }
+}
+@keyframes pageFadeUp {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* À mettre sur le bloc qui change quand on pagine */
+.paginated-content {
+  animation: pageFadeUp 220ms ease-out both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .paginated-content { animation: none !important; }
+}
+.paginated-content {
+  scroll-margin-top: 120px;
+}
+.section-articles h1 {
+  scroll-margin-top: 140px;
+}
+
+// Bouton Retour en haut
+.back-to-top {
+  position: fixed;
+  bottom: 1.5rem;
+  right: 3rem;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+
+  background-color: $vert-clair-ui;
+  color: $btn-vert;
+  border: 1px solid $vert-clair-ui-border;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  font-size: 1.1rem;
+  font-weight: 600;
+
+  cursor: pointer;
+  opacity: 0;
+  pointer-events: none;
+
+  // État caché
+  transform: translateY(6px);
+
+  transition:
+    opacity 0.3s ease,
+    transform 0.3s ease,
+    background-color 0.25s ease;
+
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.12);
+
+  &:hover {
+    background-color: $btn-vert;
+    color: #fff;
+    transform: translateY(-2px);
+  }
+
+  &.is-visible {
+    opacity: 1;
+    pointer-events: auto;
+    transform: translateY(0);
+  }
+
+  &:focus-visible {
+    outline: none;
+    box-shadow:
+      0 0 0 3px rgba(88, 129, 87, 0.35),
+      0 4px 10px rgba(0, 0, 0, 0.12);
+  }
+}
+
+
+
+
+
+

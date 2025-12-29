@@ -4,10 +4,15 @@
 
 {% block body %}
 <div class="container my-5 maladie-index">
-    <h1 class="mb-3 text-center">💊 Les maladies des poissons d'eau douce</h1>
-    <p class="text-center text-muted mb-4">
-        Un coup d'œil rapide sur les principales maladies : gravité, contagion, agent pathogène, symptômes clés.
+    <h1 class="page-title">
+    <span class="page-icon">💊</span>
+    Encyclopédie des maladies des poissons d'eau douce
+    </h1>
+
+    <p class="page-subtitle">
+    Un aperçu des principales maladies : gravité, contagion, agents pathogènes et symptômes clés.
     </p>
+
         {# Barre outils : recherche + select (même ligne) #}
         <div class="row justify-content-center mb-3">
         <div class="col-12 col-lg-10">
@@ -24,11 +29,37 @@
                     {{ form_widget(form.nom, {
                     'attr': {
                         'class': 'form-control pe-5',
-                        'placeholder': '🔍 Rechercher une maladie…'
+                        'placeholder': '🦠 Rechercher une maladie…'
                     }
                     }) }}
 
-                    <button type="button" class="btn-clear-search" title="Effacer la recherche">✖</button>
+                    <button type="button"
+                            class="btn-clear-search"
+                            aria-label="Effacer la recherche"
+                            title="Effacer la recherche">
+
+                    <svg class="icon-carnet-x"
+                        viewBox="0 0 24 24"
+                        aria-hidden="true">
+
+                        <!-- cercle carnet (UNIQUEMENT contour) -->
+                        <path
+                        fill="none"
+                        d="M12 2.8
+                            C7.1 2.8 3.1 7 3.1 12
+                            c0 5.2 4 9.2 8.9 9.2
+                            c5 0 8.9-4 8.9-9.2
+                            c0-5-3.9-9.2-8.9-9.2z" />
+
+                        <!-- croix -->
+                        <path d="M8.2 8.4 L15.6 15.7" />
+                        <path d="M15.4 8.3 L8.3 15.6" />
+
+                    </svg>
+                    </button>
+
+
+
                 </div>
 
                 {{ form_end(form) }}
@@ -74,114 +105,91 @@
     </div>
 
     {% if maladie_poissons|length == 0 %}
-        <div class="alert alert-info text-center mb-4">
-            Aucune maladie enregistrée pour le moment.
-        </div>
-    {% else %}
+    <div class="alert alert-info text-center mb-4">
+        Aucune maladie enregistrée pour le moment.
+    </div>
+{% else %}
 
-        <div id="maladie-results" class="row row-cols-1 row-cols-md-3 g-4">
+    <div class="paginated-content">
+        <div id="maladie-results" class="row row-cols-1 row-cols-md-3 g-4 results-animate">
             {% for maladie in maladie_poissons %}
+                <div class="col results-item">
 
-                {# Détection du niveau de gravité #}
-                {% set graviteValue = maladie.gravite ? maladie.gravite|lower : '' %}
-                {% set graviteLevel =
-                    graviteValue == 'faible' ? 'faible' :
-                    (graviteValue starts with 'moyen' ? 'moyenne' :
-                    (graviteValue starts with 'élev' or graviteValue starts with 'eleve' ? 'elevee' : ''))
-                %}
-                {% set graviteClass = graviteLevel ? 'gravite--' ~ graviteLevel : '' %}
-                {% set cardGraviteClass = graviteLevel ? 'card-maladie--' ~ graviteLevel : '' %}
+                    {# Détection du niveau de gravité #}
+                    {% set graviteValue = maladie.gravite ? maladie.gravite|lower : '' %}
+                    {% set graviteLevel =
+                        graviteValue == 'faible' ? 'faible' :
+                        (graviteValue starts with 'moyen' ? 'moyenne' :
+                        (graviteValue starts with 'élev' or graviteValue starts with 'eleve' ? 'elevee' : ''))
+                    %}
+                    {% set graviteClass = graviteLevel ? 'gravite--' ~ graviteLevel : '' %}
+                    {% set cardGraviteClass = graviteLevel ? 'card-maladie--' ~ graviteLevel : '' %}
 
-                <div class="col">
-                    <div class="card h-100 shadow-sm card-maladie {{ cardGraviteClass }}">
-
+                    <div class="card h-100 shadow-sm card-carnet card-carnet--compact card-maladie {{ cardGraviteClass }}">
                         {# IMAGE #}
                         {% if maladie.image %}
-                        <img src="{{ asset('uploads/maladies/' ~ maladie.image) }}"
-                            class="card-img-top image-carte"
-                            alt="{{ maladie.nom }}">
+                            <img src="{{ asset('uploads/maladies/' ~ maladie.image) }}"
+                                 class="card-img-top image-carte"
+                                 alt="{{ maladie.nom }}">
                         {% else %}
-                        <div class="image-carte image-carte--placeholder">
-                            <span>🩺</span>
-                        </div>
+                            <div class="image-carte image-carte--placeholder">
+                                <span>🩺</span>
+                            </div>
                         {% endif %}
 
                         <div class="card-body">
-                        <h5 class="card-title">
-                            <span class="me-1">💊</span>{{ maladie.nom }}
-                        </h5>
+                            <h5 class="card-title">
+                                <span class="me-1">💊</span>{{ maladie.nom }}
+                            </h5>
 
-                        <p class="card-text text-muted">
-                            {% if maladie.agentPathogene %}
-                            <em>Agent : {{ maladie.agentPathogene }}</em><br>
-                            {% endif %}
+                            <p class="card-text text-muted">
+                                {% if maladie.agentPathogene %}
+                                    <em>Agent : {{ maladie.agentPathogene }}</em><br>
+                                {% endif %}
 
-                            <span class="d-inline-flex flex-wrap gap-2 mt-2">
-                            {% if maladie.gravite %}
-                                <span class="badge-gravite {{ graviteClass }}">{{ maladie.gravite }}</span>
-                            {% endif %}
+                                <span class="d-inline-flex flex-wrap gap-2 mt-2">
+                                    {% if maladie.gravite %}
+                                        <span class="badge-gravite {{ graviteClass }}">{{ maladie.gravite }}</span>
+                                    {% endif %}
 
-                            <span class="badge-contagion badge-contagion--mini {{ maladie.contagieuse ? 'badge-contagion--oui' : 'badge-contagion--non' }}">
-                                {{ maladie.contagieuse ? 'Contagieuse' : 'Non contagieuse' }}
-                            </span>
-                            </span>
-                        </p>
+                                    <span class="badge-contagion badge-contagion--mini {{ maladie.contagieuse ? 'badge-contagion--oui' : 'badge-contagion--non' }}">
+                                        {{ maladie.contagieuse ? 'Contagieuse' : 'Non contagieuse' }}
+                                    </span>
+                                </span>
+                            </p>
 
-                        <p class="card-text small text-muted mb-0">
-                            {% if maladie.symptomes %}
-                            {% set desc = maladie.symptomes|striptags %}
-                            {{ desc|length > 120 ? desc|slice(0, 120) ~ '…' : desc }}
-                            {% else %}
-                            <span class="text-muted">Symptômes à décrire.</span>
-                            {% endif %}
-                        </p>
+                            <p class="card-text small text-muted mb-0">
+                                {% if maladie.symptomes %}
+                                    {% set desc = maladie.symptomes|striptags %}
+                                    {{ desc|length > 120 ? desc|slice(0, 120) ~ '…' : desc }}
+                                {% else %}
+                                    <span class="text-muted">Symptômes à décrire.</span>
+                                {% endif %}
+                            </p>
                         </div>
 
-                        <div class="card-footer text-end bg-light">
-                        <a href="{{ path('app_maladie_poisson_show', { id: maladie.id }) }}" class="btn btn-espece">
-                            🔍 Voir la fiche
-                        </a>
+                        <div class="card-footer d-flex justify-content-end">
+                            <a href="{{ path('app_maladie_poisson_show', { id: maladie.id }) }}" class="btn btn-espece btn-sm">
+                                🔍 Voir la fiche
+                            </a>
                         </div>
 
                     </div>
-                    </div>
-
+                </div>
             {% endfor %}
         </div>
 
         <div class="d-flex justify-content-center mt-4">
             {{ knp_pagination_render(maladie_poissons) }}
         </div>
-    {% endif %}
+    </div>
+
+{% endif %}
+
 </div>
 {% endblock %}
 
-{% block javascripts %}
-    {{ parent() }}
-    <script>
-        document.addEventListener("DOMContentLoaded", function () {
-            const input = document.querySelector("#{{ form.nom.vars.id }}");
-            const form = document.querySelector("#recherche-maladie-form");
-            const clearBtn = document.querySelector(".btn-clear-search");
 
-            if (input && form && clearBtn) {
-
-                // Envoi auto quand on tape
-                input.addEventListener("input", () => {
-                    if (input.value.trim() === "") {
-                        form.submit();
-                    }
-                });
-
-                // Clic sur la croix = reset
-                clearBtn.addEventListener("click", () => {
-                    input.value = "";
-                    form.submit();
-                });
-            }
-        });
-    </script>
-{% endblock %}
 
 
 

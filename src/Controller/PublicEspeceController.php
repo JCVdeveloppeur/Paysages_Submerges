@@ -38,16 +38,25 @@ class PublicEspeceController extends AbstractController
                 ->setParameter('search', '%' . mb_strtolower($search) . '%');
         }
 
-        // Pagination (3 par page pour test, à passer à 6 ensuite)
+        // Limit (6/9/12) : sécurisé comme pour maladies
+        $limitRaw = $request->query->get('limit', 6);
+        $limit = ctype_digit((string) $limitRaw) ? (int) $limitRaw : 6;
+
+        // (optionnel) on borne pour éviter 999 items/page
+        if (!in_array($limit, [6, 9, 12], true)) {
+            $limit = 6;
+        }
+
         $pagination = $paginator->paginate(
             $queryBuilder->getQuery(),
             $request->query->getInt('page', 1),
-            3
+            $limit
         );
 
         return $this->render('espece/public_index.html.twig', [
             'pagination' => $pagination,
             'form' => $form->createView(),
+            'limit' => $limit,
         ]);
     }
 

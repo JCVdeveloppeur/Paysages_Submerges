@@ -1,0 +1,125 @@
+@use "../variables" as *;
+@use "../mixins" as *;
+@use "../bouton" as *;
+
+/* =========================================================
+   CARTE CARNET — base commune + variantes + accents
+   ========================================================= */
+
+.card-carnet {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+
+  border-radius: 18px;
+  background: #fbfaf5;
+  border: 1px solid rgba(0, 0, 0, 0.05);
+
+  transition: transform 0.28s ease, box-shadow 0.28s ease, border-color 0.28s ease;
+  will-change: transform, box-shadow;
+
+  &::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 4px;
+    height: 100%;
+    background: var(
+      --carnet-accent,
+      linear-gradient(to bottom, rgba(102, 160, 140, 0.70), rgba(52, 78, 65, 0.70))
+    );
+    opacity: 0;
+    transition: opacity 0.28s ease;
+    pointer-events: none;
+  }
+
+  .image-carte,
+  .card-img-top {
+    width: 100%;
+    height: var(--carnet-img-h, 220px);
+    object-fit: cover;
+    border-top-left-radius: 18px;
+    border-top-right-radius: 18px;
+  }
+
+  .card-body {
+    padding: var(--carnet-pad, 1rem);
+    background-color: #fcfcfa;
+    border-top: 1px solid #eee;
+  }
+
+  h5 {
+    font-family: "Merriweather", serif;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+  }
+
+  p {
+    font-size: 0.95rem;
+    color: #444;
+  }
+
+  &:hover {
+    transform: translateY(-4px);
+    border-color: rgba(0, 0, 0, 0.08);
+    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.16), 0 0 12px rgba(0, 0, 0, 0.06);
+
+    &::before { opacity: 1; }
+  }
+
+  &:focus-within {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 22px rgba(0, 0, 0, 0.14), 0 0 0 2px rgba(102, 160, 140, 0.18);
+  }
+}
+
+/* variantes */
+.card-carnet--compact {
+  --carnet-img-h: 180px;
+  --carnet-pad: 0.9rem;
+
+  &::before {
+    top: 14px;
+    bottom: 14px;
+    height: auto;
+    width: 4px;
+    opacity: 0;
+    border-radius: 0 999px 999px 0;
+    transform: translateX(-1px);
+    transition:
+      opacity 0.28s ease,
+      width 0.22s ease,
+      transform 0.22s ease;
+    transition-delay: 0.05s; // ⭐ 50ms → premium
+  }
+
+  &:hover::before {
+    width: 4px;
+    opacity: 1;
+    transition-delay: 0s; // apparition immédiate au hover
+  }
+}
+
+.card-carnet--large {
+  --carnet-img-h: 220px;
+  --carnet-pad: 1rem;
+}
+
+/* accents (pour ton card-accent-{{ badgeClass }}) */
+.card-accent-badge-amerique-sud { --carnet-accent: #5a8f3b; }
+.card-accent-badge-asiatique    { --carnet-accent: #1aa6b7; }
+.card-accent-badge-africain     { --carnet-accent: #d08b2a; }
+.card-accent-badge-australien   { --carnet-accent: #7b4bd6; }
+.card-accent-badge-autre        { --carnet-accent: #6b7280; }
+
+.card-carnet {
+  transition: transform 0.28s ease, box-shadow 0.28s ease;
+
+  &:hover {
+    box-shadow:
+      0 14px 30px rgba(0, 0, 0, 0.14),
+      0 0 18px color-mix(in srgb, var(--carnet-accent) 35%, transparent);
+  }
+}

@@ -1,0 +1,89 @@
+{% extends 'admin/layout.html.twig' %}
+
+{% block page_title %}Administration des plantes{% endblock %}
+{% block page_heading %}🌿 Plantes{% endblock %}
+
+{% block content %}
+
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <div>
+      <span class="badge bg-success">{{ nombrePlantes }}</span>
+    </div>
+
+    <a href="{{ path('app_plante_new') }}" class="btn-admin-ajouter">
+      <i class="bi bi-plus-circle"></i> Ajouter une plante
+    </a>
+  </div>
+
+  {% if plantes is empty %}
+    <div class="alert alert-warning">Aucune plante enregistrée pour le moment.</div>
+  {% else %}
+
+    <form method="get" class="d-flex justify-content-end mb-2 gap-2">
+      <input type="hidden" name="page" value="1">
+      <select name="limit"
+              class="form-select form-select-sm"
+              style="width:auto"
+              onchange="this.form.submit()">
+        <option value="5"  {{ limit == 5 ? 'selected' }}>5</option>
+        <option value="10" {{ limit == 10 ? 'selected' }}>10</option>
+        <option value="20" {{ limit == 20 ? 'selected' }}>20</option>
+      </select>
+    </form>
+
+    <table class="table table-hover table-bordered align-middle">
+      <thead class="table-light">
+        <tr>
+          <th>#</th>
+          <th>Nom</th>
+          <th><em>Nom scientifique</em></th>
+          <th>Position</th>
+          <th>Éclairage</th>
+          <th>Difficulté</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        {% for p in plantes %}
+          <tr>
+            <td>{{ p.id }}</td>
+            <td>{{ p.nomCommun|default('—') }}</td>
+            <td><em>{{ p.nomScientifique|default('—') }}</em></td>
+            <td>{{ p.positionAquarium|default('—') }}</td>
+            <td>{{ p.eclairage|default('—') }}</td>
+            <td>{{ p.difficulte|default('—') }}</td>
+            <td>
+              <a href="{{ path('app_plante_edit', { id: p.id }) }}" class="btn-admin-modifier">
+                <i class="bi bi-pencil-square"></i> Modifier
+              </a>
+
+              <form method="post"
+                    action="{{ path('app_plante_delete', { id: p.id }) }}"
+                    onsubmit="return confirm('Supprimer cette plante ?');"
+                    class="d-inline">
+                <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ p.id) }}">
+                <button class="btn-admin-supprimer" title="Supprimer">
+                  <i class="bi bi-trash3"></i> Supprimer
+                </button>
+              </form>
+            </td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+
+    <div class="d-flex justify-content-center mt-4">
+      {{ knp_pagination_render(plantes) }}
+    </div>
+
+  {% endif %}
+
+  <a href="{{ path('admin_dashboard') }}" class="btn-admin-retour mt-4">
+    <i class="bi bi-arrow-left"></i> Retour au tableau de bord
+  </a>
+
+{% endblock %}
+
+
+

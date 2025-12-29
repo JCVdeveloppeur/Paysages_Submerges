@@ -294,14 +294,14 @@ $btn-text:           #083047;
 
 /* --- Harmonisation des boutons dans les cartes d'accueil --- */
 .home-card .btn {
-  position: relative;         /* pour z-index local si besoin */
-  z-index: 2;                 /* au-dessus du glow de .home-card::after */
+  position: relative;  
+  z-index: 2;         
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 90%;                 /* largeur uniforme */
+  width: 90%;                
   max-width: 240px;
-  margin: 1.25rem auto 0;     /* centrage + marge */
+  margin: 1.25rem auto 0;     
   gap: 0.5rem;
   padding: 0.8rem 1.2rem;
   font-size: 1rem;
