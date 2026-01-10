@@ -1,0 +1,226 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Fiche plante - {{ plante.nomCommun ?? 'Plante' }}{% endblock %}
+
+{# Même fond que la fiche espèce #}
+{% block body_class %}degrade-aquatique-body{% endblock %}
+
+{% block body %}
+
+{% set returnUrl   = app.request.query.get('return') %}
+{% set returnTitle = app.request.query.get('return_title') %}
+{% set baseParams  = app.request.query.all %}
+
+{# Force return/return_title dans baseParams si présents #}
+{% if returnUrl %}
+  {% set baseParams = baseParams|merge({
+    return: returnUrl,
+    return_title: returnTitle
+  }) %}
+{% endif %}
+
+<div class="container my-5 fiche-espece">
+
+  {# Bouton retour (même style que espèces) #}
+  <a href="{{ path('plante_public_index', baseParams) }}" class="btn btn-retour btn-sm mb-4">
+  ← Retour à la liste des plantes
+  </a>
+
+  <div class="espece-carnet">
+  {% if backUrl is defined and app.request.query.get('biotope') %}
+  <div class="mb-3 text-center bio-context bio-{{ app.request.query.get('biotope') }}">
+    <div class="d-inline-flex justify-content-center align-items-center gap-2 flex-wrap">
+    
+      {% if prevUrl %}
+        <a class="btn-bio-reset"
+          href="{{ prevUrl ~ (prevUrl matches '/\\?/' ? '&' : '?') ~ baseParams|url_encode }}">
+          ← Précédente
+        </a>
+      {% endif %}
+
+      <a class="btn-bio-reset" href="{{ path('plante_public_index', baseParams) }}">
+        ↺ Retour au biotope
+      </a>
+
+      {% if nextUrl %}
+        <a class="btn-bio-reset"
+          href="{{ nextUrl ~ (nextUrl matches '/\\?/' ? '&' : '?') ~ baseParams|url_encode }}">
+          Suivante →
+        </a>
+      {% endif %}
+
+    </div>
+  </div>
+{% endif %}
+
+    {# HEADER  #}
+    <header class="espece-carnet__header text-center">
+      <h1 class="espece-carnet__title">
+        {{ plante.nomCommun ?? 'Plante' }}
+      </h1>
+
+      {% if plante.nomScientifique %}
+        <div class="espece-nom-scientifique fst-italic">
+          {{ plante.nomScientifique }}
+        </div>
+      {% endif %}
+
+      <div class="espece-badges mt-2">
+
+        {% if plante.difficulte %}
+          {% set d = plante.difficulte|lower|trim %}
+          {% set diffClass =
+            d starts with 'fac' ? 'badge bg-success' :
+            (d starts with 'moy' ? 'badge bg-warning text-dark' :
+            (d starts with 'dif' ? 'badge bg-danger' : 'badge bg-secondary'))
+          %}
+          <span class="{{ diffClass }}">🌿 Difficulté : {{ plante.difficulte }}</span>
+        {% endif %}
+
+        {% if plante.positionAquarium %}
+          <span class="badge bg-info text-dark">📍 Position : {{ plante.positionAquarium }}</span>
+        {% endif %}
+
+        {% if plante.origine %}
+          <span class="badge bg-light text-dark">🌍 Origine : {{ plante.origine }}</span>
+        {% endif %}
+
+      </div>
+    </header>
+
+    {# IMAGE + LÉGENDE (comme espèce) #}
+    {% if plante.image %}
+      <figure class="fiche-espece__figure carnet-image">
+        <img
+          src="{{ asset('uploads/plantes/' ~ plante.image) }}"
+          alt="Photo de {{ plante.nomCommun }}"
+          class="fiche-espece__image"
+          loading="lazy"
+        >
+        <figcaption class="fiche-espece__caption">
+          {{ plante.nomCommun ?? 'Plante' }}
+        </figcaption>
+      </figure>
+    {% endif %}
+
+    {# LAYOUT 2 COLONNES #}
+    <div class="row espece-layout">
+
+      {# Colonne gauche #}
+      <div class="col-lg-8">
+
+        {# DESCRIPTION (style espèce) #}
+        {% if plante.description %}
+          <section class="fiche-section">
+            <h2 class="fiche-titre">
+              <span class="fiche-icone fiche-icone-physique">🌿</span>
+              Description
+            </h2>
+            <div class="fiche-texte">
+              {{ plante.description|nl2br }}
+            </div>
+          </section>
+        {% endif %}
+
+        {# CONDITIONS DE MAINTENANCE (on garde ton tableau) #}
+        <section class="fiche-section">
+          <h2 class="fiche-titre">
+            <span class="fiche-icone fiche-icone-comportement">🧩</span>
+            Conditions de maintenance
+          </h2>
+
+          <div class="table-responsive">
+            <table class="table table-sm table-bordered align-middle mb-0">
+              <tbody>
+                <tr>
+                  <th style="width:40%">Éclairage</th>
+                  <td>{{ plante.eclairage ?? '—' }}</td>
+                </tr>
+                <tr>
+                  <th>Croissance</th>
+                  <td>{{ plante.croissance ?? '—' }}</td>
+                </tr>
+                <tr>
+                  <th>Position</th>
+                  <td>{{ plante.positionAquarium ?? '—' }}</td>
+                </tr>
+                <tr>
+                  <th>Difficulté</th>
+                  <td>{{ plante.difficulte ?? '—' }}</td>
+                </tr>
+                <tr>
+                  <th>Hauteur max</th>
+                  <td>{{ plante.hauteurMax is not null ? plante.hauteurMax ~ ' cm' : '—' }}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+      </div>
+
+      {# Colonne droite : INFOS RAPIDES (style espèce) #}
+      <aside class="col-lg-4">
+        <section class="espece-meta-card">
+          <h2 class="espece-meta-titre">Infos rapides</h2>
+
+          <dl class="espece-meta-liste">
+
+            <div class="espece-meta-item">
+              <dt>Famille</dt>
+              <dd>{{ plante.famille ?? 'N/A' }}</dd>
+            </div>
+
+            <div class="espece-meta-item">
+              <dt>Température</dt>
+              <dd>
+                {% if plante.tempMin is not null and plante.tempMax is not null %}
+                  {{ plante.tempMin }} - {{ plante.tempMax }} °C
+                {% else %}
+                  N/A
+                {% endif %}
+              </dd>
+            </div>
+
+            <div class="espece-meta-item">
+              <dt>pH</dt>
+              <dd>
+                {% if plante.phMin is not null and plante.phMax is not null %}
+                  {{ plante.phMin }} - {{ plante.phMax }}
+                {% else %}
+                  N/A
+                {% endif %}
+              </dd>
+            </div>
+
+          </dl>
+
+          {# À RETENIR (ton champ no) #}
+          {% if plante.no %}
+            <div class="espece-meta-retour">
+              <div class="espece-meta-retour__titre">À retenir</div>
+              <div class="espece-meta-retour__texte">
+                {{ plante.no|nl2br }}
+              </div>
+            </div>
+          {% endif %}
+        </section>
+      </aside>
+
+    </div>
+
+    {# FOOTER : BOUTONS ADMIN uniquement #}
+    <footer class="espece-carnet__footer mt-4 d-flex justify-content-between align-items-center flex-wrap gap-2">
+      {% if is_granted('ROLE_ADMIN') %}
+        <div class="espece-carnet__actions">
+          <a href="{{ path('app_plante_edit', {'id': plante.id}) }}" class="btn btn-outline-warning btn-sm me-2">
+            ✏️ Modifier
+          </a>
+          {{ include('plante/_delete_form.html.twig') }}
+        </div>
+      {% endif %}
+    </footer>
+
+  </div>
+</div>
+{% endblock %}

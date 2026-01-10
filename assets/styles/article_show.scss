@@ -236,7 +236,7 @@ html[lang="fr"] { hyphens: auto; -webkit-hyphens: auto; }
   }
 }
 .avatar-signature {
-  width: 40px; // taille raisonnable
+  width: 40px; 
   height: 40px;
   border-radius: 50%;
   object-fit: cover;
@@ -277,7 +277,6 @@ html[lang="fr"] { hyphens: auto; -webkit-hyphens: auto; }
 
 /* --- Figures intégrées (gauche/droite) --- */
 
-/* Le conteneur du texte contient bien les floats */
 .full-text { display: flow-root; }
 
 /* Séparateur pour empêcher un float:right de remonter au-dessus d’un float:left existant */
@@ -314,17 +313,148 @@ html[lang="fr"] { hyphens: auto; -webkit-hyphens: auto; }
 .copy-url.copied { outline: 2px solid #79c08a; }
 
 /* --- Navigation précédent/suivant --- */
-.article-nav {
-  display:flex; justify-content:space-between; gap:1rem; margin-top:1rem;
+.article-nav{
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  margin-top: 1.5rem;
 }
-.article-nav .nav-link {
-  display:inline-flex; align-items:center; gap:.25rem;
-  padding:.4rem .6rem; border-radius:.5rem;
-  background:#f8fafc; border:1px solid #e6eaef; text-decoration:none;
+
+.article-nav-card{
+  display: block;
+  padding: .9rem 1rem;
+  border-radius: .75rem;
+  background: #f8fafc;
+  border: 1px solid #e6eaef;
+  text-decoration: none;
+  color: inherit;
+  transition: background .2s ease, transform .15s ease;
 }
-.article-nav .nav-link:hover { background:#fff; }
+
+.article-nav-card:hover{
+  background: #fff;
+  transform: translateY(-2px);
+}
+
+.nav-label{
+  display: block;
+  font-size: .75rem;
+  color: #6b7280;
+  margin-bottom: .25rem;
+}
+
+.nav-title{
+  font-size: .95rem;
+  line-height: 1.3;
+}
+
+.article-nav-card.next{
+  text-align: right;
+}
+/* ===== Navigation biotope : couleurs alignées sur badges.scss ===== */
+
+.biotope-nav { --bio: #708090; } 
+
+/* 1ère couleur des gradients */
+.biotope-nav.biotope-amerique-sud       { --bio: #6b8e23; }
+.biotope-nav.biotope-asiatique          { --bio: #20b2aa; }
+.biotope-nav.biotope-africain           { --bio: #c2b280; }
+.biotope-nav.biotope-australien         { --bio: #ffa07a; }
+.biotope-nav.biotope-amerique-centrale  { --bio: #2e8b57; }
+.biotope-nav.biotope-europeen           { --bio: #2f6f73; }
+.biotope-nav.biotope-eaux-saumatres     { --bio: #5a6f8f; }
+.biotope-nav.biotope-mangroves          { --bio: #1f7a6d; }
+.biotope-nav.biotope-autre              { --bio: #708090; }
+
+/* Base card (NEUTRE) */
+.article-nav-card{
+  position: relative;
+  overflow: hidden;
+
+  border: 1px solid #e6eaef;
+  border-radius: .85rem;
+  padding: .9rem 1rem;
+  display: block;
+  text-decoration: none;
+  color: inherit;
+  background: transparent; 
+  transition: transform .15s ease, box-shadow .2s ease, border-color .2s ease, background .2s ease;
+
+  &::before{
+    content:"";
+    position:absolute;
+    inset:0;
+    opacity:.9;
+    border-left: 4px solid transparent; 
+    border-right: 4px solid transparent; 
+    pointer-events: none;
+  }
+
+  .nav-label{
+    display:block;
+    font-size: .82rem;
+    opacity: .9;
+    color: color-mix(in srgb, var(--bio) 55%, #6b7280);
+  }
+
+  .nav-title{
+    display:block;
+    font-size: 1.02rem;
+    margin-top: .15rem;
+    line-height: 1.25;
+  }
+
+  &:hover{
+    transform: translateY(-1px);
+    border-color: color-mix(in srgb, var(--bio) 30%, #e6eaef);
+    box-shadow: 0 10px 22px rgba(0,0,0,.07);
+  }
+}
+
+/* ===== SENS VISUEL ===== */
+
+/* PREV : lumière à gauche + barre à gauche */
+.article-nav-card.prev{
+  text-align: left;
+  background: linear-gradient(
+    90deg,
+    color-mix(in srgb, var(--bio) 10%, transparent) 0%,
+    rgba(0,0,0,0) 70%
+  );
+
+  &::before{
+    border-left-color: color-mix(in srgb, var(--bio) 55%, transparent);
+    border-right-color: transparent;
+  }
+
+  &:hover::before{ border-left-color: var(--bio); }
+}
+
+/* NEXT : lumière à droite + barre à droite */
+.article-nav-card.next{
+  text-align: right;
+  background: linear-gradient(
+    270deg,
+    color-mix(in srgb, var(--bio) 10%, transparent) 0%,
+    rgba(0,0,0,0) 70%
+  );
+
+  &::before{
+    border-right-color: color-mix(in srgb, var(--bio) 55%, transparent);
+    border-left-color: transparent;
+  }
+
+  &:hover::before{ border-right-color: var(--bio); }
+}
+
+/* Focus clavier */
+.article-nav-card:focus-visible{
+  outline: 3px solid color-mix(in srgb, var(--bio) 35%, #ffffff);
+  outline-offset: 3px;
+}
 
 /* --- À lire aussi --- */
+
 .related-grid {
   display:grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: .75rem;
 }
@@ -340,6 +470,149 @@ html[lang="fr"] { hyphens: auto; -webkit-hyphens: auto; }
 .related-card .rc-title { font-size:.92rem; margin:0 0 .25rem; line-height:1.25; }
 .related-card .no-img { height:90px; background: linear-gradient(180deg,#f4f6f8,#eef2f6); }
 
+/* --- After-Read (modules en bas d’article ) --- */
+.after-read{
+  margin-top: 2.25rem;
+
+ 
+  .after-read-inner{
+    display: grid;
+    gap: 18px;
+    max-width: 960px;  
+    margin: 0 auto; 
+  }
+
+  .after-module{
+    background: rgba(255,255,255,.88);
+    border: 1px solid rgba(0,0,0,.08);
+    border-radius: .9rem;
+    box-shadow: 0 10px 26px rgba(0,0,0,.06);
+    padding: 1rem 1rem;
+    backdrop-filter: blur(6px);
+  }
+
+  .after-title{
+    font-size: 1rem;
+    font-weight: 800;
+    margin: 0 0 .75rem 0;
+    line-height: 1.25;
+    color: #4a5f73;
+    letter-spacing: .2px;
+  }
+
+  .related-grid{
+    gap: .9rem;
+  }
+
+  /* Mini-posts version "page" */
+  .mini-posts{
+    display: flex;
+    flex-direction: column;
+    gap: .65rem;
+  }
+
+  .mini-post{
+    border: 1px solid rgba(0,0,0,.08);
+    border-radius: .8rem;
+    background: rgba(255,255,255,.92);
+    transition: transform .12s ease, border-color .12s ease, box-shadow .12s ease;
+
+    .mini-link{
+      display: grid;
+      grid-template-columns: 72px 1fr;
+      gap: .75rem;
+      padding: .65rem;
+      color: inherit;
+      text-decoration: none;
+      align-items: center;
+    }
+
+    .thumb-wrap{
+      width: 72px; height: 72px;
+      border-radius: .7rem;
+      overflow: hidden;
+
+      img{
+        width: 100%; height: 100%;
+        object-fit: cover;
+        display: block;
+      }
+    }
+
+    .meta{
+      .title{
+        margin: 0 0 .3rem 0;
+        font-size: .92rem;
+        line-height: 1.25;
+        font-weight: 650;
+
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+      }
+      .date{ font-size: .78rem; }
+    }
+
+    &:hover,
+    &:focus-within{
+      border-color: rgba(0,0,0,.12);
+      box-shadow: 0 10px 22px rgba(0,0,0,.07);
+      transform: translateY(-1px);
+    }
+  }
+
+   .explore-biotope {
+    background: linear-gradient(
+      180deg,
+      rgba(245, 248, 251, 0.95),
+      rgba(255, 255, 255, 0.95)
+    );
+
+    .btn {
+      margin-top: .25rem;
+      font-weight: 600;
+    }
+  }
+  .biotope-links {
+      display: flex;
+      gap: .75rem;
+      flex-wrap: wrap;
+      margin-top: .5rem;
+    }
+
+    .biotope-link {
+      display: inline-flex;
+      align-items: center;
+      gap: .35rem;
+
+      padding: .45rem .7rem;
+      border-radius: .6rem;
+
+      font-size: .9rem;
+      font-weight: 600;
+      text-decoration: none;
+
+      background: #f8fafc;
+      border: 1px solid #e6eaef;
+      color: inherit;
+
+      transition: background .15s ease, transform .12s ease;
+    }
+
+    .biotope-link:hover {
+      background: #ffffff;
+      transform: translateY(-1px);
+    }
+}
+
+/* Responsive  */
+@media (max-width:576px){
+  .after-read .after-module{ padding: .9rem; }
+  .after-read .mini-post .mini-link{ grid-template-columns: 60px 1fr; }
+  .after-read .mini-post .thumb-wrap{ width:60px; height:60px; border-radius: .6rem; }
+}
 
 /* 1) Justifier au niveau du conteneur pour qu'il fonctionneavec <p> ou juste <br> */
 .article-card .article-content .prose,
@@ -360,17 +633,17 @@ html[lang="fr"] { hyphens: auto; -webkit-hyphens: auto; }
 .article-card .article-content .full-text figcaption,
 .article-card .article-content .prose .pull-quote .source,
 .article-card .article-content .full-text .pull-quote .source {
-  text-align: initial; /* (left/start depending on dir) */
+  text-align: initial; 
 }
 
-/* 3) Ajoute une petite précision au cas ou un thème définirait text-align ailleurs */
+
 .article-card .article-content .prose p,
 .article-card .article-content .full-text p {
   text-align: justify;
 }
 
 
-/* ===== Pull-quote (fusion) ===== */
+/* ===== Pull-quote ===== */
 .pull-quote{
   --accent:#7c8795;
   position:relative;
@@ -411,7 +684,22 @@ html[lang="fr"] { hyphens: auto; -webkit-hyphens: auto; }
 .pull-quote--orange { --accent:#f59e0b; }
 .pull-quote--purple { --accent:#7c3aed; }
 
-/* ===== Responsive : une seule media-query ===== */
+.article-hero-nav {
+  position: relative;
+  z-index: 2; // au cas où l’overlay joue avec les z-index
+
+  .btn {
+    white-space: nowrap;
+    backdrop-filter: blur(4px);
+  }
+}
+.hero-overlay .btn-bio-reset {
+  display: inline-flex;
+  text-decoration: none;
+}
+
+
+/* ===== Responsive ===== */
 @media (max-width:768px){
   .inline-figure.left,
   .inline-figure.right{
@@ -429,21 +717,86 @@ html[lang="fr"] { hyphens: auto; -webkit-hyphens: auto; }
   .pull-quote .source{ text-align:center; }
 }
 
-/* Optionnel desktop */
+/* desktop */
 @media (min-width:992px){
   .article-card .article-content .full-text p { letter-spacing:.01em; }
 }
 
-/* Très petit écran (optionnel) */
+/* Très petit écran*/
 @media (max-width:420px){
   .article-card .article-content .full-text,
   .article-card .article-content .full-text p { text-align:start; }
 }
 
-// Impression propre
+// Impression
 @media print{
   .inline-figure, .pull-quote { float:none !important; width:100%; shape-outside:auto; }
 }
+
+/* ===== NAV PREV/NEXT : mobile ===== */
+@media (max-width: 576px) {
+  .article-nav{
+    gap: .6rem;
+    grid-template-columns: 1fr 1fr; 
+  }
+
+  .nav-label{ letter-spacing: .2px; }
+
+  .article-nav-card{
+    padding: .65rem .75rem;
+    border-radius: .75rem;
+  }
+
+  .article-nav-card::before{
+    border-left-width: 3px;
+    border-right-width: 3px;
+  }
+
+  .nav-label{
+    font-size: .72rem;
+    margin-bottom: .15rem;
+  }
+
+  .nav-title{
+    font-size: clamp(.92rem, 3.8vw, 1rem);
+    line-height: 1.15;
+    margin-top: 0;
+
+    /* clamp sur le titre uniquement */
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  /* dégradés un poil plus légers */
+  .article-nav-card.prev{
+    background: linear-gradient(
+      90deg,
+      color-mix(in srgb, var(--bio) 6%, transparent) 0%,
+      rgba(0,0,0,0) 70%
+    );
+  }
+
+  .article-nav-card.next{
+    background: linear-gradient(
+      270deg,
+      color-mix(in srgb, var(--bio) 6%, transparent) 0%,
+      rgba(0,0,0,0) 70%
+    );
+  }
+}
+
+/* Très petit écran */
+@media (max-width: 380px) {
+  .article-nav{
+    grid-template-columns: 1fr;
+  }
+}
+
+
+
 
 
 

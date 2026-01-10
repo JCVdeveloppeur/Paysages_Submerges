@@ -71,7 +71,7 @@ class Article
         $this->commentaires = new ArrayCollection();
         $this->likes = new ArrayCollection();
         $this->createdAt = new \DateTime();
-        $this->updatedAt = new \DateTime(); // Initialise aussi updatedAt au départ
+        $this->updatedAt = new \DateTime(); 
     }
     
 

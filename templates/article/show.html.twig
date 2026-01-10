@@ -5,29 +5,95 @@
 {% block body %}
 <div class="article-show-page">
 
+{# --- CONTEXTE RETOUR (article d'origine) --- #}
+{% set returnUrl = app.request.query.get('return') %}
+{% set returnTitle = app.request.query.get('return_title') %}
+
+{# Valeurs stables à propager partout #}
+{% set originUrl = returnUrl ?: app.request.uri %}
+{% set originTitle = returnTitle ?: article.titre %}
+
   {# --- HERO + badge catégorie --- #}
 
   {% if article.imageHeader %}
-    {% set badgeClass = {
-      'Biotope Amérique du sud': 'badge-amerique-sud',
-      'Biotope asiatique': 'badge-asiatique',
-      'Biotope africain': 'badge-africain',
-      'Biotope australien': 'badge-australien',
-      'Autre': 'badge-autre'
-    }[article.categorie] ?? 'badge-autre' %}
+    {% set badgeSlug = {
+      'Biotope Amérique du sud': 'amerique-sud',
+      'Biotope Amérique centrale': 'amerique-centrale',
+      'Biotope asiatique': 'asiatique',
+      'Biotope africain': 'africain',
+      'Biotope australien': 'australien',
+      'Biotope européen': 'europeen',
+      'Biotope eaux saumâtres': 'eaux-saumatres',
+      'Biotope mangroves': 'mangroves',
+      'Autre': 'autre'
+    }[article.categorie] ?? 'autre' %}
 
-    <section class="hero-header hero-zoom mb-4" data-bg="{{ asset('uploads/articles/' ~ article.imageHeader) }}">
+    {% set badgeClass = 'badge-' ~ badgeSlug %}
+
+    {% set badgeIcon = {
+      'Biotope Amérique du sud': '🌿',
+      'Biotope Amérique centrale': '🌴',
+      'Biotope asiatique': '🎋',
+      'Biotope africain': '🌾',
+      'Biotope australien': '🌺',
+      'Biotope européen': '🍃',
+      'Biotope eaux saumâtres': '🫧',
+      'Biotope mangroves': '🌱',
+      'Autre': '🌍'
+    }[article.categorie] ?? '🌍' %}
+
+    <section class="hero-header hero-zoom mb-4 card-accent-badge-{{ badgeSlug }}"
+              data-bg="{{ asset('uploads/articles/' ~ article.imageHeader) }}">
       <div class="hero-overlay d-flex justify-content-center align-items-center text-center">
         <div>
           <h1 class="hero-title">{{ article.titre }}</h1>
           <span class="badge {{ badgeClass }}">
-            {% if article.categorie == 'Biotope Amérique du sud' %}🌱
-            {% elseif article.categorie == 'Biotope asiatique' %}🌊
-            {% elseif article.categorie == 'Biotope africain' %}🏜️
-            {% elseif article.categorie == 'Biotope australien' %}🪸
-            {% else %}🌍{% endif %}
-            {{ article.categorie }}
+            {{ badgeIcon }} {{ article.categorie }}
           </span>
+          {% if returnUrl %}
+            <div class="mt-3">
+              <a href="{{ returnUrl }}" class="btn-article-origin" title="{{ originTitle }}">
+                ← Retour à « {{ originTitle|slice(0,45) }}{{ originTitle|length > 45 ? '…' : '' }} »
+              </a>
+            </div>
+          {% endif %}
+
+          {% if currentBiotope is defined and currentBiotope %}
+      <div class="mb-3 text-center bio-context bio-{{ currentBiotope }}">
+        <div class="d-inline-flex justify-content-center align-items-center gap-2 flex-wrap mt-3">
+
+          {% if prevUrl %}
+            <a class="btn-bio-reset"
+              href="{{ prevUrl ~ (returnUrl ? ((prevUrl matches '/\\?/' ? '&' : '?')
+                  ~ 'return=' ~ returnUrl|url_encode
+                  ~ '&return_title=' ~ originTitle|url_encode
+              ) : '') }}">
+              ← Précédent
+            </a>
+          {% endif %}
+
+          <a class="btn-bio-reset"
+            href="{{ backUrl ~ (returnUrl ? ((backUrl matches '/\\?/' ? '&' : '?')
+                ~ 'return=' ~ returnUrl|url_encode
+                ~ '&return_title=' ~ originTitle|url_encode
+            ) : '') }}">
+            ↺ Retour au biotope
+          </a>
+
+          {% if nextUrl %}
+            <a class="btn-bio-reset"
+              href="{{ nextUrl ~ (returnUrl ? ((nextUrl matches '/\\?/' ? '&' : '?')
+                  ~ 'return=' ~ returnUrl|url_encode
+                  ~ '&return_title=' ~ originTitle|url_encode
+              ) : '') }}">
+              Suivant →
+            </a>
+          {% endif %}
+
+    </div>
+  </div>
+{% endif %}
+
         </div>
       </div>
     </section>
@@ -117,7 +183,7 @@
         </figure>
       {% endif %}
 
-      {# — Image droite après P2 (clear-left si image gauche présente) — #}
+      {# — Image droite après P2 — #}
       
       {% if article.imageDroite and (i + 1) == rightIndex %}
         {% set rightClasses = 'inline-figure right mb-3' ~ (article.imageGauche ? ' clear-left' : '') %}
@@ -197,49 +263,198 @@
 
         {# --- Navigation précédent / suivant --- #}
 
-        <nav class="article-nav mt-4">
-          <div class="nav-prev">
-            {% if prev %}
-              <a href="{{ path('app_article_show', {'id': prev.id}) }}" class="nav-link">
-                <i class="bi bi-arrow-left-short"></i> {{ prev.titre }}
-              </a>
-            {% endif %}
-          </div>
-          <div class="nav-next">
-            {% if next %}
-              <a href="{{ path('app_article_show', {'id': next.id}) }}" class="nav-link">
-                {{ next.titre }} <i class="bi bi-arrow-right-short"></i>
-              </a>
-            {% endif %}
-          </div>
-        </nav>
+        {% set slugByCategorie = {
+          'Biotope Amérique du sud': 'amerique-sud',
+          'Biotope Amérique centrale': 'amerique-centrale',
+          'Biotope asiatique': 'asiatique',
+          'Biotope africain': 'africain',
+          'Biotope australien': 'australien',
+          'Biotope européen': 'europeen',
+          'Biotope eaux saumâtres': 'eaux-saumatres',
+          'Biotope mangroves': 'mangroves',
+          'Autre': 'autre'
+        } %}
 
-        {# --- À lire aussi (même catégorie) --- #}
+        {% set prevSlug = prev ? (slugByCategorie[prev.categorie] ?? 'autre') : null %}
+        {% set nextSlug = next ? (slugByCategorie[next.categorie] ?? 'autre') : null %}
 
-        {% if related is not empty %}
-          <section class="related mt-5">
-            <h3 class="h5 mb-3">À lire aussi</h3>
-            <div class="related-grid">
-              {% for r in related %}
-                <a href="{{ path('app_article_show', {'id': r.id}) }}" class="related-card">
-                  {% if r.image %}
-                    <img src="{{ asset('uploads/articles/' ~ r.image) }}" alt="{{ r.titre }}">
-                  {% else %}
-                    <div class="no-img"></div>
-                  {% endif %}
-                  <div class="rc-body">
-                    <h4 class="rc-title">{{ r.titre|length > 70 ? r.titre|slice(0,70) ~ '…' : r.titre }}</h4>
-                    <small class="text-muted">{{ r.createdAt|human_date }}</small>
-                  </div>
-                </a>
-              {% endfor %}
-            </div>
-          </section>
+        <nav class="article-nav">
+        {% if next %}
+          <a href="{{ path('app_article_show', {
+              id: next.id,
+              return: originUrl,
+              return_title: originTitle
+          }) }}"
+            class="article-nav-card prev biotope-nav biotope-{{ nextSlug }}">
+            <span class="nav-label">← Article précédent</span>
+            <strong class="nav-title">{{ next.titre }}</strong>
+          </a>
         {% endif %}
 
-        <div class="text-end mt-4">
-          <a href="#article-top" class="btn btn-outline-secondary btn-sm">↑ Retour en haut</a>
+        {% if prev %}
+          <a href="{{ path('app_article_show', {
+              id: prev.id,
+              return: originUrl,
+              return_title: originTitle
+          }) }}"
+            class="article-nav-card next biotope-nav biotope-{{ prevSlug }}">
+            <span class="nav-label">Article suivant →</span>
+            <strong class="nav-title">{{ prev.titre }}</strong>
+          </a>
+        {% endif %}
+      </nav>
+
+
+        {# --- Après lecture : recommandations + modules --- #}
+<section class="after-read mt-5">
+  <div class="after-read-inner">
+
+    {# À lire aussi #}
+    {% if related is not empty %}
+      <div class="after-module">
+        <h3 class="after-title">À lire aussi</h3>
+
+        <div class="related-grid">
+          {% for r in related %}
+            <a href="{{ path('app_article_show', {
+                id: r.id,
+                return: originUrl,
+                return_title: originTitle
+            }) }}" class="related-card">
+              {% if r.image %}
+                <img src="{{ asset('uploads/articles/' ~ r.image) }}" alt="{{ r.titre }}">
+              {% else %}
+                <div class="no-img"></div>
+              {% endif %}
+              <div class="rc-body">
+                <h4 class="rc-title">{{ r.titre|length > 70 ? r.titre|slice(0,70) ~ '…' : r.titre }}</h4>
+                <small class="text-muted">{{ r.createdAt|human_date }}</small>
+              </div>
+            </a>
+          {% endfor %}
         </div>
+      </div>
+    {% endif %}
+
+    {# Derniers articles  #}
+    {% if lastArticles is defined and lastArticles|length > 0 %}
+      <div class="after-module">
+        <h3 class="after-title">Derniers articles</h3>
+
+        <ul class="mini-posts list-unstyled m-0">
+          {% for last in lastArticles %}
+            <li class="mini-post">
+              <a href="{{ path('app_article_show', {
+                  id: last.id,
+                  return: originUrl,
+                  return_title: originTitle
+              }) }}" class="mini-link">
+
+                <div class="thumb-wrap">
+                  {% if last.image %}
+                    <img src="{{ asset('uploads/articles/' ~ last.image) }}" alt="{{ last.titre }}" loading="lazy">
+                  {% else %}
+                    {% set randomImage = random([1,2,3]) %}
+                    {% set badgeSlug = {
+                      'Biotope Amérique du sud': 'amerique-sud',
+                      'Biotope Amérique centrale': 'amerique-centrale',
+                      'Biotope asiatique': 'asiatique',
+                      'Biotope africain': 'africain',
+                      'Biotope australien': 'australien',
+                      'Biotope européen': 'europeen',
+                      'Biotope eaux saumâtres': 'eaux-saumatres',
+                      'Biotope mangroves': 'mangroves',
+                      'Autre': 'autre'
+                    }[last.categorie] ?? 'autre' %}
+                    <img src="{{ asset('build/images/defaults/articles/' ~ badgeSlug ~ '/' ~ randomImage ~ '.jpg') }}"
+                        alt="Image par défaut - {{ last.categorie }}" loading="lazy">
+                  {% endif %}
+                </div>
+
+                <div class="meta">
+                  <h6 class="title">{{ last.titre|length > 80 ? last.titre|slice(0, 80) ~ '…' : last.titre }}</h6>
+                  <small class="date text-muted">{{ last.createdAt|human_date }}</small>
+                </div>
+              </a>
+            </li>
+          {% endfor %}
+        </ul>
+      </div>
+    {% endif %}
+
+    {#  Explorer ce biotope après lecture #}
+
+    {# slug biotope (pour URL /articles/biotope/{slug}) #}
+    {% set biotopeSlug = {
+      'Biotope Amérique du sud': 'amerique-sud',
+      'Biotope Amérique centrale': 'amerique-centrale',
+      'Biotope asiatique': 'asiatique',
+      'Biotope africain': 'africain',
+      'Biotope australien': 'australien',
+      'Biotope européen': 'europeen',
+      'Biotope eaux saumâtres': 'eaux-saumatres',
+      'Biotope mangroves': 'mangroves',
+      'Autre': 'autre'
+    }[article.categorie] ?? 'autre' %}
+
+    {# label “humain” (pour affichage) #}
+    {% set bioLabel = {
+      'Biotope Amérique du sud': 'biotope d\'Amérique du sud',
+      'Biotope Amérique centrale': 'biotope d\'Amérique centrale',
+      'Biotope asiatique': 'biotope asiatique',
+      'Biotope africain': 'biotope africain',
+      'Biotope australien': 'biotope australien',
+      'Biotope européen': 'biotope européen',
+      'Biotope eaux saumâtres': 'biotope eaux saumâtres',
+      'Biotope mangroves': 'biotope mangroves',
+      'Autre': 'biotope'
+    }[article.categorie] ?? 'biotope' %}
+
+    <div class="after-module explore-biotope">
+      <h3 class="after-title">
+        {{ badgeIcon }} Explorer le {{ bioLabel }}
+      </h3>
+
+      <p class="text-muted mb-3">
+        Articles, espèces et plantes associés au <strong>{{ bioLabel }}</strong>.
+      </p>
+
+      <div class="biotope-links">
+        {# Articles du biotope (route Symfony) #}
+        <a href="{{ path('app_articles_biotope', {
+          biotope: biotopeSlug,
+          return: originUrl,
+          return_title: originTitle
+        }) }}" class="biotope-link">
+          📖 Articles
+        </a>
+
+        {# Espèces du biotope (query string) #}
+        <a href="{{ path('espece_public_index')
+            ~ '?biotope=' ~ biotopeSlug
+            ~ '&return=' ~ originUrl|url_encode
+            ~ '&return_title=' ~ originTitle|url_encode
+          }}" class="biotope-link">
+          🐟 Espèces
+        </a>
+
+        {# Plantes du biotope (query string) #}
+        <a href="{{ path('plante_public_index')
+            ~ '?biotope=' ~ biotopeSlug
+            ~ '&return=' ~ originUrl|url_encode
+            ~ '&return_title=' ~ originTitle|url_encode
+          }}" class="biotope-link">
+          🌿 Plantes
+        </a>
+      </div>
+
+    </div>
+
+</section>
+
+        {# <div class="text-end mt-4">
+          <a href="#article-top" class="btn btn-outline-secondary btn-sm">↑ Retour en haut</a>
+        </div> #}
 
       </div>
     </div>
@@ -323,8 +538,8 @@
       </div>
     {% endif %}
 
-  </div> {# /container #}
-</div> {# /article-show-page #}
+  </div> 
+</div> 
 {% endblock %}
 
 {% block javascripts %}

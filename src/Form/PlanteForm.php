@@ -8,6 +8,7 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Validator\Constraints\File;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 
 class PlanteForm extends AbstractType
 {
@@ -34,6 +35,21 @@ class PlanteForm extends AbstractType
             ->add('nomScientifique')
             ->add('famille')
             ->add('origine')
+            ->add('biotope', ChoiceType::class, [
+                'required' => false,
+                'placeholder' => '— Choisir un biotope —',
+                'choices' => [
+                    'Amérique du sud'      => 'amerique-sud',
+                    'Amérique centrale'    => 'amerique-centrale',
+                    'Asie du Sud-Est'      => 'asiatique',
+                    'Afrique'              => 'africain',
+                    'Australie'            => 'australien',
+                    'Europe'               => 'europeen',
+                    'Eaux saumâtres'       => 'eaux-saumatres',
+                    'Mangroves'            => 'mangroves',
+                    'Autre'                => 'autre',
+                ],
+            ])
             ->add('description')
             ->add('eclairage')
             ->add('croissance')

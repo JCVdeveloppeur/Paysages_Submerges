@@ -16,20 +16,24 @@ class ArticleRepository extends ServiceEntityRepository
         parent::__construct($registry, Article::class);
     }
 
-    /**
-     * Sidebar : derniers articles validés
+    /** Sidebar / After-Read : derniers articles validés (optionnellement en excluant l'article courant)
      */
-    public function findLatestPublished(int $limit = 3): array
-    {
-        return $this->createQueryBuilder('a')
-            ->andWhere('a.estApprouve = :approved')
-            ->setParameter('approved', true)
-            ->orderBy('a.createdAt', 'DESC')
-            ->setMaxResults($limit)
-            ->getQuery()
-            ->getResult();
-    }
 
+    public function findLatestPublished(int $limit = 3, ?int $excludeId = null): array
+    {
+        $qb = $this->createQueryBuilder('a')
+            ->andWhere('a.estApprouve = true')
+            ->orderBy('a.createdAt', 'DESC')
+            ->setMaxResults($limit);
+
+        if ($excludeId !== null) {
+            $qb->andWhere('a.id != :excludeId')
+            ->setParameter('excludeId', $excludeId);
+        }
+
+        return $qb->getQuery()->getResult();
+    }
+    
     /**
      * À lire aussi : mêmes catégorie, exclus l’article courant
      */

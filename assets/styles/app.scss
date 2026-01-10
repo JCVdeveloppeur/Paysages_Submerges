@@ -6,6 +6,7 @@
 
 @use "bouton"; 
 @use "cards/carnet";
+@use "badges";
 
 @use "navbar";
 @use "accueil";
@@ -17,7 +18,7 @@
 @use "article";
 @use "article_show";
 @use "article-edit" as *;
-@use "badges";
+
 
 @use "maladie_poisson";
 @use "especes";
@@ -135,7 +136,7 @@ button, .btn {
     box-sizing: border-box;
 }
 
-/* Conteneurs sur fond clair (sans toucher aux cards) */
+/* Conteneurs sur fond clair */
 .container, .content-wrapper {
   background-color: #ffffff;
   border-radius: 0.75rem;

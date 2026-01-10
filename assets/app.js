@@ -234,6 +234,17 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 });
 
+// Effet eau bouton Aqua
+
+document.querySelectorAll(".btn-aqua").forEach(btn => {
+  btn.addEventListener("pointermove", (e) => {
+    const r = btn.getBoundingClientRect();
+    btn.style.setProperty("--rx", `${((e.clientX - r.left) / r.width) * 100}%`);
+    btn.style.setProperty("--ry", `${((e.clientY - r.top) / r.height) * 100}%`);
+  });
+});
+
+
 
 
 

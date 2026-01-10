@@ -32,14 +32,19 @@ class ArticleType extends AbstractType
                 'label' => 'Titre de l\'article'
             ])
             ->add('categorie', ChoiceType::class, [
-                'label' => 'Catégorie',
                 'choices' => [
-                    'Biotope asiatique' => 'Biotope asiatique',
-                    'Biotope Amérique du sud' => 'Biotope Amérique du sud',
-                    'Biotope africain' => 'Biotope africain',
-                    'Matériel' => 'Matériel',
-                    'Maintenance' => 'Maintenance',
-                ]
+                    'Biotope Amérique du sud'      => 'Biotope Amérique du sud',
+                    'Biotope Amérique centrale'    => 'Biotope Amérique centrale',
+                    'Biotope asiatique'            => 'Biotope asiatique',
+                    'Biotope africain'             => 'Biotope africain',
+                    'Biotope australien'           => 'Biotope australien',
+                    'Biotope européen'             => 'Biotope européen',
+                    'Biotope eaux saumâtres'       => 'Biotope eaux saumâtres',
+                    'Biotope mangroves'            => 'Biotope mangroves',
+                    'Autre'                        => 'Autre',
+                ],
+                'placeholder' => 'Choisir une catégorie',
+                'required' => true,
             ])
             ->add('chapeau', TextareaType::class, [
                 'required' => false,

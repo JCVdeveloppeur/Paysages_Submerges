@@ -7,7 +7,7 @@
    ========================================================= */
 
 /* -----------------------------
-   Keyframes (idéalement à mutualiser plus tard)
+   Keyframes 
 ------------------------------ */
 @keyframes fadeInUp {
   from { opacity: 0; transform: translateY(30px); }
@@ -388,7 +388,7 @@
     rgba(52, 78, 65, 0.70)
   );
 
-  /* petit bonus: interaction bouton dans la carte */
+  /*interaction bouton dans la carte */
   &:hover .btn-espece {
     transform: translateY(-1px);
     filter: saturate(1.06);
@@ -433,7 +433,7 @@ a.btn-espece {
 }
 
 /* =========================================================
-   Reduced motion (à mutualiser plus tard)
+   Reduced motion
    ========================================================= */
 @media (prefers-reduced-motion: reduce) {
   .fiche-espece,

@@ -19,7 +19,7 @@
 }
 
 // --------------------------------------------------
-// 🎖️ Statuts utilisateur (connecté, inactif...)
+// Statuts utilisateur (connecté, inactif...)
 // --------------------------------------------------
 
 .badge-statut {
@@ -50,7 +50,7 @@
 }
 
 // --------------------------------------------------
-// 🧑‍💼 Rôles (utilisateur, admin, etc.)
+// Rôles (utilisateur, admin, etc.)
 // --------------------------------------------------
 
 .badge-utilisateur {
@@ -64,7 +64,7 @@
 }
 
 // --------------------------------------------------
-// 🌍 Biotopes (catégories espèces)
+// Biotopes (catégories espèces)
 // --------------------------------------------------
 
 .badge-amerique-sud {
@@ -86,9 +86,25 @@
 .badge-autre {
   background: linear-gradient(45deg, #708090, #2f4f4f);
 }
+.badge-amerique-centrale {
+  background: linear-gradient(45deg, #2e8b57, #1e5e3a);
+}
+
+.badge-europeen {
+  background: linear-gradient(45deg, #2f6f73, #1f3f43);
+}
+
+.badge-eaux-saumatres {
+  background: linear-gradient(45deg, #5a6f8f, #2f3f56);
+}
+
+.badge-mangroves {
+  background: linear-gradient(45deg, #1f7a6d, #0f4a42);
+}
+
 
 // --------------------------------------------------
-// 📄 Publication d’articles
+// Publication d’articles
 // --------------------------------------------------
 
 .badge-publie {
@@ -129,7 +145,7 @@ $badge-attente: #a0875b;
 }
 
 // --------------------------------------------------
-// 🔢 Compteurs & autres pastels
+// Compteurs & autres pastels
 // --------------------------------------------------
 
 .badge-compteur {

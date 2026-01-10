@@ -25,7 +25,7 @@
     {% for i in 0..11 %}
     {% set base = 80 %}
     {% set offsetX = random([-40, 0, 40]) %}
-    {% set vertical_offset = -180 %}
+    {% set vertical_offset = -140 %}
     {% set base_top = i * 32 + vertical_offset %}
     {% set random_top = random([-5, 0, 5]) %}
     {% set top_offset = base_top + random_top %}
@@ -215,8 +215,10 @@
             </div>
             <div class="card-title">Voir les articles</div>
             <p class="flex-grow-1">Parcourez nos derniers articles rédigés par la communauté.</p>
-            <a href="{{ path('app_articles') }}" class="btn btn-aqua mt-auto">
-            <i class="bi bi-eye"></i> <span>Découvrir</span>
+            <a href="{{ path('app_articles') }}"
+              class="btn btn-aqua btn-hero mt-auto">
+              <i class="bi bi-eye"></i>
+              <span>Découvrir les articles</span>
             </a>
             </div>
 
@@ -248,24 +250,35 @@
               </div>
             </div>
         {# --- Carte : Rédiger un article --- #}
-            <div class="home-card fade-in fade-delay-3 d-flex flex-column">
-            <div class="card-media">
+        <div class="home-card fade-in fade-delay-3 d-flex flex-column">
+          <div class="card-media">
             <img src="{{ asset('images/Poisson_écrivain2.jpeg') }}" alt="Poisson rouge écrivant un article" class="card-image">
-            </div> 
-            <div class="card-title">Rédiger un article</div>
-            <p class="flex-grow-1">Partagez vos connaissances, astuces ou découvertes en rédigeant un article.</p>
+          </div>
 
-            {% if is_granted('IS_AUTHENTICATED_FULLY') %}
-                <a href="{{ path('app_article_new') }}" class="btn btn-aqua mt-auto">
-                  ✍️ Je me lance
-                </a>
-            {% else %}
-                <a href="{{ path('app_login') }}" class="btn btn-aqua mt-auto" title="Connectez-vous pour rédiger un article">
-                  🔒 Je me lance
-                </a>
-            {% endif %}
+          <div class="card-title">Rédiger un article</div>
+          <p class="flex-grow-1">Partagez vos connaissances, astuces ou découvertes en rédigeant un article.</p>
+
+          {% if is_granted('IS_AUTHENTICATED_FULLY') %}
+            <a href="{{ path('app_article_new') }}" class="btn btn-hero-contrib mt-auto">
+              <span class="btn-hero-contrib__icon">✍️</span>
+              <span class="btn-hero-contrib__label">
+                Je me lance
+                <small class="btn-hero-contrib__sub">Partager à la communauté</small>
+              </span>
+              <span class="btn-hero-contrib__arrow">→</span>
+            </a>
+          {% else %}
+            <a href="{{ path('app_login') }}" class="btn btn-hero-contrib is-locked mt-auto"
+              title="Connectez-vous pour rédiger un article">
+              <span class="btn-hero-contrib__icon">🔒</span>
+              <span class="btn-hero-contrib__label">
+                Je me lance
+                <small class="btn-hero-contrib__sub">Connexion requise</small>
+              </span>
+              <span class="btn-hero-contrib__arrow">→</span>
+            </a>
+          {% endif %}
         </div>
-
     </div>
 </div>
 {% endblock %}

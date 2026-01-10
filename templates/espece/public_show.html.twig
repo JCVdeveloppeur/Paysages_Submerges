@@ -1,4 +1,3 @@
-
 {% extends 'base.html.twig' %}
 
 {% block title %}Fiche espèce - {{ espece.nomCommun }}{% endblock %}
@@ -7,11 +6,49 @@
 {% block body_class %}degrade-aquatique-body{% endblock %}
 
 {% block body %}
+
+{% set returnUrl   = app.request.query.get('return') %}
+{% set returnTitle = app.request.query.get('return_title') %}
+{% set baseParams  = app.request.query.all %}
+
 <div class="container my-5 fiche-espece">
 
-    <a href="{{ path('espece_public_index') }}" class="btn btn-retour btn-sm mb-4">
-        ← Retour à la liste des espèces
-    </a>
+  {# Retour à la liste (conserve biotope/nom/limit/page + return/return_title) #}
+  <a href="{{ path('espece_public_index', baseParams) }}" class="btn btn-retour btn-sm mb-4">
+    ← Retour à la liste des espèces
+  </a>
+
+  {% if backUrl is defined and app.request.query.get('biotope') %}
+    <div class="mb-3 text-center bio-context bio-{{ app.request.query.get('biotope') }}">
+      <div class="d-inline-flex justify-content-center align-items-center gap-2 flex-wrap">
+
+        {% if prevUrl %}
+          <a class="btn-bio-reset"
+             href="{{ prevUrl ~ (prevUrl matches '/\\?/' ? '&' : '?')
+               ~ 'return=' ~ returnUrl|url_encode
+               ~ '&return_title=' ~ returnTitle|url_encode
+             }}">
+            ← Précédente
+          </a>
+        {% endif %}
+
+        <a class="btn-bio-reset" href="{{ path('espece_public_index', baseParams) }}">
+          ↺ Retour au biotope
+        </a>
+
+        {% if nextUrl %}
+          <a class="btn-bio-reset"
+             href="{{ nextUrl ~ (nextUrl matches '/\\?/' ? '&' : '?')
+               ~ 'return=' ~ returnUrl|url_encode
+               ~ '&return_title=' ~ returnTitle|url_encode
+             }}">
+            Suivante →
+          </a>
+        {% endif %}
+
+      </div>
+    </div>
+  {% endif %}
 
     <div class="espece-carnet">
                 {# HEADER #}
@@ -228,10 +265,3 @@
     </div>
 </div>
 {% endblock %}
-
-
-
-
-
-
-

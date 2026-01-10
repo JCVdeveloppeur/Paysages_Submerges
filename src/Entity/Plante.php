@@ -26,6 +26,20 @@ class Plante
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $origine = null;
 
+    #[ORM\Column(length: 50, nullable: true)]
+    private ?string $biotope = null;
+
+    public function getBiotope(): ?string
+    {
+        return $this->biotope;
+    }
+
+    public function setBiotope(?string $biotope): static
+    {
+        $this->biotope = $biotope;
+        return $this;
+    }
+
     #[ORM\Column(type: Types::TEXT)]
     private ?string $description = null;
 

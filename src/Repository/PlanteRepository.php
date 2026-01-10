@@ -15,6 +15,26 @@ class PlanteRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, Plante::class);
     }
+    
+    public function findIdsForExplorer(?string $biotope, ?string $nom): array
+    {
+        $qb = $this->createQueryBuilder('p')
+            ->select('p.id')
+            ->orderBy('p.nomCommun', 'ASC');
+
+        if ($biotope) {
+            $qb->andWhere('p.biotope = :bio')->setParameter('bio', $biotope);
+        }
+
+        if ($nom) {
+            $qb->andWhere('p.nomCommun LIKE :q OR p.nomScientifique LIKE :q')
+            ->setParameter('q', '%' . $nom . '%');
+        }
+
+        // retourne un tableau d'ids [1, 5, 8, ...]
+        return array_map('intval', array_column($qb->getQuery()->getArrayResult(), 'id'));
+    }
+
 
 //    /**
 //     * @return Plante[] Returns an array of Plante objects

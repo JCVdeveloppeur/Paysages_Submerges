@@ -3,6 +3,22 @@
 {% block title %}Toutes les espèces{% endblock %}
 
 {% block body %}
+
+{# --- CONTEXTE RETOUR (article d'origine) --- #}
+{% set returnUrl   = app.request.query.get('return') %}
+{% set returnTitle = app.request.query.get('return_title') %}
+
+{# Paramètres actuels (biotope, q, limit, page, etc.) #}
+{% set baseParams = app.request.query.all %}
+
+{# Force return/return_title dans les params si présents #}
+{% if returnUrl %}
+  {% set baseParams = baseParams|merge({
+    return: returnUrl,
+    return_title: returnTitle
+  }) %}
+{% endif %}
+
     <div class="container my-5">
     <h1 class="page-title">
     <span class="page-icon">🐟</span>
@@ -10,8 +26,30 @@
     </h1>
 
     <p class="page-subtitle">
-    Un panorama des espèces d'eau douce : classification, biotope et caractéristiques essentielles.
+    Un panorama des espèces de poissons d'eau douce : classification, biotope et caractéristiques essentielles.
     </p>
+    {% if currentBiotopeLabel %}
+
+    <div class="d-flex justify-content-center align-items-center gap-2 mb-4 bio-context bio-{{ currentBiotope }}">
+    
+    <span class="badge badge-{{ currentBiotope }}">
+      🌍 {{ currentBiotopeLabel }}
+    </span>
+
+    {% if returnUrl %}
+      <a class="btn-bio-reset"
+         href="{{ returnUrl }}"
+         title="{{ returnTitle ?? "Retour à l'article" }}">
+        ← Retour à « {{ (returnTitle ?? "l'article")|slice(0,45) }}{{ (returnTitle and returnTitle|length > 45) ? '…' : '' }} »
+      </a>
+    {% else %}
+      <a class="btn-bio-reset" href="{{ path('espece_public_index') }}">
+        ↺ Tout voir
+      </a>
+    {% endif %}
+
+  </div>
+{% endif %}
 
 
     {# Barre outils : recherche + select (même ligne) #}
@@ -25,6 +63,15 @@
 
             {# conserver le limit quand on cherche #}
             <input type="hidden" name="limit" value="{{ limit }}">
+
+            {% if returnUrl %}
+            <input type="hidden" name="return" value="{{ returnUrl }}">
+            <input type="hidden" name="return_title" value="{{ returnTitle }}">
+            {% endif %}
+
+            {% if app.request.query.get('biotope') %}
+            <input type="hidden" name="biotope" value="{{ app.request.query.get('biotope') }}">
+            {% endif %}
 
             <div class="position-relative">
             {{ form_widget(form.nom, {
@@ -69,6 +116,16 @@
 
             {# conserver la recherche quand on change le limit #}
             <input type="hidden" name="nom" value="{{ app.request.get('nom') }}">
+
+            {# conserver le biotope quand on change le limit #}
+            {% if app.request.query.get('biotope') %}
+                <input type="hidden" name="biotope" value="{{ app.request.query.get('biotope') }}">
+            {% endif %}
+
+            {% if returnUrl %}
+            <input type="hidden" name="return" value="{{ returnUrl }}">
+            <input type="hidden" name="return_title" value="{{ returnTitle }}">
+            {% endif %}
 
             {# reset page quand on change le limit #}
             <input type="hidden" name="page" value="1">
@@ -115,11 +172,12 @@
                         </div>
 
                         <div class="card-footer d-flex justify-content-end">
-                            <a href="{{ path('espece_public_show', { id: espece.id }) }}"
-                               class="btn btn-espece btn-sm">
-                                🔍 Voir la fiche
+                            <a href="{{ path('espece_public_show', baseParams|merge({
+                                    id: espece.id,
+                                    page: pagination.currentPageNumber
+                                    })) }}" class="btn btn-espece btn-sm">
+                            🔍 Voir la fiche
                             </a>
-
                         </div>
                     </div>
                 </div>
@@ -127,7 +185,7 @@
         </div>
 
         <div class="d-flex justify-content-center mt-4">
-            {{ knp_pagination_render(pagination) }}
+            {{ knp_pagination_render(pagination, null, {'query': baseParams}) }}
         </div>
     </div>
 {% endif %}

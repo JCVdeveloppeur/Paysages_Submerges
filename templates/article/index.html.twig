@@ -5,8 +5,24 @@
 {% block body %}
 <section class="section-articles py-6 bg-light">
     <div class="container">
-        <h1 class="mb-2 text-center">Tous les articles</h1>
-        <p class="lead text-center mb-5">Laissez-vous émerveiller par la diversité sous-marine.</p>
+        <h1 class="mb-2 text-center"> 📖 Tous les articles</h1>
+        <p class="lead text-center mb-5"> Parcourez tous les articles et laissez-vous inspirer par la diversité sous-marine.</p>
+
+        {# Filtre biotope actif (quand on vient de /articles/biotope/...) #}
+        {% if currentBiotope is defined and currentBiotope %}
+    <div class="d-flex justify-content-center align-items-center gap-2 mb-4 flex-wrap bio-context bio-{{ currentBiotope }}">
+        <span class="badge badge-{{ currentBiotope }}">
+        🌍 {{ currentBioLabel ?? currentBiotope }}
+        </span>
+
+        {% if returnUrl is defined and returnUrl %}
+        <a class="btn-bio-reset" href="{{ returnUrl }}">
+            ← Retour à l'article
+        </a>
+        {% endif %}
+    </div>
+    {% endif %}
+
 
         {% if searchTerm is defined and searchTerm %}
         <div class="alert alert-info text-center">
@@ -30,6 +46,10 @@
                     <input type="hidden" name="auteur" value="{{ app.request.query.get('auteur') }}">
                 {% endif %}
 
+                {% if returnUrl is defined and returnUrl %}
+                <input type="hidden" name="return" value="{{ returnUrl }}">
+                {% endif %}
+
                 {# Reset page quand on change le nombre #}
                 <input type="hidden" name="page" value="1">
 
@@ -50,32 +70,31 @@
                 <div class="paginated-content">
                     <div class="row" id="articles-list">
                         {% for article in articles %}
-                            {# badgeClass : 1 seule fois, en haut #}
-                            {% set badgeClass = {
-                                'Biotope Amérique du sud': 'badge-amerique-sud',
-                                'Biotope asiatique': 'badge-asiatique',
-                                'Biotope africain': 'badge-africain',
-                                'Biotope australien': 'badge-australien',
-                                'Autre': 'badge-autre'
-                            }[article.categorie] ?? 'badge-autre' %}
+                        {# slug pour la couleur / accent #}
+                        {% set badgeSlug = {
+                        'Biotope Amérique du sud': 'amerique-sud',
+                        'Biotope Amérique centrale': 'amerique-centrale',
+                        'Biotope asiatique': 'asiatique',
+                        'Biotope africain': 'africain',
+                        'Biotope australien': 'australien',
+                        'Biotope européen': 'europeen',
+                        'Biotope eaux saumâtres': 'eaux-saumatres',
+                        'Biotope mangroves': 'mangroves',
+                        'Autre': 'autre'
+                        }[article.categorie] ?? 'autre' %}
+
+                        {% set badgeClass = 'badge-' ~ badgeSlug %}
 
                             <div class="col-md-6 col-xl-4 mb-4">
-                                <div
-                                    class="card h-100 shadow-sm
-                                            card-carnet card-carnet--compact
-                                            card-article card-accent-{{ badgeClass }}">
+                            <div class="card h-100 shadow-sm
+                                        card-carnet card-carnet--compact
+                                        card-article card-accent-badge-{{ badgeSlug }}">
                                     {% if article.image %}
                                         <img src="{{ asset('uploads/articles/' ~ article.image) }}"
                                             class="card-img-top image-carte"
                                             alt="{{ article.titre }}">
                                     {% else %}
-                                        {% set dossierCategorie = {
-                                            'Biotope Amérique du sud': 'amerique-sud',
-                                            'Biotope asiatique': 'asiatique',
-                                            'Biotope africain': 'africain',
-                                            'Biotope australien': 'australien',
-                                            'Autre': 'autre'
-                                        }[article.categorie] ?? 'autre' %}
+                                        {% set dossierCategorie = badgeSlug %}
                                         {% set randomImage = random([1, 2, 3]) %}
                                         <img src="{{ asset('build/images/defaults/articles/' ~ dossierCategorie ~ '/' ~ randomImage ~ '.jpg') }}"
                                             class="card-img-top image-carte"
@@ -86,14 +105,18 @@
                                         <h5 class="card-title">{{ article.titre }}</h5>
 
                                         <span class="badge {{ badgeClass }}">
-                                            {{ {
-                                                'Biotope Amérique du sud': '🌱',
-                                                'Biotope asiatique': '🌊',
-                                                'Biotope africain': '🏜️',
-                                                'Biotope australien': '🪸',
-                                                'Autre': '🌍'
-                                            }[article.categorie] ?? '🌍' }}
-                                            {{ article.categorie }}
+                                        {{ {
+                                            'Biotope Amérique du sud': '🌿',
+                                            'Biotope Amérique centrale': '🌴',
+                                            'Biotope asiatique': '🎋',
+                                            'Biotope africain': '🌾',
+                                            'Biotope australien': '🌺',
+                                            'Biotope européen': '🍃',
+                                            'Biotope eaux saumâtres': '🫧',
+                                            'Biotope mangroves': '🌱',
+                                            'Autre': '🌍'
+                                        }[article.categorie] ?? '🌍' }}
+                                        {{ article.categorie }}
                                         </span>
 
                                         <p class="card-text">
@@ -101,7 +124,19 @@
                                         </p>
 
                                         <div class="d-flex flex-column gap-2 mt-3">
-                                            <a href="{{ path('app_article_show', {'id': article.id}) }}" class="btn btn-lire-suite">Lire la suite</a>
+                                        {% set returnFromQuery = app.request.query.get('return') %}
+                                            <a class="btn btn-espece btn-sm"
+                                            href="{{ path('app_article_show', {
+                                                id: article.id,
+                                                biotope: currentBiotope|default(null),
+                                                q: searchTerm|default(''),
+                                                page: articles.currentPageNumber,
+                                                limit: limit,
+                                                return: returnUrl|default(null),
+                                                return_title: returnTitle|default(null)
+                                                }) }}">
+                                             Lire l'article
+                                            </a>
 
                                             {% if app.user %}
                                                 {% if is_granted('ROLE_ADMIN') or (article.user == app.user and not article.estApprouve) %}
@@ -135,9 +170,15 @@
 
                     </div>
                     {# Pagination  #}
+
                     <div class="d-flex justify-content-center mt-4">
-                        {{ knp_pagination_render(articles) }}
+                    {% if returnUrl is defined and returnUrl %}
+                    
+                    {% endif %}
+                    {{ knp_pagination_render(articles, null, {}, { query: app.request.query.all }) }}
+
                     </div>
+
                 </div>
                 {% else %}
                     <div class="alert alert-warning text-center">
@@ -153,12 +194,12 @@
             <!-- Colonne droite -->
             <div class="col-lg-3 sidebar">
                 <div class="sticky-top" style="top: 100px;">
-                    <div class="mb-4 p-3 bg-white rounded shadow-sm">
+                    <div class="mb-4 p-3 bg-white rounded shadow-sm sidebar-card">
                         <h5 class="mb-3"> Espace publicitaire</h5>
                         <p>Votre publicité ici ? Contactez-nous.</p>
                     </div>
 
-                    <div class="mb-4 p-3 bg-white rounded shadow-sm concours-card">
+                    <div class="mb-4 p-3 bg-white rounded shadow-sm concours-card sidebar-card">
                         <h5 class="mb-3 d-flex align-items-center gap-2">
                             Concours d'Aquascaping
                         </h5>
@@ -168,7 +209,7 @@
                             <div class="contest-icon" aria-hidden="true">🇫🇷</div>
                             <div class="contest-content">
                                 <h6 class="contest-title m-0">Concours Français d'Aquascaping</h6>
-                                <p class="contest-desc mb-2">Découvrez le concours d'aquascaping et de paysages aquatiques et trouvez l'inspiration.</p>
+                                <p class="contest-desc mb-2">Trouver l'inspiration.</p>
                                 <a href="https://capa-aquascaping.fr/"
                                 class="btn btn-concours btn-sm"
                                 target="_blank" rel="noopener noreferrer"
@@ -182,7 +223,7 @@
                             <div class="contest-icon" aria-hidden="true">🌐</div>
                             <div class="contest-content">
                                 <h6 class="contest-title m-0">Concours international d'Aquascaping</h6>
-                                <p class="contest-desc mb-2">Parcourez les concours internationaux d'aquascaping, des œuvres d'art vivantes !</p>
+                                <p class="contest-desc mb-2">Des oeuvres d'Art vivantes .</p>
                                 <a href="https://showcase.aquatic-gardeners.org/"
                                 class="btn btn-concours btn-sm"
                                 target="_blank" rel="noopener noreferrer"
@@ -196,38 +237,41 @@
 
                     {# Derniers articles publiés #}
                     {% if lastArticles is defined and lastArticles|length > 0 %}
-                    <div class="mb-4 p-3 bg-white rounded shadow-sm">
+                    <div class="mb-4 p-3 bg-white rounded shadow-sm sidebar-card">
                         <h5 class="mb-3"> Derniers articles publiés</h5>
 
-                        {# mapping pour images par défaut #}
-                        {% set dossierCategorie = {
+                        <ul class="mini-posts list-unstyled m-0">
+                    {% for last in lastArticles %}
+
+                    {% set badgeSlug = {
                         'Biotope Amérique du sud': 'amerique-sud',
+                        'Biotope Amérique centrale': 'amerique-centrale',
                         'Biotope asiatique': 'asiatique',
                         'Biotope africain': 'africain',
                         'Biotope australien': 'australien',
+                        'Biotope européen': 'europeen',
+                        'Biotope eaux saumâtres': 'eaux-saumatres',
+                        'Biotope mangroves': 'mangroves',
                         'Autre': 'autre'
-                        } %}
+                    }[last.categorie] ?? 'autre' %}
 
-                        <ul class="mini-posts list-unstyled m-0">
-                        {% for last in lastArticles %}
-                            {% set badgeClass = {
-                            'Biotope Amérique du sud': 'badge-amerique-sud',
-                            'Biotope asiatique': 'badge-asiatique',
-                            'Biotope africain': 'badge-africain',
-                            'Biotope australien': 'badge-australien',
-                            'Autre': 'badge-autre'
-                            }[last.categorie] ?? 'badge-autre' %}
+                    {% set badgeClass = 'badge-' ~ badgeSlug %}
 
-                            {% set icon = {
-                            'Biotope Amérique du sud': '🌱',
-                            'Biotope asiatique': '🌊',
-                            'Biotope africain': '🏜️',
-                            'Biotope australien': '🪸',
-                            'Autre': '🌍'
-                            }[last.categorie] ?? '🌍' %}
+                    {% set icon = {
+                        'Biotope Amérique du sud': '🌿',
+                        'Biotope Amérique centrale': '🌴',
+                        'Biotope asiatique': '🎋',
+                        'Biotope africain': '🌾',
+                        'Biotope australien': '🌺',
+                        'Biotope européen': '🍃',
+                        'Biotope eaux saumâtres': '🫧',
+                        'Biotope mangroves': '🌱',
+                        'Autre': '🌍'
+                    }[last.categorie] ?? '🌍' %}
 
-                            {% set catFolder = dossierCategorie[last.categorie]|default('autre') %}
-                            {% set randomImage = random([1,2,3]) %}
+                    {% set catFolder = badgeSlug %}
+                    {% set randomImage = random([1,2,3]) %}
+
 
                             <li class="mini-post">
                             <a href="{{ path('app_article_show', {'id': last.id}) }}" class="mini-link">
@@ -317,7 +361,7 @@
             form.setAttribute('action', action);
             tokenInput.value = token;
 
-            // Ajoute une classe spéciale au backdrop pour appliquer le flou
+            // classe spéciale au backdrop pour appliquer le flou
             setTimeout(() => {
                 const backdrop = document.querySelector('.modal-backdrop');
                 if (backdrop) {

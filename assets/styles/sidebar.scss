@@ -2,97 +2,84 @@
 @use "mixins" as *;
 @use "bouton" as *;
 
+/* =========================
+   SIDEBAR 
+   ========================= */
 
-/* ========== SIDEBAR WRAPPER ========== */
 .sidebar {
+  /* Variables locales pour harmoniser partout */
+  --sb-radius: 16px;
+  --sb-radius-sm: 12px;
+  --sb-border: rgba(0, 0, 0, 0.08);
+  --sb-shadow: 0 10px 26px rgba(0, 0, 0, 0.06);
+  --sb-shadow-hover: 0 14px 34px rgba(0, 0, 0, 0.08);
+  --sb-bg: rgba(255, 255, 255, 0.85); 
+  --sb-gap: 18px;
+  --sb-title-color: #4a5f73; // gris bleuté très léger
+
   .sticky-top {
     top: 100px;
   }
 
-  /* ========== CARDS GÉNÉRALES (Pub, articles, concours...) ========== */
-  .card,
-  .pub-box {
-    background-color: #ffffff;
-    border: 1px solid #e3e3e3;
-    border-radius: 0.5rem;
-    padding: 1rem;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-    margin-bottom: 1.5rem;
-
-    h5 {
-      font-size: 1.1rem;
-      font-weight: bold;
-      margin-bottom: 0.75rem;
-    }
-
-    p {
-      font-size: 0.9rem;
-      color: #555;
-    }
-
-    a.btn {
-      margin-top: 0.5rem;
-      font-size: 0.85rem;
-      white-space: nowrap;
-    }
+  /* Style commun de “module” sidebar*/
+  :where(.sidebar-card, .pub-box, .sticky-top > .mb-4) {
+    background: var(--sb-bg);
+    border: 1px solid var(--sb-border);
+    border-radius: var(--sb-radius);
+    box-shadow: var(--sb-shadow);
+    padding: 16px 16px;
+    margin-bottom: var(--sb-gap);
+    backdrop-filter: blur(6px);
   }
 
-  /* ========== MINIATURE IMAGE POUR DERNIERS ARTICLES ========== */
-  .card-img-top {
-    border-radius: 0.3rem;
-    height: 120px;
-    object-fit: cover;
+  /* Petits titres */
+  :where(.sidebar-card, .sticky-top > .mb-4) h5 {
+    font-size: 0.98rem;
+    font-weight: 700;
+    margin: 0 0 10px 0;
+    line-height: 1.25;
+    letter-spacing: 0.2px;
+    color: var(--sb-title-color);
+    text-wrap: balance;
   }
 
-  /* ========== TITRES D’ARTICLES RÉCENTS ========== */
-  .card-title {
-    font-size: 0.95rem;
-    font-weight: 600;
-    margin-bottom: 0.3rem;
+  :where(.sidebar-card, .sticky-top > .mb-4) p {
+    font-size: 0.92rem;
+    color: #555;
+    margin: 0;
+    line-height: 1.55;
   }
 
-  .text-muted {
-    font-size: 0.75rem;
+  /* Boutons dans la sidebar */
+  :where(.sidebar-card, .sticky-top > .mb-4) a.btn {
+    margin-top: 10px;
+    font-size: 0.85rem;
+    white-space: nowrap;
   }
 
-  /* ========== VARIANTE FOND CLAIR ========== */
-  .card {
-    background-color: #fafafa;
-    border: 1px solid #e0e0e0;
-  }
-  }
-  
-  a.btn-concours {
-  @include bouton-nature($btn-brun, $btn-brun-hover);
+  /* Petit décalage du premier module pour casser l’alignement */
+  .sidebar .sticky-top > .mb-4:first-child {
+    margin-top: .25rem; 
   }
 
-
-
-/* ========== RESPONSIVE : MARGE AU-DESSUS EN MOBILE ========== */
-@media (max-width: 991px) {
-  .sidebar {
-    margin-top: 2rem;
-  }
-}
-/* ===== Mini liste "Derniers articles" ===== */
-.sidebar {
+  /* ========== MINI LISTE "Derniers articles" ========== */
   .mini-posts {
     display: flex;
     flex-direction: column;
-    gap: .6rem;
+    gap: 10px; /* + d’air */
   }
 
   .mini-post {
-    border: 1px solid #e7e7e7;
-    border-radius: .55rem;
-    background: #fff;
-    transition: transform .12s ease, border-color .12s ease, box-shadow .12s ease;
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    border-radius: var(--sb-radius-sm);
+    background: rgba(255, 255, 255, 0.9);
+    transition: transform 0.12s ease, border-color 0.12s ease, box-shadow 0.12s ease;
 
     .mini-link {
       display: grid;
       grid-template-columns: 72px 1fr;
-      gap: .75rem;
-      padding: .55rem;
+      gap: 12px;
+      padding: 10px;
       color: inherit;
       text-decoration: none;
       align-items: center;
@@ -101,9 +88,8 @@
     .thumb-wrap {
       width: 72px;
       height: 72px;
-      border-radius: .45rem;
+      border-radius: 12px;
       overflow: hidden;
-      flex: 0 0 72px;
 
       img {
         width: 100%;
@@ -115,11 +101,14 @@
 
     .meta {
       .title {
-        margin: 0 0 .35rem 0;
-        font-size: .95rem;
+        margin: 0 0 8px 0;
+        font-size: 0.92rem;
         line-height: 1.25;
+        font-weight: 650;
+
         display: -webkit-box;
-        -webkit-line-clamp: 2; /* 2 lignes max */
+        -webkit-line-clamp: 2;
+        line-clamp: 2;
         -webkit-box-orient: vertical;
         overflow: hidden;
       }
@@ -127,99 +116,134 @@
       .row-aux {
         display: flex;
         align-items: center;
-        gap: .5rem;
+        gap: 8px;
         flex-wrap: wrap;
       }
 
       .badge {
-        font-size: .65rem;
-        padding: .25rem .5rem;
+        font-size: 0.65rem;
+        padding: 0.25rem 0.55rem;
         border-radius: 999px;
       }
 
       .date {
-        font-size: .75rem;
+        font-size: 0.75rem;
       }
     }
 
     &:hover,
     &:focus-within {
-      border-color: rgba(0,0,0,.12);
-      box-shadow: 0 4px 10px rgba(0,0,0,.05);
+      border-color: rgba(0, 0, 0, 0.12);
+      box-shadow: 0 10px 22px rgba(0, 0, 0, 0.07);
       transform: translateY(-1px);
     }
   }
 
-  /* un poil plus compact sous 400px de large */
   @media (max-width: 400px) {
     .mini-post .mini-link {
       grid-template-columns: 60px 1fr;
-      padding: .5rem;
+      padding: 9px;
     }
     .mini-post .thumb-wrap {
-      width: 60px; height: 60px;
-      border-radius: .4rem;
+      width: 60px;
+      height: 60px;
+      border-radius: 10px;
     }
-    .mini-post .meta .title { font-size: .9rem; }
+    .mini-post .meta .title {
+      font-size: 0.9rem;
+    }
   }
-}
-/* ===== Carte groupée "Concours d’Aquascaping" ===== */
-.sidebar {
+
+  /* ========== Carte groupée "Concours d’Aquascaping" ========== */
   .concours-card {
+    
     .contest-list {
       display: flex;
       flex-direction: column;
-      gap: .75rem;
+      gap: 12px;
     }
 
     .contest-item {
       display: grid;
       grid-template-columns: 40px 1fr;
-      gap: .75rem;
-      padding: .75rem;
-      border: 1px solid #e7e7e7;
-      border-radius: .6rem;
-      background: #fff;
-      transition: transform .12s ease, border-color .12s ease, box-shadow .12s ease;
+      gap: 12px;
+
+      padding: 12px;
+      border: 1px solid rgba(0, 0, 0, 0.08);
+      border-radius: var(--sb-radius-sm);
+      background: rgba(255, 255, 255, 0.9);
+      transition: transform 0.12s ease, border-color 0.12s ease, box-shadow 0.12s ease;
 
       &:hover {
-        border-color: rgba(0,0,0,.12);
-        box-shadow: 0 4px 10px rgba(0,0,0,.05);
+        border-color: rgba(0, 0, 0, 0.12);
+        box-shadow: 0 10px 22px rgba(0, 0, 0, 0.07);
         transform: translateY(-1px);
       }
     }
 
     .contest-icon {
-      width: 40px; height: 40px;
+      width: 40px;
+      height: 40px;
       border-radius: 999px;
-      display: flex; align-items: center; justify-content: center;
-      background: rgba(79,195,247,.12); /* écho à ton bleu */
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      background: rgba(79, 195, 247, 0.12); 
       font-size: 1.1rem;
       user-select: none;
     }
 
     .contest-title {
-      font-size: .98rem;
-      font-weight: 600;
-      margin-bottom: .25rem;
+      font-size: 0.95rem;
+      font-weight: 700;
+      margin: 0 0 6px 0;
+
+      
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
     }
 
     .contest-desc {
-      font-size: .9rem;
+      font-size: 0.9rem;
       color: #555;
-      margin: .25rem 0 .5rem;
+      margin: 0 0 10px 0;
+      line-height: 1.5;
+
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
     }
 
-    /* compact sous 400px */
     @media (max-width: 400px) {
       .contest-item {
         grid-template-columns: 36px 1fr;
-        padding: .65rem;
+        padding: 11px;
       }
-      .contest-icon { width: 36px; height: 36px; font-size: 1rem; }
-      .contest-title { font-size: .95rem; }
-      .contest-desc { font-size: .88rem; }
+      .contest-icon {
+        width: 36px;
+        height: 36px;
+        font-size: 1rem;
+      }
     }
   }
+
+  /* Bouton concours */
+  a.btn-concours {
+    @include bouton-nature($btn-brun, $btn-brun-hover);
+  }
 }
+
+/* RESPONSIVE : marge au-dessus en mobile */
+@media (max-width: 991px) {
+  .sidebar {
+    margin-top: 2rem;
+  }
+}
+
 
