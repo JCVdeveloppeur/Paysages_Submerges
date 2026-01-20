@@ -1,76 +1,99 @@
-{% extends 'base.html.twig' %}
+{% extends 'admin/layout.html.twig' %}
 
-{% block title %}Tous les articles{% endblock %}
+{% block page_title %}Tous les articles{% endblock %}
+{% block page_heading %}<i class="bi bi-file-earmark-text me-2"></i> Tous les articles publiés{% endblock %}
 
-{% block body %}
-<div class="container py-5">
-    <h1 class="mb-4"><i class="bi bi-file-earmark-text"></i> Tous les articles publiés</h1>
+{% block content %}
+  <div class="admin-surface">
 
-    {% if articles is empty %}
-        <div class="alert alert-info">
-            Aucun article pour le moment.
-        </div>
-    {% else %}
-        <div class="table-responsive">
-            <table class="table table-hover align-middle">
-                <thead class="table-light">
-                    <tr>
-                        <th>Titre</th>
-                        <th>Auteur</th>
-                        <th>Date création</th>
-                        <th>Statut</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for article in articles %}
-                        <tr>
-                            <td>{{ article.titre }}</td>
-                            <td>
-                                {% if article.user %}
-                                    {{ article.user.pseudo ?? article.user.email }}
-                                {% else %}
-                                    <em class="text-muted">Auteur inconnu</em>
-                                {% endif %}
-                            </td>
-                            <td>{{ article.dateCreation|date('d/m/Y H:i') }}</td>
-                            <td>
-                                {% if article.statut == 'publié' %}
-                                    <span class="badge badge-publie">Publié</span>
-                                {% elseif article.statut == 'brouillon' %}
-                                    <span class="badge badge-brouillon">Brouillon</span>
-                                {% else %}
-                                    <span class="badge badge-attente">{{ article.statut }}</span>
-                                {% endif %}
-                            </td>
-                            <td>
-                                <form method="post" action="{{ path('admin_article_delete', { id: article.id }) }}"
-                                    onsubmit="return confirm('Supprimer cet article ?');" class="d-inline">
-                                    <input type="hidden" name="_token" value="{{ csrf_token('delete-article-' ~ article.id) }}">
-                                    <button type="submit" class="btn-admin-supprimer" title="Supprimer">
-                                    <i class="bi bi-trash3"></i> Supprimer
-                                </button>
-                                </form>
-                            </td>
+    <div class="admin-surface__head">
+      <h3 class="mb-0">
+        <i class="bi bi-file-earmark-text me-2"></i>
+        Tous les articles publiés
+      </h3>
 
-                        </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        </div>
-
-        <div class="d-flex justify-content-center mt-4">
-            {{ knp_pagination_render(articles, '@KnpPaginator/Pagination/bootstrap5_v5_pagination.html.twig') }}
-        </div>
-    {% endif %}
-
-    <div class="mt-4">
-        <a href="{{ path('admin_dashboard') }}" class="btn-admin-retour">
-            <i class="bi bi-arrow-left-circle"></i> Retour au tableau de bord
+      <div class="admin-surface__actions">
+        <a href="{{ path('app_article_new') }}" class="btn-admin-ajouter">
+          <i class="bi bi-plus-circle me-2"></i>
+          Nouvel article
         </a>
 
+        <a href="{{ path('admin_dashboard') }}" class="btn btn-outline-light">
+          <i class="bi bi-speedometer2 me-2"></i> Tableau de bord
+        </a>
+      </div>
+    </div>
+
+      {# ===== Body ===== #}
+
+        <div class="admin-surface__body">
+
+            {% if articles is empty %}
+                <div class="alert alert-info mb-0">
+                    Aucun article pour le moment.
+                </div>
+            {% else %}
+                <div class="table-responsive">
+                    <table class="table admin-table-glass align-middle">
+                        <thead>
+                            <tr>
+                                <th>Titre</th>
+                                <th>Auteur</th>
+                                <th>Date création</th>
+                                <th>Statut</th>
+                                <th class="text-end">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for article in articles %}
+                                <tr>
+                                    <td>{{ article.titre }}</td>
+                                    <td>
+                                        {% if article.user %}
+                                            {{ article.user.pseudo ?? article.user.email }}
+                                        {% else %}
+                                            <em class="text-muted">Auteur inconnu</em>
+                                        {% endif %}
+                                    </td>
+                                    <td>{{ article.dateCreation|date('d/m/Y H:i') }}</td>
+                                    <td>
+                                    {% include 'admin/_status_badge.html.twig' with {
+                                        status: article.statut
+                                    } %}
+                                    </td>
+                                    <td class="text-end">
+                                    {% include 'admin/_actions_row.html.twig' with {
+                                        edit_path: path('article_edit', { id: article.id }),
+                                        delete_path: path('admin_article_delete', { id: article.id }),
+                                        csrf_token_id: 'delete' ~ article.id,
+
+                                        delete_kind: 'article',
+                                        delete_kicker: "Suppression d'article",
+                                        delete_title: "Supprimer l'article ?",
+                                        delete_subtitle: "Cette fiche ne sera plus accessible.",
+                                        delete_body: "Vous êtes sûr de vouloir supprimer : <strong>" ~ (article.titre|default("cet article"))|e('html_attr') ~ "</strong> ?"
+                                    } %}
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% endif %}
+
+        </div>
+
+        {# ===== Footer ===== #}
+        <div class="admin-surface__foot d-flex justify-content-between align-items-center flex-wrap gap-3">
+
+            {{ knp_pagination_render(
+                articles,
+                '@KnpPaginator/Pagination/bootstrap5_v5_pagination.html.twig'
+            ) }}
+        </div>
 
     </div>
 </div>
 {% endblock %}
+
 

@@ -1,0 +1,153 @@
+@use "variables" as *;
+@use "mixins" as *;
+@use "bouton" as *;
+
+
+.ps-modal {
+  position: fixed;
+  inset: 0;
+  display: none;
+  z-index: 9999;
+  padding: 24px;
+
+  &.is-open {
+    display: grid;
+    place-items: center;
+  }
+}
+
+.ps-modal__backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(5, 12, 20, 0.55);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  animation: psFadeIn 180ms ease-out;
+}
+
+.ps-modal__dialog {
+  position: relative;
+  width: min(720px, 100%);
+  max-height: min(80vh, 720px);
+  overflow: auto;
+
+  border-radius: 18px;
+  padding: 22px 22px 18px;
+
+  background: rgba(255, 255, 255, 0.10);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  box-shadow: 0 18px 55px rgba(0, 0, 0, 0.35);
+
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+
+  transform: translateY(10px) scale(0.98);
+  animation: psPopIn 200ms ease-out forwards;
+}
+
+.ps-modal__close {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  background: rgba(255, 255, 255, 0.08);
+  color: rgba(255, 255, 255, 0.92);
+  cursor: pointer;
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.14);
+  }
+}
+
+.ps-modal__header {
+  padding-right: 48px;
+}
+
+.ps-modal__title {
+  margin: 0;
+  font-size: 1.25rem;
+  color: rgba(255, 255, 255, 0.95);
+  letter-spacing: 0.2px;
+}
+
+.ps-modal__subtitle {
+  margin: 6px 0 0;
+  color: rgba(255, 255, 255, 0.75);
+  font-size: 0.95rem;
+}
+
+.ps-modal__body {
+  margin-top: 14px;
+  color: rgba(255, 255, 255, 0.85);
+  line-height: 1.55;
+}
+
+.ps-modal__footer {
+  margin-top: 18px;
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+}
+
+/* Boutons minimalistes */
+.ps-btn {
+  padding: 10px 14px;
+  border-radius: 12px;
+  border: 1px solid transparent;
+  cursor: pointer;
+  font-weight: 600;
+
+  &--primary {
+    background: rgba(40, 140, 255, 0.85);
+    color: white;
+
+    &:hover {
+      background: rgba(40, 140, 255, 0.95);
+    }
+  }
+
+  &--ghost {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: rgba(255, 255, 255, 0.18);
+    color: rgba(255, 255, 255, 0.9);
+
+    &:hover {
+      background: rgba(255, 255, 255, 0.14);
+    }
+  }
+}
+
+@keyframes psFadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes psPopIn {
+  to { transform: translateY(0) scale(1); }
+}
+.ps-modal-lock {
+  overflow: hidden !important;
+}
+.ps-modal__kicker{
+  display: inline-flex;
+  align-items: center;
+  gap: .5rem;
+  margin-bottom: .35rem;
+  font-size: .85rem;
+  font-weight: 700;
+  letter-spacing: .3px;
+  color: rgba(255,255,255,.78);
+  opacity: .95;
+}
+.ps-modal[data-kind="article"] .ps-modal__kicker { color: rgba(180, 220, 255, .9); }
+.ps-modal[data-kind="espece"]  .ps-modal__kicker { color: rgba(140, 220, 255, .9); }
+.ps-modal[data-kind="plante"]  .ps-modal__kicker { color: rgba(170, 245, 190, .9); }
+.ps-modal[data-kind="patho"]   .ps-modal__kicker { color: rgba(255, 160, 160, .95); }
+
+.ps-modal[data-kind="reject"] .ps-modal__kicker{
+  color: rgba(255, 170, 170, .95);
+}
+

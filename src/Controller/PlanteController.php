@@ -137,7 +137,7 @@ final class PlanteController extends AbstractController
     #[Route('/{id}', name: 'app_plante_delete', methods: ['POST'])]
     public function delete(Request $request, Plante $plante, EntityManagerInterface $entityManager): Response
     {
-        if ($this->isCsrfTokenValid('delete'.$plante->getId(), $request->getPayload()->getString('_token'))) {
+        if ($this->isCsrfTokenValid('delete'.$plante->getId(), $request->request->get('_token'))) {
             if ($plante->getImage()) {
             $path = $this->getParameter('plantes_upload_dir').'/'.$plante->getImage();
             if (file_exists($path)) {

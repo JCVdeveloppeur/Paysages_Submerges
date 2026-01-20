@@ -1,0 +1,37 @@
+{# 
+  Variables attendues :
+  - status (string) : ex "publié", "brouillon", "en attente", etc.
+#}
+
+{% set statut = (status ?? '')|lower %}
+
+{% if statut in ['publié', 'publie'] %}
+  <span class="status-badge status-badge--published">
+    Publié
+  </span>
+
+{% elseif statut == 'brouillon' %}
+  <span class="status-badge status-badge--draft">
+    Brouillon
+  </span>
+
+{% elseif statut in ['en attente', 'attente', 'à valider', 'a valider'] %}
+  <span class="status-badge status-badge--pending">
+    En attente
+  </span>
+
+{% elseif statut in ['archivé', 'archive'] %}
+  <span class="status-badge status-badge--archived">
+    Archivé
+  </span>
+
+{% elseif statut in ['rejeté', 'rejete', 'refusé', 'refuse'] %}
+  <span class="status-badge status-badge--rejected">
+    Rejeté
+  </span>
+
+{% else %}
+  <span class="status-badge">
+    {{ status|default('Non défini') }}
+  </span>
+{% endif %}

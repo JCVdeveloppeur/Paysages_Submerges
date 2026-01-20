@@ -1,48 +1,74 @@
-{% extends 'dashboard.html.twig' %}
+{% extends 'admin/layout.html.twig' %}
 
-{% block title %}Gestion des blocs de page{% endblock %}
+{% block page_title %}Gestion des blocs de page{% endblock %}
+{% block page_heading %}<i class="bi bi-blockquote-left"></i> Blocs de page{% endblock %}
 
-{% block body %}
-<div class="container py-4">
-    <h1 class="mb-4"><i class="bi bi-blockquote-left"></i> Blocs de page</h1>
+{% block content %}
+<div class="admin-surface">
 
-    <div class="mb-3">
-        <a href="{{ path('admin_pageblock_new') }}" class="btn btn-success">
-            <i class="bi bi-plus-circle"></i> Nouveau bloc
-        </a>
+  <div class="admin-surface__head">
+    <h3 class="mb-0">
+      <i class="bi bi-blockquote-left me-2"></i> Blocs de page
+    </h3>
+
+    <div class="d-flex gap-2">
+      <a href="{{ path('admin_dashboard') }}" class="btn btn-outline-light">
+        <i class="bi bi-arrow-left-circle me-2"></i> Tableau de bord
+      </a>
+
+      <a href="{{ path('admin_page_block_new') }}" class="btn-admin-ajouter">
+        <i class="bi bi-plus-circle"></i> Nouveau bloc
+      </a>
     </div>
+  </div>
 
-    <table class="table table-hover align-middle">
+  <div class="admin-surface__body">
+    <div class="table-responsive">
+      <table class="table table-hover align-middle table-bordered admin-table-glass">
         <thead>
-            <tr>
-                <th>Slug</th>
-                <th>Titre</th>
-                <th>Mis à jour</th>
-                <th class="text-end">Actions</th>
-            </tr>
+          <tr>
+            <th>Slug</th>
+            <th>Titre</th>
+            <th>Mis à jour</th>
+            <th class="text-end">Actions</th>
+          </tr>
         </thead>
+
         <tbody>
         {% for block in blocks %}
-            <tr>
-                <td><code>{{ block.slug }}</code></td>
-                <td>{{ block.title ?: '-' }}</td>
-                <td>{{ block.updatedAt ? block.updatedAt|date('d/m/Y H:i') : '-' }}</td>
-                <td class="text-end">
-                    <a href="{{ path('admin_pageblock_edit', {id: block.id}) }}" class="btn btn-sm btn-primary">
-                        <i class="bi bi-pencil"></i> Modifier
-                    </a>
-                    <form method="post" action="{{ path('admin_pageblock_delete', {id: block.id}) }}" style="display:inline-block" onsubmit="return confirm('Supprimer ce bloc ?');">
-                        <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ block.id) }}">
-                        <button class="btn btn-sm btn-danger"><i class="bi bi-trash"></i></button>
-                    </form>
-                </td>
-            </tr>
+          <tr>
+            <td><code>{{ block.slug }}</code></td>
+            <td>{{ block.title ?: '-' }}</td>
+            <td>{{ block.updatedAt ? block.updatedAt|date('d/m/Y H:i') : '-' }}</td>
+            <td class="text-end">
+              <a href="{{ path('admin_page_block_edit', {id: block.id}) }}" class="btn-admin-modifier">
+                <i class="bi bi-pencil"></i> Modifier
+              </a>
+
+              <form method="post"
+                    action="{{ path('admin_page_block_delete', {id: block.id}) }}"
+                    class="d-inline"
+                    onsubmit="return confirm('Supprimer ce bloc ?');">
+                <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ block.id) }}">
+                <button class="btn-admin-supprimer" title="Supprimer">
+                  <i class="bi bi-trash3"></i> Supprimer
+                </button>
+              </form>
+            </td>
+          </tr>
         {% else %}
-            <tr>
-                <td colspan="4" class="text-center text-muted">Aucun bloc pour le moment.</td>
-            </tr>
+          <tr>
+            <td colspan="4" class="text-center text-muted">Aucun bloc pour le moment.</td>
+          </tr>
         {% endfor %}
         </tbody>
-    </table>
+      </table>
+    </div>
+  </div>
+
 </div>
 {% endblock %}
+
+
+
+

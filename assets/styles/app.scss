@@ -1,12 +1,15 @@
 
+
 @use "bootstrap/scss/bootstrap" as *;
 
 @use "variables" as *;
 @use "mixins" as *;
 
-@use "bouton"; 
+@use "bouton";
 @use "cards/carnet";
 @use "badges";
+@use "admin_badges";
+@use "admin_actions";
 
 @use "navbar";
 @use "accueil";
@@ -18,7 +21,6 @@
 @use "article";
 @use "article_show";
 @use "article-edit" as *;
-
 
 @use "maladie_poisson";
 @use "especes";
@@ -38,20 +40,54 @@
 @use "commentaire";
 
 @use "admin_dashboard";
+@use "admin_glass";
+@use "modal_glass";
 @use "sidebar";
 
+/* =========================
+   Base globale
+   ========================= */
 
-
-
-
-html, body {
+html,
+body {
   height: 100%;
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  font-family: 'Lato', sans-serif;
+  font-family: "Lato", sans-serif;
 }
 
+* {
+  box-sizing: border-box;
+}
+
+h1,
+h2,
+h3,
+h4 {
+  font-family: "Merriweather", serif;
+}
+
+button,
+.btn {
+  font-family: "Roboto", sans-serif;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+/* =========================
+   Cas spécifiques de pages
+   ========================= */
+
+.accueil-page,
+.article-page,
+.article-show-page,
+.espece-show-page-body {
+  margin: 0;
+  padding: 0;
+}
+
+/* Page article_show : fond blanc forcé uniquement ici */
 body.article-show-body {
   background-color: #ffffff !important;
 
@@ -60,13 +96,44 @@ body.article-show-body {
   }
 }
 
-body.article-show-body {
-  background-color: #ffffff !important;
-
-  > * {
-    background-color: #ffffff !important;
-  }
+/* Dégradé aquatique */
+body.degrade-aquatique-body {
+  background: $degrade-aquatique;
+  background-attachment: fixed;
+  background-repeat: no-repeat;
+  background-size: cover;
+  color: #fff;
+  transition: background 0.8s ease;
 }
+
+/* =========================
+   Fond global du site (PUBLIC)
+   ========================= */
+
+body:not(.article-show-body):not(.degrade-aquatique-body) {
+  background-color: $bleu-profond;
+}
+
+/* =========================
+   Main content
+   ========================= */
+
+/* Par défaut (public) : fond crème */
+.main-content {
+  flex: 1;
+  width: 100%;
+  background-color: $crème-clair;
+}
+
+/* En admin : on évite le “crème” sous le glass */
+body.admin .main-content {
+  background: transparent; /* ou #050f1c si tu préfères un fond sombre fixe */
+}
+
+/* =========================
+   Boutons spécifiques
+   ========================= */
+
 .btn-retour-articles {
   background-color: $btn-vert;
   color: #fff;
@@ -91,58 +158,21 @@ body.article-show-body {
   }
 }
 
-body:not(.article-show-body):not(.degrade-aquatique-body) {
-  background-color: $bleu-profond;
+/* =========================
+   Cartes / conteneurs sur fond clair
+   ========================= */
 
-  > * {
-    background-color: $bleu-profond;
+body:not(.admin) {
+  .container,
+  .content-wrapper {
+    background-color: #ffffff;
+    border-radius: 0.75rem;
+    padding: 1rem;
+    color: #000;
   }
 }
 
-body.degrade-aquatique-body {
-  background: $degrade-aquatique;
-  background-attachment: fixed;
-  background-repeat: no-repeat;
-  background-size: cover;
-  color: #fff;
-  transition: background 0.8s ease;
-}
 
-.main-content {
-    flex: 1;
-    width: 100%;
-    background-color:$crème-clair;
-}
-
-h1, h2, h3, h4 {
-    font-family: 'Merriweather', serif;
-}
-
-button, .btn {
-    font-family: 'Roboto', sans-serif;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-}
-
-.accueil-page,
-.article-page,
-.article-show-page,
-.espece-show-page-body {
-    margin: 0;
-    padding: 0;
-}
-
-* {
-    box-sizing: border-box;
-}
-
-/* Conteneurs sur fond clair */
-.container, .content-wrapper {
-  background-color: #ffffff;
-  border-radius: 0.75rem;
-  padding: 1rem;
-  color: #000;
-}
 
 
 

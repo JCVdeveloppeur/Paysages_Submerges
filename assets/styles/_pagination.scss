@@ -130,6 +130,46 @@
   }
 }
 
+/* =========================================================
+   PAGINATION – ADMIN
+   ========================================================= */
+
+body.admin .pagination {
+  gap: .4rem;
+}
+
+body.admin .pagination .page-link {
+  background: rgba(255,255,255,0.06);
+  color: rgba(220,235,255,0.9);
+  border: 1px solid rgba(140,190,255,0.18);
+  border-radius: 10px;
+  transition: all .2s ease;
+}
+
+body.admin .pagination .page-link:hover {
+  background: rgba(120,190,255,0.18);
+  color: #fff;
+}
+
+body.admin .pagination .page-item.active .page-link {
+  background: rgba(120, 190, 255, 0.38);
+  border-color: rgba(120, 190, 255, 0.65);
+  color: #fff;
+
+  box-shadow:
+    0 0 0 1px rgba(120,190,255,0.25),
+    0 6px 14px rgba(0,0,0,0.35);
+
+  font-weight: 600;
+  cursor: default;
+}
+
+
+body.admin .pagination .page-item.disabled .page-link {
+  opacity: .4;
+  pointer-events: none;
+}
+
 
 
 

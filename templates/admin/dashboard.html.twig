@@ -4,170 +4,173 @@
 {% block page_heading %}<i class="bi bi-speedometer2"></i> Tableau de bord administrateur{% endblock %}
 
 {% block content %}
-<div class="row g-4">
-    {# Carte Articles #}
-    <div class="col-md-3">
-        <div class="card border-primary shadow-sm text-center h-100">
-            <div class="card-body">
-                <h5 class="card-title d-flex align-items-center justify-content-center gap-2">
-                    <i class="bi bi-journal-text"></i> Articles
-                    <span class="badge bg-primary">{{ nombreArticles }}</span>
-                </h5>
-                <p class="card-text text-muted">Nombre total d'articles publiés.</p>
-                <a href="{{ path('admin_articles_all') }}" class="btn btn-sm btn-bleu-profil w-100 d-flex align-items-center justify-content-center gap-2">
-                    <i class="bi bi-eye"></i> Voir les articles
-                </a>
-            </div>
-        </div>
+
+<div class="admin-dashboard admin-dashboard--glass">
+
+{# Header actions rapides #}
+<div class="admin-dash-header mb-4">
+    <div class="admin-dash-header__left">
+        <h2 class="admin-dash-title mb-1">Vue d'ensemble</h2>
+        <p class="admin-dash-subtitle mb-0">Gestion du site, modération et statistiques.</p>
     </div>
 
-    {# Carte Espèces #}
-    <div class="col-md-3">
-        <div class="card border-warning shadow-sm text-center h-100">
-            <div class="card-body">
-                <h5 class="card-title d-flex align-items-center justify-content-center gap-2">
-                    🐟 <i class="bi bi-fish"></i> Espèces
-                    <span class="badge badge-especes">{{ nombreEspeces }}</span>
-                </h5>
-                <p class="card-text text-muted">Nombre total de fiches espèces.</p>
-                <a href="{{ path('admin_especes') }}" class="btn btn-sm btn-bleu-profil w-100 d-flex align-items-center justify-content-center gap-2">
-                    <i class="bi bi-pencil"></i> Gérer les espèces
-                </a>
-            </div>
-        </div>
-    </div>
-
-    {# Carte Modération #}
-    <div class="col-md-3">
-        <div class="card border-success shadow-sm text-center h-100">
-            <div class="card-body">
-                <h5 class="card-title d-flex align-items-center justify-content-center gap-2">
-                    <i class="bi bi-check2-circle"></i> Modération
-                    <span class="badge bg-success">{{ articlesEnAttente }}</span>
-                </h5>
-                <p class="card-text text-muted">Articles en attente de validation.</p>
-                <a href="{{ path('admin_articles_moderation') }}" class="btn btn-sm btn-bleu-profil w-100 d-flex align-items-center justify-content-center gap-2">
-                    <i class="bi bi-check2-square"></i> Modérer
-                </a>
-            </div>
-        </div>
-    </div>
-
-    {# Carte Utilisateurs #}
-    <div class="col-md-3">
-        <div class="card border-dark shadow-sm text-center h-100">
-            <div class="card-body">
-                <h5 class="card-title d-flex align-items-center justify-content-center gap-2">
-                    <i class="bi bi-people"></i> Utilisateurs
-                    <span class="badge bg-dark">{{ nombreUtilisateurs }}</span>
-                </h5>
-                <p class="card-text text-muted mb-3">Nombre d'utilisateurs inscrits.</p>
-                <div class="d-flex justify-content-between align-items-center mb-2">
-                    <span data-bs-toggle="tooltip" title="Connectés ces 7 derniers jours.">Actifs</span>
-                    <span class="badge bg-success">{{ utilisateursActifs }}</span>
-                </div>
-                <div class="d-flex justify-content-between align-items-center mb-2">
-                    <span data-bs-toggle="tooltip" title="Non connectés ces 7 derniers jours.">Inactifs</span>
-                    <span class="badge bg-secondary">{{ utilisateursInactifs }}</span>
-                </div>
-                <a href="{{ path('admin_users') }}" class="btn btn-sm btn-bleu-profil w-100 mt-2 d-flex align-items-center justify-content-center gap-2">
-                    <i class="bi bi-eye"></i> Voir les utilisateurs
-                </a>
-            </div>
-        </div>
+    <div class="admin-dash-header__right d-flex gap-2">
+        <a href="{{ path('app_article_new') }}" class="btn btn-success d-flex align-items-center gap-2">
+            <i class="bi bi-pencil-square"></i> Rédiger
+        </a>
+        <a href="{{ path('admin_articles_moderation') }}" class="btn btn-outline-light d-flex align-items-center gap-2">
+            <i class="bi bi-shield-check"></i> Modération
+        </a>
     </div>
 </div>
 
-{# Interactions #}
-<div class="row mt-5">
-    <div class="col">
-        <div class="card border-info shadow-sm">
-            <div class="card-body">
-                <h5><i class="bi bi-chat-dots"></i> Interactions</h5>
-                <p class="card-text text-muted">
-                    Commentaires ({{ nombreCommentaires }}) & Likes ({{ nombreLikes }})<br>
-                    <strong>Aujourd'hui</strong> : Commentaires {{ commentairesAujourdHui }} / Likes {{ likesAujourdHui }}<br>
-                    <strong>7 derniers jours</strong> : Commentaires {{ commentaires7Jours }} / Likes {{ likes7Jours }}
-                </p>
-                <a href="{{ path('admin_interactions') }}" class="btn btn-sm btn-bleu-profil w-100 d-flex align-items-center justify-content-center gap-2">
+{# KPI Cards (carte entière cliquable) #}
+<div class="row g-4">
+    <div class="col-md-3">
+        <a href="{{ path('admin_articles_all') }}" class="admin-kpi admin-kpi--primary">
+            <div class="admin-kpi__top">
+                <div class="admin-kpi__icon"><i class="bi bi-journal-text"></i></div>
+                <span class="admin-kpi__badge">{{ nombreArticles }}</span>
+            </div>
+            <div class="admin-kpi__content">
+                <div class="admin-kpi__title">Articles</div>
+                <div class="admin-kpi__subtitle">Nombre total d'articles publiés.</div>
+            </div>
+            <div class="admin-kpi__cta">
+                <span>Voir les articles</span><i class="bi bi-arrow-right"></i>
+            </div>
+        </a>
+    </div>
+
+    <div class="col-md-3">
+        <a href="{{ path('admin_espece_list') }}" class="admin-kpi admin-kpi--warning">
+            <div class="admin-kpi__top">
+                <div class="admin-kpi__icon"><i class="bi bi-droplet-half"></i></div>
+                <span class="admin-kpi__badge">{{ nombreEspeces }}</span>
+            </div>
+            <div class="admin-kpi__content">
+                <div class="admin-kpi__title">Espèces</div>
+                <div class="admin-kpi__subtitle">Nombre total de fiches espèces.</div>
+            </div>
+            <div class="admin-kpi__cta">
+                <span>Gérer les espèces</span><i class="bi bi-arrow-right"></i>
+            </div>
+        </a>
+    </div>
+
+    <div class="col-md-3">
+        <a href="{{ path('admin_articles_moderation') }}" class="admin-kpi admin-kpi--success">
+            <div class="admin-kpi__top">
+                <div class="admin-kpi__icon"><i class="bi bi-check2-circle"></i></div>
+                <span class="admin-kpi__badge">{{ articlesEnAttente }}</span>
+            </div>
+            <div class="admin-kpi__content">
+                <div class="admin-kpi__title">Modération</div>
+                <div class="admin-kpi__subtitle">Articles en attente de validation.</div>
+            </div>
+            <div class="admin-kpi__cta">
+                <span>Modérer</span><i class="bi bi-arrow-right"></i>
+            </div>
+        </a>
+    </div>
+
+    <div class="col-md-3">
+        <a href="{{ path('admin_users') }}" class="admin-kpi admin-kpi--dark">
+            <div class="admin-kpi__top">
+                <div class="admin-kpi__icon"><i class="bi bi-people"></i></div>
+                <span class="admin-kpi__badge">{{ nombreUtilisateurs }}</span>
+            </div>
+
+            <div class="admin-kpi__content">
+                <div class="admin-kpi__title">Utilisateurs</div>
+                <div class="admin-kpi__subtitle">Nombre d'utilisateurs inscrits.</div>
+
+                <div class="admin-kpi__meta mt-2">
+                    <div class="d-flex justify-content-between align-items-center mb-1">
+                        <span data-bs-toggle="tooltip" title="Connectés ces 7 derniers jours.">Actifs</span>
+                        <span class="badge bg-success">{{ utilisateursActifs }}</span>
+                    </div>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <span data-bs-toggle="tooltip" title="Non connectés ces 7 derniers jours.">Inactifs</span>
+                        <span class="badge bg-secondary">{{ utilisateursInactifs }}</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="admin-kpi__cta">
+                <span>Voir les utilisateurs</span><i class="bi bi-arrow-right"></i>
+            </div>
+        </a>
+    </div>
+</div>
+
+{# Interactions + Bloc "À traiter" #}
+<div class="row mt-4 g-4">
+    <div class="col-lg-7">
+        <div class="admin-panel admin-panel--info">
+            <div class="admin-panel__head">
+                <h5 class="admin-panel__title mb-0"><i class="bi bi-chat-dots"></i> Interactions</h5>
+                <a href="{{ path('admin_interactions') }}" class="btn btn-sm btn-bleu-profil d-flex align-items-center gap-2">
                     <i class="bi bi-chat-dots"></i> Modérer
                 </a>
             </div>
-        </div>
-    </div>
-</div>
-
-{# Rangée Pathologies + Blocs de page #}
-<div class="row mt-4 g-4">
-    {# Carte Pathologies #}
-    <div class="col-md-3">
-        <div class="card border-danger shadow-sm text-center h-100">
-            <div class="card-body">
-                <h5 class="card-title d-flex align-items-center justify-content-center gap-2">
-                    <i class="bi bi-capsule-pill"></i> Pathologies
-                    <span class="badge bg-danger">{{ nombreMaladies }}</span>
-                </h5>
-                <p class="card-text text-muted">Nombre total de fiches maladies.</p>
-                <a href="{{ path('admin_maladies') }}"
-                   class="btn btn-sm btn-bleu-profil w-100 d-flex align-items-center justify-content-center gap-2">
-                    <i class="bi bi-pencil-square"></i> Gérer les maladies
-                </a>
+            <div class="admin-panel__body">
+                <div class="admin-metrics">
+                    <div class="metric">
+                        <div class="metric__label">Commentaires</div>
+                        <div class="metric__value">{{ nombreCommentaires }}</div>
+                        <div class="metric__hint">
+                            Aujourd'hui : {{ commentairesAujourdHui }} • 7 jours : {{ commentaires7Jours }}
+                        </div>
+                    </div>
+                    <div class="metric">
+                        <div class="metric__label">Likes</div>
+                        <div class="metric__value">{{ nombreLikes }}</div>
+                        <div class="metric__hint">
+                            Aujourd'hui : {{ likesAujourdHui }} • 7 jours : {{ likes7Jours }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="admin-panel__foot">
+                <small class="text-muted">Dernière mise à jour : {{ "now"|date("d/m/Y H:i") }}</small>
             </div>
         </div>
     </div>
 
-    {# Carte Plantes #}
-
-    <div class="col-md-3">
-        <div class="card border-success shadow-sm text-center h-100">
-            <div class="card-body">
-            <h5 class="card-title d-flex align-items-center justify-content-center gap-2">
-                <i class="bi bi-flower1"></i> Plantes
-                <span class="badge bg-success">{{ nombrePlantes }}</span>
-            </h5>
-            <p class="card-text text-muted">Nombre total de fiches plantes.</p>
-            <a href="{{ path('admin_plantes') }}"
-                class="btn btn-sm btn-bleu-profil w-100 d-flex align-items-center justify-content-center gap-2">
-                <i class="bi bi-pencil-square"></i> Gérer les plantes
-            </a>
+    <div class="col-lg-5">
+        <div class="admin-panel admin-panel--alert">
+            <div class="admin-panel__head">
+                <h5 class="admin-panel__title mb-0"><i class="bi bi-bell"></i> Actions rapides</h5>
             </div>
-        </div>
-        </div>
+            <div class="admin-panel__body">
+                <div class="d-grid gap-2">
+                    <a href="{{ path('admin_maladie_list') }}" class="btn btn-outline-danger d-flex align-items-center justify-content-between">
+                        <span><i class="bi bi-capsule-pill me-2"></i> Gérer les pathologies</span>
+                        <span class="badge text-bg-danger">{{ nombreMaladies }}</span>
+                    </a>
 
-    {# Carte Blocs de page #}
-    <div class="col-md-3">
-        <div class="card border-info shadow-sm text-center h-100">
-            <div class="card-body">
-                <h5 class="card-title d-flex align-items-center justify-content-center gap-2">
-                    <i class="bi bi-text-paragraph"></i> Blocs de page
-                    {% if nombreBlocs is defined %}
-                        <span class="badge bg-info">{{ nombreBlocs }}</span>
-                    {% endif %}
-                </h5>
-                <p class="card-text text-muted">Éditez les textes statiques (accueil, etc.).</p>
-                <a href="{{ path('admin_page_block_list') }}"
-                   class="btn btn-sm btn-bleu-profil w-100 d-flex align-items-center justify-content-center gap-2">
-                    <i class="bi bi-pencil-square"></i> Gérer les blocs
-                </a>
+                    <a href="{{ path('admin_plante_list') }}" class="btn btn-outline-success d-flex align-items-center justify-content-between">
+                        <span><i class="bi bi-flower1 me-2"></i> Gérer les plantes</span>
+                        <span class="badge text-bg-success">{{ nombrePlantes }}</span>
+                    </a>
+
+                    <a href="{{ path('admin_page_block_list') }}" class="btn btn-outline-info d-flex align-items-center justify-content-between">
+                        <span><i class="bi bi-text-paragraph me-2"></i> Gérer les blocs de page</span>
+                        {% if nombreBlocs is defined %}
+                            <span class="badge text-bg-info">{{ nombreBlocs }}</span>
+                        {% endif %}
+                    </a>
+                </div>
             </div>
         </div>
     </div>
 </div>
 
-<hr class="my-5">
-
-{# Bouton pour rédiger un nouvel article #}
-<div class="text-center">
-    <a href="{{ path('app_article_new') }}" class="btn btn-vert btn-lg">
-        ✍️ Rédiger un nouvel article
-    </a>
 </div>
 {% endblock %}
 
-
 {% block extra_js %}
-
-
 <script>
 document.addEventListener('DOMContentLoaded', function () {
     const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
@@ -177,6 +180,8 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 </script>
 {% endblock %}
+
+
 
 
 

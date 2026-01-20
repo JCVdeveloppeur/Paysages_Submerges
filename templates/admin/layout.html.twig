@@ -1,19 +1,19 @@
 
 {% extends 'base.html.twig' %}
 
+{% set body_class = (body_class|default('') ~ ' admin')|trim %}
+
 {# <title> de l’onglet #}
 {% block title %}{% block page_title %}Administration{% endblock %}{% endblock %}
 
 {# Contenu principal #}
 {% block body %}
-  <div class="container py-5">
+  <div class="container py-5 admin-container">
 
-    {# Titre H1 de la page #}
     <h1 class="mb-4">
       {% block page_heading %}{% endblock %}
     </h1>
 
-    {# Flash messages (success, danger, etc.) #}
     {% for label, messages in app.flashes %}
       {% for message in messages %}
         <div class="alert alert-{{ label }} alert-dismissible fade show" role="alert">
@@ -23,10 +23,15 @@
       {% endfor %}
     {% endfor %}
 
-    {# Zone de contenu des pages enfants #}
-    {% block content %}{% endblock %}
+    <main class="admin-glass">
+      {% block content %}{% endblock %}
+    </main>
   </div>
+  
+  {% include '_partials/_delete_modal_glass.html.twig' %}
+
 {% endblock %}
+
 
 {# JS additionnel des pages enfants (graphiques, etc.) #}
 {% block javascripts %}

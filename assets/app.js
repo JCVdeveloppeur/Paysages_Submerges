@@ -14,8 +14,7 @@ import './like.js';
 
 import './vague_boutons.js';
 
-// (Optionnel) Import de CSS pur 
-// import './styles/app.css';
+import './_modal_glass.js';
 
 document.documentElement.classList.add("js-enabled");
 

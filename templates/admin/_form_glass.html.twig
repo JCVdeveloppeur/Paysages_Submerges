@@ -1,0 +1,61 @@
+{# templates/admin/_form_glass.html.twig #}
+
+<div class="admin-surface">
+  <div class="admin-surface__head">
+    <h3 class="mb-0">
+      {% if icon is defined %}<i class="bi {{ icon }} me-2"></i>{% endif %}
+      {{ title|default('Formulaire') }}
+      {% if subtitle is defined and subtitle %}
+        <span class="ms-2" style="opacity:.85">{{ subtitle }}</span>
+      {% endif %}
+    </h3>
+
+    <div class="d-flex gap-2">
+      <a href="{{ path('admin_dashboard') }}" class="btn btn-outline-light btn-admin-nav">
+        <i class="bi bi-speedometer2 me-2"></i> Tableau de bord
+      </a>
+
+      {% if list_route is defined %}
+        <a href="{{ path(list_route) }}" class="btn btn-outline-light btn-admin-nav">
+          <i class="bi bi-list-ul me-2"></i> Liste
+        </a>
+      {% endif %}
+    </div>
+  </div>
+
+  <div class="admin-surface__body">
+    {# Erreurs globales #}
+    {% if form.vars.errors|length %}
+      <div class="alert alert-danger mb-3">
+        {{ form_errors(form) }}
+      </div>
+    {% endif %}
+
+    {{ form_start(form) }}
+
+      <div class="row g-3">
+        {% for field in form %}
+          {% if field.vars.name != '_token' %}
+            {% set isTextarea = 'textarea' in field.vars.block_prefixes %}
+            <div class="{{ isTextarea ? 'col-12' : 'col-12 col-md-6' }}">
+              {{ form_row(field) }}
+            </div>
+          {% endif %}
+        {% endfor %}
+      </div>
+
+      <div class="d-flex justify-content-end gap-2 mt-4">
+        {% if cancel_route is defined %}
+          <a href="{{ path(cancel_route) }}" class="btn btn-pastel">
+            <i class="bi bi-x-circle"></i> Annuler
+          </a>
+        {% endif %}
+
+        <button class="btn btn-bleu-profil">
+          <i class="bi bi-save"></i> {{ save_label|default('Enregistrer') }}
+        </button>
+      </div>
+
+    {{ form_end(form) }}
+  </div>
+</div>

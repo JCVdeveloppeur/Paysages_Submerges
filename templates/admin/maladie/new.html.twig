@@ -1,0 +1,9 @@
+{% extends 'admin/layout.html.twig' %}
+
+{% block page_title %}Nouvelle pathologie{% endblock %}
+{% block page_heading %}💊 Nouvelle pathologie{% endblock %}
+
+{% block content %}
+  {% include 'admin/maladie/_form.html.twig' with { form: form, button_label: 'Créer' } %}
+{% endblock %}
+

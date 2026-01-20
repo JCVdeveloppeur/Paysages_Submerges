@@ -1,0 +1,16 @@
+{% extends 'admin/layout.html.twig' %}
+
+{% block page_title %}Ajouter une plante{% endblock %}
+{% block page_heading %}<i class="bi bi-flower1"></i> Ajouter une plante{% endblock %}
+
+{% block content %}
+  {% include 'admin/_form_glass.html.twig' with {
+    form: form,
+    icon: 'bi-flower1',
+    title: 'Ajouter une plante',
+    list_route: 'admin_plante_list',
+    cancel_route: 'admin_plante_list',
+    save_label: 'Créer'
+  } %}
+{% endblock %}
+

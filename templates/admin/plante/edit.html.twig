@@ -1,0 +1,16 @@
+{% extends 'admin/layout.html.twig' %}
+
+{% block page_title %}Modifier une plante{% endblock %}
+{% block page_heading %}<i class="bi bi-flower1"></i> Modifier une plante{% endblock %}
+
+{% block content %}
+  {% include 'admin/_form_glass.html.twig' with {
+    form: form,
+    icon: 'bi-flower1',
+    title: 'Modifier la plante',
+    list_route: 'admin_plante_list',
+    cancel_route: 'admin_plante_list',
+    save_label: 'Mettre à jour'
+  } %}
+{% endblock %}
+

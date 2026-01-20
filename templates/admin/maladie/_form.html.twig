@@ -1,0 +1,20 @@
+{% if form.vars.errors|length %}
+  <div class="alert alert-danger mb-3">
+    {{ form_errors(form) }}
+  </div>
+{% endif %}
+
+{{ form_start(form) }}
+  {{ form_widget(form) }}
+
+  <div class="d-flex gap-2 mt-3">
+    <button class="btn btn-bleu-profil">
+      <i class="bi bi-save"></i> {{ button_label|default('Enregistrer') }}
+    </button>
+
+    <a href="{{ path('admin_maladie_list') }}" class="btn btn-pastel">
+      <i class="bi bi-x-circle"></i> Annuler
+    </a>
+  </div>
+{{ form_end(form) }}
+

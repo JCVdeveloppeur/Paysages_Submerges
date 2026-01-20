@@ -57,47 +57,6 @@ public function index(
     ]);
     }
 
-    #[Route('/new', name: 'app_maladie_poisson_new', methods: ['GET', 'POST'])]
-    #[IsGranted('ROLE_ADMIN')]
-    public function new(Request $request, EntityManagerInterface $entityManager): Response
-    {
-        $maladiePoisson = new MaladiePoisson();
-        $form = $this->createForm(MaladiePoissonForm::class, $maladiePoisson);
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            /** @var UploadedFile|null $imageFile */
-            $imageFile = $form->get('imageFile')->getData();
-
-            if ($imageFile) {
-                $uploadsDir = $this->getParameter('kernel.project_dir') . '/public/uploads/maladies';
-
-                if (!is_dir($uploadsDir)) {
-                    mkdir($uploadsDir, 0775, true);
-                }
-
-                $newFilename = uniqid('maladie_') . '.' . $imageFile->guessExtension();
-
-                try {
-                    $imageFile->move($uploadsDir, $newFilename);
-                    $maladiePoisson->setImage($newFilename);
-                } catch (FileException $e) {
-                    $this->addFlash('danger', 'Impossible d\'enregistrer l\'image.');
-                }
-            }
-
-            $entityManager->persist($maladiePoisson);
-            $entityManager->flush();
-            $this->addFlash('success', 'Nouvelle pathologie ajoutée avec succès !');
-            return $this->redirectToRoute('admin_maladies');
-        }
-
-        return $this->render('maladie_poisson/new.html.twig', [
-            'maladie_poisson' => $maladiePoisson,
-            'form' => $form,
-        ]);
-    }
-
     #[Route('/{id}', name: 'app_maladie_poisson_show', methods: ['GET'])]
     public function show(MaladiePoisson $maladiePoisson, RiskGlossary $riskGlossary): Response
     {
@@ -118,67 +77,5 @@ public function index(
             'risk' => $risk,
         ]);
     }
-
-    #[Route('/{id}/edit', name: 'app_maladie_poisson_edit', methods: ['GET', 'POST'])]
-    #[IsGranted('ROLE_ADMIN')]
-    public function edit(Request $request, MaladiePoisson $maladiePoisson, EntityManagerInterface $entityManager): Response
-    {
-        $form = $this->createForm(MaladiePoissonForm::class, $maladiePoisson);
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            /** @var UploadedFile|null $imageFile */
-            $imageFile = $form->get('imageFile')->getData();
-
-            if ($imageFile) {
-                $uploadsDir = $this->getParameter('kernel.project_dir') . '/public/uploads/maladies';
-
-                if (!is_dir($uploadsDir)) {
-                    mkdir($uploadsDir, 0775, true);
-                }
-
-                // supprimer l'ancienne image si elle existe
-                if ($maladiePoisson->getImage()) {
-                    $oldPath = $uploadsDir . '/' . $maladiePoisson->getImage();
-                    if (is_file($oldPath)) {
-                        @unlink($oldPath);
-                    }
-                }
-
-                $newFilename = uniqid('maladie_') . '.' . $imageFile->guessExtension();
-
-                try {
-                    $imageFile->move($uploadsDir, $newFilename);
-                    $maladiePoisson->setImage($newFilename);
-                } catch (FileException $e) {
-                    $this->addFlash('danger', 'Impossible d\'enregistrer la nouvelle image.');
-                }
-            }
-
-            $entityManager->flush();
-            $this->addFlash('success', 'Pathologie modifiée avec succès !');
-            return $this->redirectToRoute('admin_maladies');
-        }
-
-        return $this->render('maladie_poisson/edit.html.twig', [
-            'maladie_poisson' => $maladiePoisson,
-            'form' => $form,
-        ]);
     }
-
-    #[Route('/{id}', name: 'app_maladie_poisson_delete', methods: ['POST'])]
-    #[IsGranted('ROLE_ADMIN')]
-    public function delete(Request $request, MaladiePoisson $maladiePoisson, EntityManagerInterface $entityManager): Response
-    {
-        if ($this->isCsrfTokenValid('delete'.$maladiePoisson->getId(), $request->getPayload()->getString('_token'))) {
-            $entityManager->remove($maladiePoisson);
-            $entityManager->flush();
-            $this->addFlash('danger', 'Pathologie supprimée.');
-            return $this->redirectToRoute('admin_maladies');
-
-        }
-
-        return $this->redirectToRoute('admin_maladies');
-    }
-}
 

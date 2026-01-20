@@ -1,0 +1,10 @@
+{% extends 'admin/layout.html.twig' %}
+
+{% block page_title %}Nouvelle espèce{% endblock %}
+{% block page_heading %}<i class="bi bi-fish"></i> Nouvelle espèce{% endblock %}
+
+{% block content %}
+  {% include 'admin/espece/_form.html.twig' with { form: form, button_label: 'Créer' } %}
+{% endblock %}
+
+

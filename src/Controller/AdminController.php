@@ -30,7 +30,7 @@ class AdminController extends AbstractController
     #[IsGranted('ROLE_ADMIN')]
     public function index(): Response
     {
-        // Redirige simplement vers le dashboard (ou une vue personnalisée si souhaité plus tard)
+        // Redirige svers le dashboard 
         return $this->redirectToRoute('admin_dashboard');
     }
 
@@ -274,90 +274,7 @@ class AdminController extends AbstractController
 
     return $this->redirectToRoute('admin_users');
     }
-    #[Route('/admin/especes', name: 'admin_especes')]
-    #[IsGranted('ROLE_ADMIN')]
-    public function adminEspeces(EspeceRepository $especeRepository, Request $request, PaginatorInterface $paginator): Response
-    {
-        $query = $especeRepository->createQueryBuilder('e')
-            ->orderBy('e.nomCommun', 'ASC')
-            ->getQuery();
-
-        $limit = $request->query->getInt('limit', 5);
-        if (!in_array($limit, [5, 10, 20], true)) {
-            $limit = 5;
-        }
-
-        $especes = $paginator->paginate(
-            $query,
-            $request->query->getInt('page', 1),
-            $limit
-        );
-
-        return $this->render('admin/espece/admin.html.twig', [
-            'especes' => $especes,
-            'nombreEspeces' => $especeRepository->count([]),
-            'limit' => $limit,
-        ]);
     }
-    #[Route('/admin/plantes', name: 'admin_plantes')]
-    #[IsGranted('ROLE_ADMIN')]
-    public function adminPlantes(
-        PlanteRepository $planteRepository,
-        Request $request,
-        PaginatorInterface $paginator
-    ): Response {
-        $query = $planteRepository->createQueryBuilder('p')
-            ->orderBy('p.nomCommun', 'ASC')
-            ->getQuery();
-
-        $limit = $request->query->getInt('limit', 5);
-        if (!in_array($limit, [5, 10, 20], true)) {
-            $limit = 5;
-        }
-
-        $plantes = $paginator->paginate(
-            $query,
-            $request->query->getInt('page', 1),
-            $limit
-        );
-
-        return $this->render('admin/plante/admin.html.twig', [
-            'plantes' => $plantes,
-            'nombrePlantes' => $planteRepository->count([]),
-            'limit' => $limit,
-        ]);
-    }
-
-
-    #[Route('/admin/maladies', name: 'admin_maladies')]
-    #[IsGranted('ROLE_ADMIN')]
-    public function adminMaladies(
-        MaladiePoissonRepository $repo,
-        Request $request,
-        PaginatorInterface $paginator
-    ): Response {
-        $query = $repo->createQueryBuilder('m')
-            ->orderBy('m.nom', 'ASC')
-            ->getQuery();
-
-        $limit = $request->query->getInt('limit', 5);
-        if (!in_array($limit, [5, 10, 20], true)) {
-            $limit = 5;
-        }
-
-        $maladies = $paginator->paginate(
-            $query,
-            $request->query->getInt('page', 1),
-            $limit
-        );
-
-        return $this->render('admin/maladie/admin.html.twig', [
-            'maladies' => $maladies,
-            'nombreMaladies' => $repo->count([]),
-            'limit' => $limit,
-        ]);
-    }
-}
 
 
 

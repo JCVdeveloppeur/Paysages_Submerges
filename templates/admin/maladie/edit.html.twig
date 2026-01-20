@@ -1,0 +1,9 @@
+{% extends 'admin/layout.html.twig' %}
+
+{% block page_title %}Modifier pathologie{% endblock %}
+{% block page_heading %}✏️ Modifier : {{ maladie.nom }}{% endblock %}
+
+{% block content %}
+  {% include 'admin/maladie/_form.html.twig' with { form: form, button_label: 'Enregistrer' } %}
+{% endblock %}
+

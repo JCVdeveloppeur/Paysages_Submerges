@@ -1,64 +1,88 @@
-{% extends 'base.html.twig' %}
+{% extends 'admin/layout.html.twig' %}
 
-{% block title %}Modération des articles{% endblock %}
+{% block page_title %}Modération des articles{% endblock %}
+{% block page_heading %}Modération des articles{% endblock %}
 
-{% block body %}
-<div class="container py-5">
-    <h1 class="mb-4"><i class="bi bi-eye-slash"></i> Modération des articles</h1>
+{% block content %}
 
-    {% if articles is empty %}
-        <div class="alert alert-info">
-            Aucun article en attente de modération pour le moment.
+  <div class="admin-surface">
+
+    {# ===== Header ===== #}
+    <div class="admin-surface__head">
+      <h3 class="mb-0">
+        <i class="bi bi-eye-slash me-2"></i>
+        Modération des articles
+      </h3>
+      <a href="{{ path('admin_dashboard') }}" class="btn btn-outline-light">
+        <i class="bi bi-speedometer2 me-2"></i> Tableau de bord
+      </a>
+    </div>
+
+    {# ===== Body ===== #}
+    <div class="admin-surface__body">
+
+      {% if articles is empty %}
+        <div class="alert alert-info mb-0">
+          Aucun article en attente de modération pour le moment.
         </div>
-    {% else %}
-        <div class="row g-4">
-            {% for article in articles %}
-                <div class="col-md-6">
-                    <div class="card h-100 border-warning shadow-sm mb-3">
-                        <div class="card-body">
-                            <h5 class="card-title">{{ article.titre }}</h5>
-                            <p class="card-text propose-par">
-                                Proposé par :
-                                {% if article.user %}
-                                    {{ article.user.pseudo ?: article.user.email }}
-                                {% else %}
-                                    Auteur inconnu
-                                {% endif %}
-                            </p>
+      {% else %}
+        <div class="admin-grid-cards">
+          {% for article in articles %}
+            <div class="admin-mod-card">
+              <div class="admin-mod-card__head">
+                <h5 class="admin-mod-card__title mb-0">{{ article.titre }}</h5>
+                {% include 'admin/_status_badge.html.twig' with { status: 'en attente' } %}
+              </div>
 
-                            <p class="card-text">{{ article.contenu|striptags|slice(0, 100) ~ '...' }}</p>
+              <p class="card-text propose-par mb-2">
+                Proposé par :
+                {% if article.user %}
+                  <strong>{{ article.user.pseudo ?: article.user.email }}</strong>
+                {% else %}
+                  <em class="text-muted">Auteur inconnu</em>
+                {% endif %}
+              </p>
 
-                            <div class="d-flex justify-content-between align-items-center mt-3 flex-wrap gap-2">
+              <p class="admin-mod-card__excerpt mb-0">
+                {{ article.contenu|striptags|slice(0, 120) ~ '…' }}
+              </p>
 
-                            <a href="{{ path('admin_article_show', {'id': article.id}) }}" class="btn btn-admin-modifier btn-sm">
-                                📖 Lire
-                            </a>
+              <div class="admin-mod-card__actions">
+                <a href="{{ path('admin_article_show', {'id': article.id}) }}"
+                   class="btn btn-admin-modifier btn-sm">
+                  <i class="bi bi-book me-1"></i> Lire
+                </a>
 
-                            <form method="post" action="{{ path('admin_article_approve', {'id': article.id}) }}">
-                                <input type="hidden" name="_token" value="{{ csrf_token('approve' ~ article.id) }}">
-                                <button class="btn btn-approve btn-sm">✅ Approuver</button>
-                            </form>
+                <form method="post" action="{{ path('admin_article_approve', {'id': article.id}) }}">
+                  <input type="hidden" name="_token" value="{{ csrf_token('approve' ~ article.id) }}">
+                  <button class="btn btn-approve btn-sm" type="submit">
+                    <i class="bi bi-check2-circle me-1"></i> Approuver
+                  </button>
+                </form>
+                {% include 'admin/_actions_row.html.twig' with {
+                  edit_path: null,
+                  delete_path: path('admin_article_delete', { id: article.id }),
+                  csrf_token_id: 'delete' ~ article.id,
 
-                            <form method="post" action="{{ path('admin_article_delete', {'id': article.id}) }}" onsubmit="return confirm('Supprimer cet article ?')">
-                                <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ article.id) }}">
-                                <button class="btn btn-admin-supprimer btn-sm">🗑️ Supprimer</button>
-                            </form>
+                  delete_kind: 'reject',
+                  delete_kicker: "Refus d'article",
+                  delete_title: "Refuser l'article ?",
+                  delete_subtitle: "Il ne sera pas publié.",
+                  delete_body: "Refuser la proposition : <strong>" ~ article.titre|e('html_attr') ~ "</strong> ?",
 
-                        </div>
-
-                        </div>
-                    </div>
-                </div>
-            {% endfor %}
+                  confirm_label: "Oui, refuser",
+                  confirm_variant: "danger"
+                } %}
+              </div>
+            </div>
+          {% endfor %}
         </div>
-    {% endif %}
-
-    <div class="mt-5 text-center">
-        <a href="{{ path('admin_articles_all') }}" class="btn-admin-retour mt-4">
-            <i class="bi bi-arrow-left"></i> Retour au tableau de bord
-        </a>
+      {% endif %}
 
     </div>
-</div>
+  </div>
+
 {% endblock %}
+
+
 

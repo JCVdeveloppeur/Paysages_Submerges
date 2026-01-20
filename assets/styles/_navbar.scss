@@ -2,28 +2,177 @@
 @use "mixins" as *;
 @use "bouton" as *;
 
+/* =========================================================
+   NAVBAR – BASE (structure commune, AUCUN fond ici)
+   Objectif : éviter que Public/Admin se contaminent
+   ========================================================= */
 
 .navbar {
   width: 100%;
   margin: 0;
   padding: 0;
-  transition: top 0.3s ease-in-out;
-  background-color: rgba(5, 33, 59, 0.8);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+
+  transition: background-color .3s ease, box-shadow .3s ease, top .3s ease-in-out;
   border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.10);
+
+  /* On neutralise ici pour laisser PUBLIC/ADMIN décider */
+  background: transparent;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
 }
 
-.navbar.scrolled {
-  background-color: rgba(5, 33, 59, 0.95);
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+/* Overlay mobile */
+#navbar-overlay {
+  display: none;
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 1029;
 }
+#navbar-overlay.active { display: block; }
+
+/* =========================================================
+   NAVBAR – PUBLIC (body sans .admin)
+   ========================================================= */
+
+body:not(.admin) .navbar {
+  background-color: rgba(5, 33, 59, 0.95); 
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.18);
+}
+
+/* Scrolled = seulement PUBLIC (important) */
+body:not(.admin) .navbar.scrolled {
+  background-color: rgba(5, 33, 59, 0.98);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.20);
+}
+
+/* =========================================================
+   NAVBAR – ADMIN (via class .admin-navbar-glass sur <nav>)
+   ========================================================= */
+
+.admin-navbar-glass {
+  background: rgba(6, 18, 32, 0.92) !important; 
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+
+  border-bottom: 1px solid rgba(140, 190, 255, 0.14);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.35);
+
+  padding-top: .65rem;
+  padding-bottom: .65rem;
+
+  /* Marque */
+  .navbar-brand {
+    font-family: 'Merriweather', serif;
+    font-weight: 900;
+    letter-spacing: -0.02em;
+    color: rgba(235,245,255,0.95) !important;
+
+    &:hover { color: rgba(255,255,255,0.98) !important; }
+  }
+
+  /* Liens admin */
+  .nav-link {
+    color: rgba(215,235,255,0.80) !important;
+    border-radius: 999px;
+    padding: .45rem .75rem;
+    transition: background-color .15s ease, color .15s ease, transform .15s ease;
+
+    i { opacity: .9; }
+
+    &:hover {
+      color: rgba(255,255,255,0.95) !important;
+      background: rgba(255,255,255,0.08);
+      transform: translateY(-1px);
+    }
+
+    &.active,
+    &:focus {
+      color: rgba(255,255,255,0.98) !important;
+      background: rgba(120,190,255,0.14);
+    }
+  }
+
+  .navbar-nav { gap: .25rem; }
+
+  /* Champ recherche admin */
+  .admin-search {
+    .form-control {
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(140,190,255,0.18);
+      color: rgba(235,245,255,0.95);
+      border-radius: 14px;
+      padding: .45rem .85rem;
+
+      &::placeholder { color: rgba(215,235,255,0.55); }
+
+      &:focus {
+        box-shadow: 0 0 0 .2rem rgba(120,190,255,0.18);
+        border-color: rgba(120,190,255,0.35);
+      }
+    }
+
+    .btn { border-radius: 14px; }
+  }
+
+  /* Toggler mobile admin */
+  .navbar-toggler {
+    border-color: rgba(140,190,255,0.25) !important;
+
+    &:focus {
+      box-shadow: 0 0 0 .2rem rgba(120,190,255,0.18);
+    }
+  }
+}
+
+/* Pills + dropdown admin */
+.admin-navbar-glass .admin-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: .45rem;
+  padding: .35rem .65rem;
+  border-radius: 999px;
+  background: rgba(255,255,255,0.08);
+  border: 1px solid rgba(140,190,255,0.16);
+  color: rgba(235,245,255,0.9);
+}
+
+.admin-navbar-glass .nav-item.dropdown {
+  display: flex;
+  align-items: center;
+}
+
+.admin-navbar-glass .dropdown-menu {
+  background: rgba(8, 25, 45, 0.92);
+  border: 1px solid rgba(140,190,255,0.18);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  box-shadow: 0 18px 40px rgba(0,0,0,0.45);
+}
+
+.admin-navbar-glass .dropdown-item {
+  color: rgba(235,245,255,0.9);
+
+  &:hover {
+    background: rgba(120,190,255,0.18);
+    color: #fff;
+  }
+}
+
+/* =========================================================
+   LIENS / BRAND – COMMUN (fonctionne public + admin)
+   ========================================================= */
 
 .navbar-nav .nav-link {
   color: #f8f9fa;
-  transition: color 0.3s ease, text-shadow 0.3s ease;
+  transition: color .3s ease, text-shadow .3s ease;
 
   &:hover {
     color: #ffffff;
@@ -31,32 +180,18 @@
   }
 }
 
-#navbar-overlay {
-  display: none;
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.5);
-  z-index: 1029;
-}
-
-#navbar-overlay.active {
-  display: block;
-}
+/* Brand (dégradé animé) */
 .navbar-brand {
   font-family: $font-titres;
   font-weight: bold;
   font-size: 1.3rem;
 
-  // Dégradé aquatique animé
   background: linear-gradient(
     90deg,
-    #18c6c1,   // turquoise
-    #00e1ff,   // bleu lagon
-    #0077b6,   // bleu profond
-    #18c6c1    // retour turquoise
+    #18c6c1,
+    #00e1ff,
+    #0077b6,
+    #18c6c1
   );
   background-size: 300% auto;
   background-clip: text;
@@ -67,14 +202,12 @@
   position: relative;
   text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.4);
 
-  // vague colorée en continu
   animation: wave-gradient 6s ease infinite;
 
-  // effet scintillement discret
   &::before {
     content: "";
     position: absolute;
-    top: 0; left: 0; right: 0; bottom: 0;
+    inset: 0;
     background: linear-gradient(
       120deg,
       transparent 0%,
@@ -86,7 +219,6 @@
     background-clip: text;
     color: transparent;
 
-    // le rayon passe lentement et rarement
     animation: shimmer 10s linear infinite;
     opacity: 0.7;
     pointer-events: none;
@@ -97,70 +229,29 @@
   }
 }
 
-// vague en continu
 @keyframes wave-gradient {
   0%   { background-position: 0% 50%; }
   50%  { background-position: 100% 50%; }
   100% { background-position: 0% 50%; }
 }
 
-// scintillement subtil
 @keyframes shimmer {
   0%   { background-position: -200% 0; opacity: 0; }
-  40%  { opacity: 0; } 
-  45%  { opacity: 0.7; }   // apparition du rayon
-  55%  { opacity: 0.7; }   // rayon visible un court instant
-  60%  { opacity: 0; }     // disparaît
+  40%  { opacity: 0; }
+  45%  { opacity: 0.7; }
+  55%  { opacity: 0.7; }
+  60%  { opacity: 0; }
   100% { background-position: 200% 0; opacity: 0; }
 }
 
-.navbar {
-  .nav-link {
-    position: relative;
-    display: inline-block; 
-    color: #f8f9fa;
-    text-decoration: none;
-    transition: color .3s ease, text-shadow .3s ease;
-
-    &::after {
-      content: "";
-      position: absolute;
-      bottom: -4px;
-      left: 50%;    
-      transform: translateX(-50%);
-      width: 0;
-      height: 2px;
-      background: #fff;  
-      transition: width .35s ease;
-    }
-
-    &:hover,
-    &:focus-visible {
-      color: #fff;
-      text-shadow: 0 0 6px rgba(255,255,255,.6);
-
-      &::after {
-        width: 100%; 
-      }
-    }
-  }
-
-  .navbar-brand {
-    &::after { display: none; }
-  }
-}
-.navbar .nav-link svg.icon-capsule {
-  position: relative;
-  top: 1px;
-}
-
-/* État actif commun à tous les liens */
+/* =========================================================
+   TRAIT (hover + actif) – version unique 
+   ========================================================= */
 
 .navbar .nav-link {
   position: relative;
   display: inline-flex;
   align-items: center;
-  color: #f8f9fa;
   text-decoration: none;
   transition: color 0.25s ease;
 
@@ -168,7 +259,6 @@
     transition: transform 0.25s ease, filter 0.25s ease;
   }
 
-  /** LE TRAIT UNIQUE (hover + actif) */
   &::after {
     content: "";
     position: absolute;
@@ -183,38 +273,28 @@
     transition: width 0.25s ease, opacity 0.25s ease;
   }
 
-  /** HOVER SIMPLE */
-  &:hover {
-    color: #fff;
+  &:hover::after {
+    width: 100%;
+    opacity: 0.5;
+  }
+
+  &.active {
+    font-weight: 600;
+    overflow: visible;
 
     &::after {
-      width: 100%;
-      opacity: 0.5;
+      width: 70%;
+      height: 6px;
+      bottom: -8px;
+      opacity: 0.9;
+      background: url("data:image/svg+xml;utf8,\
+      <svg xmlns='http://www.w3.org/2000/svg' width='120' height='6' viewBox='0 0 120 6'>\
+      <path d='M0 3 Q 10 0 20 3 T 40 3 T 60 3 T 80 3 T 100 3 T 120 3' fill='none' stroke='%238fbfe8' stroke-width='2'/>\
+      </svg>");
+      background-repeat: repeat-x;
+      background-size: 120px 6px;
+      animation: wave-move 5s linear infinite;
     }
-  }
-
-  /** ÉTAT ACTIF */
-  &.active {
-     font-weight: 600;
-  overflow: visible;
-
-  &::after {
-    content: "";
-    position: absolute;
-    left: 50%;
-    bottom: -8px;
-    width: 70%;
-    height: 6px;
-    transform: translateX(-50%);
-    background: url("data:image/svg+xml;utf8,\
-    <svg xmlns='http://www.w3.org/2000/svg' width='120' height='6' viewBox='0 0 120 6'>\
-    <path d='M0 3 Q 10 0 20 3 T 40 3 T 60 3 T 80 3 T 100 3 T 120 3' fill='none' stroke='%238fbfe8' stroke-width='2'/>\
-    </svg>");
-    background-repeat: repeat-x;
-    background-size: 120px 6px;
-    animation: wave-move 5s linear infinite;
-    opacity: 0.9;
-  }
 
     svg {
       transform: scale(1.1);
@@ -223,43 +303,30 @@
   }
 }
 
-/** Capsule spéciale Pathologies */
+@keyframes wave-move {
+  from { background-position-x: 0; }
+  to   { background-position-x: 120px; }
+}
+
+/* Capsule Pathologies */
 .navbar .nav-link.active .icon-capsule {
   filter: drop-shadow(0 0 6px rgba(245, 130, 90, 0.8));
   transform: scale(1.08);
 }
-@keyframes wave-move {
-  from {
-    background-position-x: 0;
-  }
-  to {
-    background-position-x: 120px;
-  }
+
+.navbar .nav-link svg.icon-capsule {
+  position: relative;
+  top: 1px;
 }
-/* Largeur du soulignement = mot uniquement, MAIS aligné à gauche */
+
+/* Largeur du lien = contenu  */
 .navbar-nav .nav-link {
-  width: fit-content;      // garde la largeur du texte
-  margin-left: 0;         // annule le centrage
-  margin-right: auto;     // pousse le lien à gauche
+  width: fit-content;
 }
 
-/* Soulignement hover */
-.navbar-nav .nav-link::after {
-  left: 50%;
-  transform: translateX(-50%);
-  width: 0;
-}
 
-.navbar-nav .nav-link:hover::after {
-  width: 100%;
-}
 
-/* Soulignement actif */
-.navbar .nav-link.active::after {
-  left: 50%;
-  transform: translateX(-50%);
-  width: 100%;
-}
+
 
 
 

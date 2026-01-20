@@ -1,0 +1,398 @@
+
+@use "variables" as *;
+@use "mixins" as *;
+@use "bouton" as *;
+
+/* =========================================================
+   ADMIN GLASS – BASE + LISTES + MODERATION + FORM
+   ✅ Scoped ONLY to admin pages via: body.admin { ... }
+   ========================================================= */
+
+body.admin {
+
+  /* ---------------------------------------------------------
+     Wrapper principal (celui de ton admin/layout.html.twig)
+     <main class="admin-glass"> ... </main>
+     --------------------------------------------------------- */
+  .admin-glass{
+    /* Base */
+    color: rgba(235,245,255,0.95);
+
+    background:
+      radial-gradient(900px 420px at 20% -10%, rgba(20,90,140,0.22), transparent 60%),
+      radial-gradient(700px 360px at 85% 0%, rgba(10,60,100,0.18), transparent 65%),
+      linear-gradient(180deg, #071a2b 0%, #061524 45%, #050f1c 100%);
+    border-radius: 24px;
+    padding: 18px;
+
+    a{ color: rgba(170,220,255,0.95); }
+    a:hover{ color: rgba(255,255,255,0.98); }
+
+    /* ---------------------------------------------------------
+       Surface (wrapper intérieur des pages admin)
+       <div class="admin-surface"> ... </div>
+       --------------------------------------------------------- */
+    .admin-surface{
+      border-radius: 22px;
+      padding: 18px;
+      background: rgba(8, 30, 52, 0.50);
+      border: 1px solid rgba(140,190,255,0.14);
+      box-shadow: 0 16px 40px rgba(0,0,0,0.35);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+    }
+
+    .admin-surface__head{
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap: 14px;
+      padding-bottom: 14px;
+      border-bottom: 1px solid rgba(255,255,255,0.10);
+
+      h1,h2,h3,h4,h5{
+        margin:0;
+        font-family: 'Merriweather', serif;
+        color: rgba(235,245,255,0.96);
+        font-weight: 900;
+      }
+
+      @media (max-width: 768px){
+        flex-direction: column;
+        align-items: stretch;
+      }
+    }
+
+    .admin-surface__body{ padding-top: 16px; }
+
+    .admin-surface__foot{
+      padding-top: 16px;
+      margin-top: 16px;
+      border-top: 1px solid rgba(255,255,255,0.10);
+    }
+
+    /* ---------------------------------------------------------
+       Boutons d’actions (si tu as ces classes)
+       --------------------------------------------------------- */
+    .btn-admin-modifier,
+    .btn-admin-supprimer{
+      backdrop-filter: blur(6px);
+      -webkit-backdrop-filter: blur(6px);
+    }
+
+    /* ---------------------------------------------------------
+       Table glass
+       --------------------------------------------------------- */
+    .table.admin-table-glass{
+      margin: 0;
+      color: rgba(235,245,255,0.92);
+      border-color: rgba(140,190,255,0.12);
+
+      &.table-bordered > :not(caption) > *{
+        border-color: rgba(140,190,255,0.12) !important;
+      }
+
+      thead th{
+        background: rgba(255,255,255,0.06);
+        color: rgba(235,245,255,0.92);
+        border-bottom: 1px solid rgba(255,255,255,0.12);
+        font-weight: 800;
+        white-space: nowrap;
+      }
+
+      tbody td{
+        border-top: 1px solid rgba(255,255,255,0.08);
+        vertical-align: middle;
+        color: rgba(235,245,255,0.90);
+      }
+
+      /* ✅ Bootstrap met du blanc dans les cellules : on force un fond sombre */
+      > :not(caption) > * > *{
+        background: rgba(255,255,255,0.03) !important;
+      }
+
+      tbody tr:hover{
+        background: rgba(120,190,255,0.10);
+      }
+
+      tr.row-pending > *{
+        background: rgba(255,193,7,0.10) !important;
+      }
+    }
+
+    /* ---------------------------------------------------------
+       Select glass (limit)
+       --------------------------------------------------------- */
+    .admin-select-glass{
+      width: auto;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(140,190,255,0.18);
+      color: rgba(235,245,255,0.92);
+      border-radius: 14px;
+      box-shadow: 0 10px 22px rgba(0,0,0,0.20);
+
+      option{
+        background: #071a2b;
+        color: rgba(235,245,255,0.95);
+      }
+
+      &:focus{
+        border-color: rgba(120,190,255,0.35);
+        box-shadow: 0 0 0 .18rem rgba(120,190,255,0.20);
+      }
+    }
+
+    /* ---------------------------------------------------------
+       Pagination glass
+       --------------------------------------------------------- */
+    .admin-pagination-glass{
+      .pagination{ margin: 0; }
+
+      .page-link{
+        background: rgba(255,255,255,0.06);
+        border: 1px solid rgba(140,190,255,0.14);
+        color: rgba(235,245,255,0.92);
+        border-radius: 12px;
+        margin: 0 4px;
+      }
+
+      .page-item.active .page-link{
+        background: rgba(120,190,255,0.22);
+        border-color: rgba(120,190,255,0.28);
+        color: rgba(255,255,255,0.98);
+      }
+
+      .page-item.disabled .page-link{
+        opacity: .45;
+      }
+    }
+
+    /* ---------------------------------------------------------
+       Alerts sur fond sombre
+       --------------------------------------------------------- */
+    .alert{
+      border: 1px solid rgba(255,255,255,0.10);
+      background: rgba(255,255,255,0.06);
+      color: rgba(235,245,255,0.92);
+    }
+
+    /* ---------------------------------------------------------
+       Cards modération
+       --------------------------------------------------------- */
+    .admin-grid-cards{
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 16px;
+
+      @media (max-width: 992px){
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .admin-mod-card{
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(140,190,255,0.14);
+      border-left: 3px solid rgba(255, 193, 7, .95);
+      border-radius: 18px;
+      box-shadow: 0 16px 38px rgba(0,0,0,0.35);
+      padding: 16px;
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      transition: transform .12s ease, box-shadow .12s ease, border-color .12s ease;
+
+      &:hover{
+        transform: translateY(-1px);
+        box-shadow: 0 22px 50px rgba(0,0,0,0.45);
+        border-color: rgba(140,190,255,0.22);
+      }
+
+      &__head{
+        display:flex;
+        align-items:flex-start;
+        justify-content:space-between;
+        gap: 12px;
+        margin-bottom: 8px;
+      }
+
+      &__title{
+        font-family: 'Merriweather', serif;
+        font-weight: 900;
+        color: rgba(235,245,255,0.96);
+        font-size: 1rem;
+        line-height: 1.2;
+      }
+
+      &__excerpt{
+        color: rgba(200,220,240,0.78);
+        font-size: .92rem;
+        line-height: 1.35;
+        margin-top: 6px;
+        min-height: 48px;
+      }
+
+      &__actions{
+        margin-top: 14px;
+        display:flex;
+        align-items:center;
+        justify-content:flex-end;
+        gap: 10px;
+        flex-wrap: wrap;
+
+        form{ margin: 0; }
+      }
+    }
+
+    /* ---------------------------------------------------------
+       Panels glass (dashboard / interactions)
+       --------------------------------------------------------- */
+    .admin-panel--glass{
+      background: rgba(8, 30, 52, 0.38);
+      border: 1px solid rgba(140,190,255,0.14);
+      border-radius: 18px;
+      box-shadow: 0 16px 40px rgba(0,0,0,0.30);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+    }
+
+    .admin-panel__head{
+      border-bottom: 1px solid rgba(255,255,255,0.10);
+    }
+
+    .admin-panel__body--tight{
+      padding: 14px;
+    }
+
+    /* accents panels */
+    .admin-panel--glass:first-of-type{
+      border-left: 3px solid rgba(56, 189, 248, 0.6);
+    }
+    .admin-panel--glass:last-of-type{
+      border-left: 3px solid rgba(239, 68, 68, 0.6);
+    }
+
+    /* ---------------------------------------------------------
+       Scrollbar table responsive
+       --------------------------------------------------------- */
+    .table-responsive{
+      scrollbar-width: thin;
+      scrollbar-color: rgba(140,190,255,.4) transparent;
+    }
+
+    .table-responsive::-webkit-scrollbar{
+      height: 8px;
+    }
+
+    .table-responsive::-webkit-scrollbar-thumb{
+      background: rgba(140,190,255,.35);
+      border-radius: 999px;
+    }
+
+    /* ---------------------------------------------------------
+       Boutons bootstrap light (utilisé dans l’admin)
+       --------------------------------------------------------- */
+    .btn-outline-light{
+      color: rgba(235,245,255,0.9);
+      border-color: rgba(140,190,255,0.35);
+      background: rgba(255,255,255,0.04);
+      backdrop-filter: blur(6px);
+
+      &:hover,
+      &:focus{
+        background: rgba(140,190,255,0.18);
+        color: #fff;
+        border-color: rgba(140,190,255,0.55);
+        box-shadow: 0 0 0 .18rem rgba(120,190,255,0.22);
+      }
+    }
+
+    /* ---------------------------------------------------------
+       Form glass (si tu mets class="admin-form-glass")
+       --------------------------------------------------------- */
+    .admin-form-glass{
+      .form-control,
+      .form-select,
+      textarea{
+        background: rgba(255,255,255,0.06);
+        border: 1px solid rgba(140,190,255,0.18);
+        color: rgba(235,245,255,0.92);
+        border-radius: 14px;
+
+        &:focus{
+          border-color: rgba(120,190,255,0.35);
+          box-shadow: 0 0 0 .18rem rgba(120,190,255,0.20);
+          background: rgba(255,255,255,0.08);
+          color: rgba(235,245,255,0.95);
+        }
+      }
+
+      .form-label{
+        color: rgba(235,245,255,0.85);
+        font-weight: 650;
+      }
+
+      .form-text{
+        color: rgba(200,220,240,0.70);
+      }
+    }
+
+    /* ---------------------------------------------------------
+       Boutons nav du partial _form_glass.html.twig
+       --------------------------------------------------------- */
+    .btn-admin-nav.btn-outline-light{
+      background: rgba(255,255,255,0.06);
+      border-color: rgba(140,190,255,0.18);
+      color: rgba(235,245,255,0.92);
+    }
+
+    .btn-admin-nav.btn-outline-light:hover{
+      background: rgba(255,255,255,0.10);
+      border-color: rgba(140,190,255,0.26);
+      color: rgba(255,255,255,0.98);
+    }
+
+  } /* ✅ fin .admin-glass */
+
+  /* ---------------------------------------------------------
+     Règles admin globales (mais toujours dans body.admin)
+     --------------------------------------------------------- */
+  .admin-panel{
+    min-height: 420px;
+  }
+
+  .admin-panel__title .badge{
+    font-size: 0.7rem;
+    padding: 0.25rem 0.5rem;
+    border-radius: 999px;
+  }
+
+} /* ✅ fin body.admin */
+
+.admin-surface__actions{
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-left: auto; 
+}
+/* =========================================================
+   TABLES – ADMIN (hover lignes)
+   ========================================================= */
+
+body.admin table tbody tr {
+  transition:
+    background-color .18s ease,
+    box-shadow .18s ease;
+}
+
+body.admin table tbody tr:hover {
+  background: rgba(255, 255, 255, 0.035);
+  box-shadow: inset 0 0 0 1px rgba(120,190,255,0.08);
+}
+
+
+
+
+
+
+
+
+

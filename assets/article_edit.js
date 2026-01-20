@@ -1,6 +1,5 @@
 // Auto-resize des <textarea class="autogrow">
 
-// assets/js/article_edit.js
 const initAutogrow = () => {
   const areas = document.querySelectorAll('textarea.autogrow');
 

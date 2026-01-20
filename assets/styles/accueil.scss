@@ -162,11 +162,11 @@
   flex-wrap: wrap;
   justify-content: center;
   align-items: stretch;
-  gap: 1.5rem;
+  gap: 1.25rem;
   max-width: 1200px;
   margin: 0 auto;
   overflow: visible;
-   padding: 1.5rem 1rem 0;
+  padding: 1.5rem 0.75rem 0;
   background: radial-gradient(
     circle at top center,
     rgba(255, 255, 255, 0.05),
@@ -179,6 +179,7 @@
 // ------------------
 
 .home-card {
+  display: flex;
   flex: 1 1 300px;
   max-width: 300px;
   background-color: $crème-clair;
@@ -192,6 +193,7 @@
   text-align: center;
   cursor: pointer;
   z-index: 1;
+  min-height: 520px; /* ajuste 500–560 selon ton rendu */
 
   &:hover {
     transform: translateY(-8px) scale(1.02);
@@ -217,23 +219,31 @@
 
   p {
     font-size: 1rem;
-    flex-grow: 1;               /* occupe tout l’espace dispo */
-    display: flex;              /* active le centrage vertical */
-    align-items: center;        /* centre verticalement */
-    justify-content: center;    /* centre horizontalement */
-    text-align: center;         /* aligne le texte */
-    margin-bottom: 0;           /* pas de marge inutile */
+    flex-grow: 1;             
+    display: block;             
+    align-items: center;       
+    justify-content: center;    
+    text-align: center;         
+    margin-bottom: 0;
   }
 
   .btn {
-    width: 100%;
-    max-width: 240px;
-    margin: 1.25rem auto 0;     /* centré avec espace au-dessus */
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: .5rem;
-  }
+  width: 100%;
+  max-width: 240px;
+  margin: auto auto 0;  
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: .5rem;
+}
+
+}
+.home-card,
+.home-center {
+  height: 100%;
+}
+@media (max-width: 992px) {
+  .home-card { min-height: auto; } 
 }
 
 // ---------------------------

@@ -1,101 +1,127 @@
 {% extends 'admin/layout.html.twig' %}
 
 {% block page_title %}Administration des pathologies{% endblock %}
-{% block page_heading %}💊 Pathologies{% endblock %}
+{% block page_heading %}💊 Gérer les pathologies{% endblock %}
 
 {% block content %}
-  <div class="d-flex justify-content-between align-items-center mb-3">
-    <div>
-      <span class="badge bg-primary">{{ nombreMaladies}}</span>
+<div class="admin-surface">
+
+  {# ===== HEAD ===== #}
+  <div class="admin-surface__head">
+    <div class="d-flex align-items-center gap-2 flex-wrap">
+      <h3 class="mb-0">Fiches pathologies</h3>
+      <span class="badge bg-primary">{{ nombreMaladies }}</span>
     </div>
-    <a href="{{ path('app_maladie_poisson_new') }}" class="btn-admin-ajouter">
-      <i class="bi bi-plus-circle"></i> Ajouter une pathologie
+
+    <div class="d-flex align-items-center gap-2 flex-wrap">
+      {% if maladies is not empty %}
+        <form method="get" class="d-flex align-items-center gap-2 m-0">
+          <input type="hidden" name="page" value="1">
+          <label class="visually-hidden" for="limitSelectMaladie">Limite</label>
+          <select id="limitSelectMaladie"
+                  name="limit"
+                  class="form-select form-select-sm admin-select-glass"
+                  onchange="this.form.submit()">
+            <option value="5"  {{ limit == 5 ? 'selected' }}>5</option>
+            <option value="10" {{ limit == 10 ? 'selected' }}>10</option>
+            <option value="20" {{ limit == 20 ? 'selected' }}>20</option>
+          </select>
+        </form>
+      {% endif %}
+
+      <a href="{{ path('admin_maladie_new') }}" class="btn-admin-ajouter">
+        <i class="bi bi-plus-circle"></i> Ajouter une pathologie
+      </a>
+
+      <a href="{{ path('admin_dashboard') }}" class="btn btn-outline-light">
+      <i class="bi bi-speedometer2"></i> Tableau de bord
     </a>
+    </div>
   </div>
 
-  {% if maladies is empty %}
-    <div class="alert alert-warning">Aucune pathologie enregistrée pour le moment.</div>
-  {% else %}
+  {# ===== BODY ===== #}
+  <div class="admin-surface__body">
+    {% if maladies is empty %}
+      <div class="alert alert-warning mb-0">
+        Aucune pathologie enregistrée pour le moment.
+      </div>
+    {% else %}
+      <div class="table-responsive">
+        <table class="table admin-table-glass align-middle">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Nom</th>
+              <th>Agent</th>
+              <th>Gravité</th>
+              <th>Contagieuse</th>
+              <th class="text-end">Actions</th>
+            </tr>
+          </thead>
 
-    <form method="get" class="d-flex justify-content-end mb-2 gap-2">
-      <input type="hidden" name="page" value="1">
+          <tbody>
+            {% for m in maladies %}
+              <tr>
+                <td>{{ m.id }}</td>
+                <td>{{ m.nom|default('—') }}</td>
+                <td><em>{{ m.agentPathogene|default('—') }}</em></td>
 
-      <select name="limit"
-              class="form-select form-select-sm"
-              style="width:auto"
-              onchange="this.form.submit()">
-        <option value="5"  {{ limit == 5 ? 'selected' }}>5</option>
-        <option value="10" {{ limit == 10 ? 'selected' }}>10</option>
-        <option value="20" {{ limit == 20 ? 'selected' }}>20</option>
-      </select>
-    </form>
+                <td>
+                  {% set g = (m.gravite ?? '')|lower %}
+                  {% set graviteClass =
+                    g == 'faible' ? 'gravite--faible' :
+                    (g starts with 'moyen' ? 'gravite--moyenne' :
+                    (g starts with 'élev' or g starts with 'eleve' ? 'gravite--elevee' : 'gravite--na'))
+                  %}
 
-    <table class="table table-hover table-bordered align-middle">
-      <thead class="table-light">
-        <tr>
-          <th>#</th>
-          <th>Nom</th>
-          <th>Agent</th>
-          <th>Gravité</th>
-          <th>Contagieuse</th>
-          <th>Actions</th>
-        </tr>
-      </thead>
+                  {% if m.gravite %}
+                    <span class="badge-gravite {{ graviteClass }}">
+                      {{ m.gravite|capitalize }}
+                    </span>
+                  {% else %}
+                    —
+                  {% endif %}
+                </td>
 
-      <tbody>
-        {% for m in maladies %}
-          <tr>
-            <td>{{ m.id }}</td>
-            <td>{{ m.nom|default('—') }}</td>
-            <td><em>{{ m.agentPathogene|default('—') }}</em></td>
+                <td>
+                  {% if m.contagieuse %}
+                    <span class="badge bg-danger-subtle text-danger border border-danger-subtle">Oui</span>
+                  {% else %}
+                    <span class="badge bg-success-subtle text-success border border-success-subtle">Non</span>
+                  {% endif %}
+                </td>
+                <td class="text-end">
+                  {% include 'admin/_actions_row.html.twig' with {
+                    edit_path: path('admin_maladie_edit', { id: m.id }),
+                    delete_path: path('admin_maladie_delete', { id: m.id }),
+                    csrf_token_id: 'delete' ~ m.id,
 
-            <td>
-              {% set g = (m.gravite ?? '')|lower %}
-              {% set graviteClass =
-                g == 'faible' ? 'gravite--faible' :
-                (g starts with 'moyen' ? 'gravite--moyenne' :
-                (g starts with 'élev' or g starts with 'eleve' ? 'gravite--elevee' : 'gravite--na'))
-              %}
+                    delete_kind: 'patho',
+                    delete_kicker: "Suppression de pathologie",
+                    delete_title: "Supprimer cette pathologie ?",
+                    delete_subtitle: "Cette fiche ne sera plus accessible.",
+                    delete_body: "Vous êtes sûr de vouloir supprimer : <strong>" ~ (m.nom|default('cette pathologie'))|e('html_attr') ~ "</strong> ?"
+                  } %}
+                </td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    {% endif %}
+  </div>
 
-              {% if m.gravite %}
-                <span class="badge-gravite {{ graviteClass }}">
-                  {{ m.gravite|capitalize }}
-                </span>
-              {% else %}
-                —
-              {% endif %}
-            </td>
+  {# ===== FOOT ===== #}
+  <div class="admin-surface__foot d-flex justify-content-between align-items-center flex-wrap gap-3">
+    {% if maladies is not empty %}
+      <div class="admin-pagination-glass">
+        {{ knp_pagination_render(maladies) }}
+      </div>
+    {% endif %}
+  </div>
 
-            <td>{{ m.contagieuse ? 'Oui' : 'Non' }}</td>
+</div>
+{% endblock %}
 
-            <td>
-              <a href="{{ path('app_maladie_poisson_edit', { id: m.id }) }}" class="btn-admin-modifier">
-                <i class="bi bi-pencil-square"></i> Modifier
-              </a>
-
-              <form method="post"
-                    action="{{ path('app_maladie_poisson_delete', { id: m.id }) }}"
-                    onsubmit="return confirm('Supprimer cette pathologie ?');"
-                    class="d-inline">
-                <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ m.id) }}">
-                <button class="btn-admin-supprimer" title="Supprimer">
-                  <i class="bi bi-trash3"></i> Supprimer
-                </button>
-              </form>
-            </td>
-          </tr>
-        {% endfor %}
-      </tbody>
-    </table>
-
-    <div class="d-flex justify-content-center mt-4">
-      {{ knp_pagination_render(maladies) }}
-    </div>
-  {% endif %}
-
-  <a href="{{ path('admin_dashboard') }}" class="btn-admin-retour mt-4">
-    <i class="bi bi-arrow-left"></i> Retour au tableau de bord
-  </a>
- {% endblock %}
 
 

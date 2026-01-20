@@ -1,0 +1,39 @@
+
+<div class="admin-actions">
+
+  {# Modifier #}
+  {% if edit_path is defined and edit_path %}
+    <a href="{{ edit_path }}"
+       class="{{ edit_class|default('btn-admin-action btn-admin-action--edit') }}"
+       title="{{ edit_title|default('Modifier') }}"
+       aria-label="{{ edit_aria|default('Modifier') }}">
+      <i class="{{ edit_icon|default('bi bi-pencil-square') }}"></i>
+    </a>
+  {% endif %}
+
+  {# Action "danger" via modal glass (supprimer / refuser / etc.) #}
+  {% if delete_path is defined and delete_path and csrf_token_id is defined and csrf_token_id %}
+    <button
+      type="button"
+      class="{{ delete_class|default('btn-admin-action btn-admin-action--delete') }}"
+      title="{{ delete_button_title|default('Supprimer') }}"
+      aria-label="{{ delete_button_aria|default('Supprimer') }}"
+      data-ps-open="#psDeleteModal"
+
+      data-delete-kind="{{ delete_kind|default('article') }}"
+      data-delete-kicker="{{ delete_kicker|default('Suppression') }}"
+
+      data-delete-title="{{ delete_title|default('Supprimer ?') }}"
+      data-delete-subtitle="{{ delete_subtitle|default('Cette action est irréversible.') }}"
+      data-delete-body="{{ delete_body|default(confirm_message|default('Supprimer cet élément ?')) }}"
+
+      data-delete-action="{{ delete_path }}"
+      data-delete-token="{{ csrf_token(csrf_token_id) }}"
+      data-confirm-label="{{ confirm_label|default('Oui, supprimer') }}"
+      data-confirm-variant="{{ confirm_variant|default('primary') }}"
+    >
+      <i class="{{ delete_icon|default('bi bi-trash3') }}"></i>
+    </button>
+  {% endif %}
+</div>
+

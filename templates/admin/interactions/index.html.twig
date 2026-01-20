@@ -1,144 +1,218 @@
-{% extends 'base.html.twig' %}
+{% extends 'admin/layout.html.twig' %}
 
-{% block title %}Modération : Commentaires & Likes{% endblock %}
+{% block page_title %}Modération : Commentaires & Likes{% endblock %}
+{% block page_heading %}<i class="bi bi-intersect"></i> Modération des interactions{% endblock %}
 
-{% block body %}
-<div class="container py-5 admin-dashboard">
-    <h1 class="mb-4"><i class="bi bi-intersect"></i> Modération des interactions</h1>
+{% block content %}
+<div class="admin-surface">
 
-    <div class="row">
-        <!-- Bloc Commentaires -->
-        <div class="col-md-6">
-            <h3 class="mb-3">🔔 Commentaires
-                <span class="badge-compteur pastel-blue">{{ totalCommentaires }}</span>
-            </h3>
+  <div class="admin-surface__head">
+    <div class="d-flex align-items-center gap-2 flex-wrap">
+      <h3 class="mb-0"> Interactions</h3>
+      <span class="badge text-bg-info ms-2">Commentaires : {{ totalCommentaires }}</span>
+      <span class="badge text-bg-danger ms-2">Likes : {{ totalLikes }}</span>
+    </div>
+
+    <a href="{{ path('admin_dashboard') }}" class="btn btn-outline-light">
+      <i class="bi bi-speedometer2 me-2"></i> Tableau de bord
+    </a>
+  </div>
+
+  <div class="admin-surface__body">
+    <div class="row g-4">
+
+      {# ===== Commentaires ===== #}
+      <div class="col-xl-6">
+        <div class="admin-panel admin-panel--glass">
+          <div class="admin-panel__head">
+            <h5 class="admin-panel__title mb-0 d-flex align-items-center gap-2">
+              <i class="bi bi-chat-dots"></i> Commentaires
+              <span class="badge text-bg-info">{{ totalCommentaires }}</span>
+            </h5>
+          </div>
+
+          <div class="admin-panel__body admin-panel__body--tight">
 
             {% if commentaires is empty %}
-                <p class="text-muted">Aucun commentaire.</p>
+              <p class="text-muted mb-0">Aucun commentaire.</p>
             {% else %}
-                <table class="table table-sm table-hover align-middle">
-                    <thead>
-                        <tr>
-                            <th>Auteur</th>
-                            <th>Article</th>
-                            <th>Contenu</th>
-                            <th>Date</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for commentaire in commentaires %}
-                            <tr class="{{ not commentaire.approuve ? 'row-pending' }}">
-                                <td>{{ commentaire.auteur.pseudo ?? commentaire.auteur.email ?? 'Utilisateur supprimé' }}</td>
-                                <td>
-                                    {% if commentaire.article %}
-                                        <a href="{{ path('app_article_show', { id: commentaire.article.id }) }}" target="_blank">
-                                            {{ commentaire.article.titre|length > 30 ? commentaire.article.titre[:30] ~ '…' : commentaire.article.titre }}
-                                        </a>
-                                    {% else %}
-                                        <em class="text-muted">Supprimé</em>
-                                    {% endif %}
-                                </td>
-                                <td>
-                                    {{ commentaire.contenu|length > 40 ? commentaire.contenu[:40] ~ '…' : commentaire.contenu }}
-                                    {% if not commentaire.approuve %}
-                                        <span class="badge badge-en-attente ms-2">
-                                            <i class="bi bi-clock"></i> En attente
-                                        </span>
-                                    {% endif %}
-                                </td>
-                                <td>{{ commentaire.dateCommentaire|date('d/m/Y H:i') }}</td>
-                                <td>
-                                    <div class="d-flex gap-1">
-                                        {% if not commentaire.approuve %}
-                                            <form method="post" action="{{ path('commentaire_approve', { id: commentaire.id }) }}">
-                                                <input type="hidden" name="_token" value="{{ csrf_token('approve' ~ commentaire.id) }}">
-                                                <button class="btn-approve" title="Approuver">
-                                                    <i class="bi bi-check-circle"></i>
-                                                </button>
-                                            </form>
-                                        {% endif %}
-                                        <form method="post" action="{{ path('admin_comment_delete', { id: commentaire.id }) }}"
-                                              onsubmit="return confirm('Supprimer ce commentaire ?');">
-                                            <input type="hidden" name="_token" value="{{ csrf_token('delete-comment-' ~ commentaire.id) }}">
-                                            <button class="btn-icon-supprimer" title="Supprimer">
-                                                <i class="bi bi-trash3"></i>
-                                            </button>
+              <div class="table-responsive">
+                <table class="table table-sm table-hover align-middle table-bordered admin-table-glass w-100">
+                  <thead>
+                    <tr>
+                      <th style="width: 140px;">Auteur</th>
+                      <th>Article</th>
+                      <th>Contenu</th>
+                      <th style="width: 140px;">Date</th>
+                      <th class="text-end" style="width: 110px;">Actions</th>
+                    </tr>
+                  </thead>
 
-                                        </form>
-                                    </div>
-                                </td>
-                            </tr>
-                        {% endfor %}
-                    </tbody>
+                  <tbody>
+                    {% for commentaire in commentaires %}
+                      <tr class="{{ not commentaire.approuve ? 'row-pending' }}">
+                        <td class="text-truncate" style="max-width: 180px;">
+                          {{ commentaire.auteur.pseudo ?? commentaire.auteur.email ?? 'Utilisateur supprimé' }}
+                        </td>
+
+                        <td class="text-truncate" style="max-width: 220px;">
+                          {% if commentaire.article %}
+                            <a href="{{ path('app_article_show', { id: commentaire.article.id }) }}" target="_blank" rel="noopener">
+                              {{ commentaire.article.titre }}
+                            </a>
+                          {% else %}
+                            <em class="text-muted">Supprimé</em>
+                          {% endif %}
+                        </td>
+
+                        <td class="text-truncate" style="max-width: 260px;">
+                          {{ commentaire.contenu }}
+                          {% if not commentaire.approuve %}
+                            <span class="badge badge-en-attente ms-2">
+                              <i class="bi bi-clock"></i> En attente
+                            </span>
+                          {% endif %}
+                        </td>
+
+                        <td class="text-nowrap">
+                          {{ commentaire.dateCommentaire|date('d/m/Y') }}<br>
+                          <small class="opacity-75">{{ commentaire.dateCommentaire|date('H:i') }}</small>
+                        </td>
+                        <td class="text-end">
+                          <div class="d-inline-flex gap-1 justify-content-end align-items-center">
+
+                            {# ===== Approuver (hors modal) ===== #}
+                            {% if not commentaire.approuve %}
+                              <form method="post"
+                                    action="{{ path('commentaire_approve', { id: commentaire.id }) }}">
+                                <input type="hidden" name="_token" value="{{ csrf_token('approve' ~ commentaire.id) }}">
+                                <button class="btn-approve" title="Approuver" aria-label="Approuver">
+                                  <i class="bi bi-check-circle"></i>
+                                </button>
+                              </form>
+                            {% endif %}
+
+                            {# ===== Supprimer (modal glass) ===== #}
+                            {% include 'admin/_actions_row.html.twig' with {
+                              edit_path: null,
+                              delete_path: path('admin_comment_delete', { id: commentaire.id }),
+                              csrf_token_id: 'delete-comment-' ~ commentaire.id,
+
+                              delete_kind: 'comment',
+                              delete_kicker: 'Suppression de commentaire',
+                              delete_title: 'Supprimer ce commentaire ?',
+                              delete_subtitle: 'Cette action est irréversible.',
+                              delete_body: 'Supprimer ce commentaire rédigé par <strong>' ~
+                                (commentaire.auteur.pseudo|default(commentaire.auteur.email|default('un utilisateur')))|e('html_attr')
+                                ~ '</strong> ?',
+
+                              confirm_label: 'Oui, supprimer',
+                              confirm_variant: 'danger'
+                            } %}
+                          </div>
+                        </td>
+                      </tr>
+                    {% endfor %}
+                  </tbody>
                 </table>
+              </div>
 
-                <div class="d-flex justify-content-center mt-3">
-                    {{ knp_pagination_render(commentaires) }}
-                </div>
+              <div class="d-flex justify-content-center mt-3 admin-pagination-glass">
+                {{ knp_pagination_render(commentaires) }}
+              </div>
             {% endif %}
-        </div>
 
-        <!-- Bloc Likes -->
-        <div class="col-md-6">
-            <h3 class="mb-3">❤️ Likes
-                <span class="badge-compteur pastel-pink">{{ totalLikes }}</span>
-            </h3>
+          </div>
+        </div>
+      </div>
+
+      {# ===== Likes ===== #}
+      <div class="col-xl-6">
+        <div class="admin-panel admin-panel--glass">
+          <div class="admin-panel__head">
+            <h5 class="admin-panel__title mb-0 d-flex align-items-center gap-2">
+              <i class="bi bi-heart"></i> Likes
+              <span class="badge text-bg-danger">{{ totalLikes }}</span>
+            </h5>
+          </div>
+
+          <div class="admin-panel__body admin-panel__body--tight">
 
             {% if likes is empty %}
-                <p class="text-muted">Aucun like.</p>
+              <p class="text-muted mb-0">Aucun like.</p>
             {% else %}
-                <table class="table table-sm table-hover align-middle">
-                    <thead>
-                        <tr>
-                            <th>Auteur</th>
-                            <th>Article</th>
-                            <th>Date</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for like in likes %}
-                            <tr>
-                                <td>{{ like.user.pseudo ?? like.user.email ?? 'Utilisateur supprimé' }}</td>
-                                <td>
-                                    {% if like.article %}
-                                        <a href="{{ path('app_article_show', { id: like.article.id }) }}">
-                                            {{ like.article.titre|length > 30 ? like.article.titre[:30] ~ '…' : like.article.titre }}
-                                        </a>
-                                    {% else %}
-                                        <em class="text-muted">Supprimé</em>
-                                    {% endif %}
-                                </td>
-                                <td>{{ like.dateLike|date('d/m/Y H:i') }}</td>
-                                <td>
-                                    <form method="post" action="{{ path('admin_like_delete', { id: like.id }) }}" onsubmit="return confirm('Supprimer ce like ?');">
-                                        <input type="hidden" name="_token" value="{{ csrf_token('delete-like-' ~ like.id) }}">
-                                        <button class="btn-icon-supprimer" title="Supprimer">
-                                            <i class="bi bi-trash3"></i>
-                                        </button>
+              <div class="table-responsive">
+                <table class="table table-sm table-hover align-middle table-bordered admin-table-glass w-100">
+                  <thead>
+                    <tr>
+                      <th style="width: 140px;">Auteur</th>
+                      <th>Article</th>
+                      <th style="width: 140px;">Date</th>
+                      <th class="text-end" style="width: 90px;">Actions</th>
+                    </tr>
+                  </thead>
 
-                                    </form>
-                                </td>
-                            </tr>
-                        {% endfor %}
-                    </tbody>
+                  <tbody>
+                    {% for like in likes %}
+                      <tr>
+                        <td class="text-truncate" style="max-width: 180px;">
+                          {{ like.user.pseudo ?? like.user.email ?? 'Utilisateur supprimé' }}
+                        </td>
+
+                        <td class="text-truncate" style="max-width: 260px;">
+                          {% if like.article %}
+                            <a href="{{ path('app_article_show', { id: like.article.id }) }}" target="_blank" rel="noopener">
+                              {{ like.article.titre }}
+                            </a>
+                          {% else %}
+                            <em class="text-muted">Supprimé</em>
+                          {% endif %}
+                        </td>
+
+                        <td class="text-nowrap">
+                          {{ like.dateLike|date('d/m/Y') }}<br>
+                          <small class="opacity-75">{{ like.dateLike|date('H:i') }}</small>
+                        </td>
+                        <td class="text-end">
+                          {% include 'admin/_actions_row.html.twig' with {
+                            edit_path: null,
+                            delete_path: path('admin_like_delete', { id: like.id }),
+                            csrf_token_id: 'delete-like-' ~ like.id,
+
+                            delete_kind: 'like',
+                            delete_kicker: 'Suppression de like',
+                            delete_title: 'Supprimer ce like ?',
+                            delete_subtitle: 'Cette action est irréversible.',
+                            delete_body: 'Supprimer le like de <strong>' ~
+                              (like.user.pseudo|default(like.user.email|default('un utilisateur')))|e('html_attr')
+                              ~ '</strong> ?',
+
+                            confirm_label: 'Oui, supprimer',
+                            confirm_variant: 'danger'
+                          } %}
+                        </td>
+                      </tr>
+                    {% endfor %}
+                  </tbody>
                 </table>
+              </div>
 
-                <div class="d-flex justify-content-center mt-3">
-                    {{ knp_pagination_render(likes) }}
-                </div>
+              <div class="d-flex justify-content-center mt-3 admin-pagination-glass">
+                {{ knp_pagination_render(likes) }}
+              </div>
             {% endif %}
+
+          </div>
         </div>
-    </div>
-
-    <div class="mt-4">
-        <a href="{{ path('admin_dashboard') }}" class="btn-admin-retour">
-    ← Retour au tableau de bord</a>
+      </div>
 
     </div>
+  </div>
+
 </div>
 {% endblock %}
+
+
 
 
 

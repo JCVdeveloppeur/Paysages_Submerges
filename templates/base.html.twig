@@ -17,9 +17,16 @@
         {{ encore_entry_link_tags('app') }}
     {% endblock %}
 </head>
-<body class="{{ body_class|default('') }}">
 
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top py-3">
+{% set isAdmin = app.request.attributes.get('_route') starts with 'admin_' %}
+{% set body_class = (body_class|default('') ~ (isAdmin ? ' admin' : ''))|trim %}
+
+<body class="{{ body_class }}">
+
+
+<nav class="navbar navbar-expand-lg navbar-dark fixed-top py-3
+    {{ isAdmin ? 'admin-navbar-glass' : '' }}">
+
     <div class="container-fluid">
         <a class="navbar-brand" href="{{ path('app_accueil') }}">
             <span class="navbar-brand">Paysages Submergés</span>
@@ -104,9 +111,12 @@
             <ul class="navbar-nav">
                 {% if app.user %}
                     <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle text-white d-flex align-items-center" href="#" id="navbarDropdown"
-                           role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            <i class="bi bi-person-circle me-1"></i> {{ app.user.pseudo ?? app.user.username }}
+                        <a class="nav-link dropdown-toggle p-0" href="#" id="navbarDropdown"
+                        role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <span class="admin-pill">
+                                <i class="bi bi-person-circle"></i>
+                                {{ app.user.pseudo ?? app.user.username }}
+                            </span>
                         </a>
                         <ul class="dropdown-menu dropdown-menu-end">
                             <li>
@@ -165,11 +175,11 @@
             </ul>
             {% if app.user %}
                 <a href="{{ path('app_article_new') }}" class="btn btn-vert ms-2 me-3 d-none d-lg-inline-flex">
-                    <i class="bi bi-pencil-square"></i> Rédiger un article
+                    <i class="bi bi-pencil-square me-2"></i> Rédiger un article
                 </a>
             {% endif %}
 
-            <form class="d-flex ms-3" action="{{ path('app_articles') }}" method="get" role="search">
+            <form class="{{ isAdmin ? 'admin-search' : '' }} d-flex ms-3" action="{{ path('app_articles') }}" method="get" role="search">
                 <input class="form-control me-2" type="search" name="q" placeholder="🔍 Rechercher…" value="{{ app.request.get('q') }}">
             </form>
         </div>
@@ -305,8 +315,7 @@
     </div>
     
     </footer>
-
-
+    
 {% block javascripts %}
 {{ encore_entry_script_tags('app') }}
 <script>

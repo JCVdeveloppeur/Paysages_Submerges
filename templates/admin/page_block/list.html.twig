@@ -1,51 +1,77 @@
 {% extends 'admin/layout.html.twig' %}
 
 {% block page_title %}Blocs de page{% endblock %}
-{% block page_heading %}Blocs de page{% endblock %}
+{% block page_heading %}<i class="bi bi-blockquote-left"></i> Gérer les blocs de page{% endblock %}
 
 {% block content %}
-<div class="d-flex justify-content-end mb-3">
-  <a href="{{ path('admin_page_block_new') }}" class="btn btn-admin-ajouter">
-    <i class="bi bi-plus-circle"></i> Nouveau bloc
-  </a>
-</div>
+<div class="admin-surface">
 
-<table class="table table-striped align-middle">
-  <thead>
-    <tr>
-      <th>#</th>
-      <th>Slug</th>
-      <th>Titre</th>
-      <th>Mis à jour</th>
-      <th class="text-end">Actions</th>
-    </tr>
-  </thead>
-  <tbody>
-  {% for b in blocks %}
-    <tr>
-      <td>{{ b.id }}</td>
-      <td><code>{{ b.slug }}</code></td>
-      <td>{{ b.title ?: '—' }}</td>
-      <td>{{ b.updatedAt ? b.updatedAt|date('d/m/Y H:i') : '—' }}</td>
-      <td class="text-end">
-        <a href="{{ path('admin_page_block_edit', {id: b.id}) }}" class="btn btn-admin-modifier me-2">
-          <i class="bi bi-pencil-square"></i> Modifier
-        </a>
-        {% include 'admin/page_block/_delete_form.html.twig' with {block: b} %}
-      </td>
-    </tr>
-  {% else %}
-    <tr><td colspan="5" class="text-muted">Aucun bloc pour le moment.</td></tr>
-  {% endfor %}
-  </tbody>
-</table>
+  <div class="admin-surface__head">
+    <h3 class="mb-0"> Blocs de page </h3>
 
-<div class="mt-4">
-  <a href="{{ path('admin_dashboard') }}" class="btn btn-admin-retour">
-    <i class="bi bi-arrow-left"></i> Retour au tableau de bord
-  </a>
+    <div class="d-flex gap-2 flex-wrap">
+
+      <a href="{{ path('admin_page_block_new') }}" class="btn-admin-ajouter">
+        <i class="bi bi-plus-circle"></i> Nouveau bloc
+      </a>
+
+      <a href="{{ path('admin_dashboard') }}" class="btn btn-outline-light btn-sm">
+        <i class="bi bi-arrow-left-circle me-2"></i> Tableau de bord
+      </a>
+      
+    </div>
+  </div>
+
+  <div class="admin-surface__body">
+    <div class="table-responsive">
+      <table class="table table-hover align-middle table-bordered admin-table-glass">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Slug</th>
+            <th>Titre</th>
+            <th>Mis à jour</th>
+            <th class="text-end">Actions</th>
+          </tr>
+        </thead>
+
+        <tbody>
+        {% for b in blocks %}
+          <tr>
+            <td>{{ b.id }}</td>
+            <td><code>{{ b.slug }}</code></td>
+            <td>{{ b.title ?: '—' }}</td>
+            <td>{{ b.updatedAt ? b.updatedAt|date('d/m/Y H:i') : '—' }}</td>
+            <td class="text-end">
+              {% include 'admin/_actions_row.html.twig' with {
+                edit_path: path('admin_page_block_edit', { id: b.id }),
+                delete_path: path('admin_page_block_delete', { id: b.id }),
+                csrf_token_id: 'delete_page_block_' ~ b.id,
+
+                delete_kind: 'block',
+                delete_kicker: 'Suppression de bloc',
+                delete_title: 'Supprimer ce bloc ?',
+                delete_subtitle: 'Cette action est irréversible.',
+                delete_body: 'Vous êtes sûr de vouloir supprimer le bloc : <strong>' ~ (b.titre|default(b.slug|default('ce bloc')))|e('html_attr') ~ '</strong> ?',
+
+                confirm_label: 'Oui, supprimer',
+                confirm_variant: 'danger'
+              } %}
+            </td>
+          </tr>
+        {% else %}
+          <tr>
+            <td colspan="5" class="text-center text-muted">Aucun bloc pour le moment.</td>
+          </tr>
+        {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+
 </div>
 {% endblock %}
+
 
 
 
